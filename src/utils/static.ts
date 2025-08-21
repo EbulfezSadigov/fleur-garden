@@ -1,7 +1,6 @@
 export const navigationItems = [
-    { label: "jobs", href: "/jobs" },
-    { label: "companies", href: "/companies" },
-    { label: "categories", href: "/categories" },
-    { label: "cvs", href: "/cvs" },
-    { label: "about", href: "/about" },
+    { label: "about_company", href: "/about-company" },
+    { label: "partners", href: "/partners" },
+    { label: "blog", href: "/blog" },
+    { label: "contact", href: "/contact" },
   ]

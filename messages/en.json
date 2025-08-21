@@ -1,13 +1,24 @@
 {
     "home": {
-        "title": "HR-vacancies",
-        "description": "HR-vacancies"
+        "carousel_reviews_title": "Reviews",
+        "blogs_title": "Blogs",
+        "newsletter_title": "Stay Updated",
+        "newsletter_subtitle": "Subscribe to get timely updates about campaigns, news, and special offers."
     },
     "navigation": {
-        "jobs": "Jobs",
-        "companies": "Companies",
-        "categories": "Categories",
-        "cvs": "CVs",
-        "about": "About"
+        "about_company": "About company",
+        "partners": "Partners",
+        "blog": "Blog",
+        "contact": "Contact",
+        "login": "Login",
+        "register": "Register",
+        "catalog": "Catalog"
+    },
+    "newsletter": {
+        "title": "Stay Updated",
+        "subtitle": "Subscribe to get timely updates about campaigns, news, and special offers.",
+        "emailLabel": "Email",
+        "placeholder": "Enter your email address",
+        "cta": "Subscribe"
     }
 }

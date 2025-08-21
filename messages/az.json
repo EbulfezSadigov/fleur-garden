@@ -1,13 +1,24 @@
 {
-    "home": {
-        "title": "HR-vakansiyaları",
-        "description": "HR-vakansiyaları"
-    },
-    "navigation": {
-        "jobs": "Vakansiyalar",
-        "companies": "Şirkətlər",
-        "categories": "Kateqoriyalar",
-        "cvs": "CVlər",
-        "about": "Haqqımızda"
-    }
+  "home": {
+    "carousel_reviews_title": "Rəylər",
+    "blogs_title": "Bloqlar",
+    "newsletter_title": "Yeniliklərdən Xəbərdar Ol",
+    "newsletter_subtitle": "Abunə ol və kampaniyalar, xəbərlər və xüsusi fürsətlərdən vaxtında xəbərdar ol."
+  },
+  "navigation": {
+    "about_company": "Şirkət haqqında",
+    "partners": "Tərəfdaşlarımız",
+    "blog": "Bloq",
+    "contact": "Əlaqə",
+    "login": "Daxil ol",
+    "register": "Qeydiyyatdan keç",
+    "catalog": "Kataloq"
+  },
+  "newsletter": {
+    "title": "Yeniliklərdən Xəbərdar Ol",
+    "subtitle": "Abunə ol və kampaniyalar, xəbərlər və xüsusi fürsətlərdən vaxtında xəbərdar ol.",
+    "emailLabel": "Email",
+    "placeholder": "Email adresinizi daxil edin",
+    "cta": "Abunə ol"
+  }
 }

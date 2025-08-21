@@ -7,7 +7,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { Toaster } from "sonner";
-import Header from "@/components/navigation/header";
+import { Header } from "@/components/navigation/header";
 import Footer from "@/components/navigation/footer";
 
 const geistSans = Geist({
@@ -42,11 +42,11 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>
           <NextIntlClientProvider messages={messages}>
-            <div className="min-h-screen">
+            <main>
               <Header />
               {children}
               <Footer />
-            </div>
+            </main>
             <Toaster position="top-center" richColors />
           </NextIntlClientProvider>
         </QueryProvider>
