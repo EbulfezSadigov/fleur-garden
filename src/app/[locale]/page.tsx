@@ -12,7 +12,7 @@ export default function Home() {
       <ProductCarousel />
       <BrandCarousel />
       <ProductGrid />
-      <HeroBanner title="HR-vakansiyaları" imageSrc="/images/banner.jpg" />
+      <HeroBanner title="50%-dək endirim" imageSrc="/images/banner.jpg" />
       <BlogSection />
       <CarouselWithReviews />
       <NewsletterSubscribe />

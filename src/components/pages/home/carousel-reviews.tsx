@@ -80,8 +80,8 @@ export function CarouselWithReviews() {
                     <div className="flex items-center justify-between">
                         <h2 className="text-[36px] font-medium">Rəylər</h2>
                         <div className="flex items-center space-x-2">
-                            <CarouselPrevious className="border rounded-full p-1 static translate-y-0" />
-                            <CarouselNext className="border rounded-full p-1 static translate-y-0" />
+                            <CarouselPrevious className="border w-12 h-12 rounded-full p-1 static translate-y-0" />
+                            <CarouselNext className="border w-12 h-12 rounded-full p-1 static translate-y-0" />
                         </div>
                     </div>
                 </Container>

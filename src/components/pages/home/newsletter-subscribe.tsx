@@ -11,7 +11,7 @@ export async function NewsletterSubscribe() {
       <Container>
         <div className="rounded-2xl bg-[#F6F6F6] px-4 py-8 md:px-10 md:py-10">
           <div className="grid items-center gap-6 md:grid-cols-2">
-            <div className="space-y-3">
+            <div className="space-y-6 max-w-[500px]">
               <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                 {t("title")}
               </h2>

@@ -27,7 +27,7 @@ export function HeroBanner({
                                 BYREDO
                             </p>
                             <h1 className="text-3xl sm:text-4xl md:text-[56px] font-semibold leading-tight text-primary">
-                                HR-vakansiyaları
+                            50%-dək endirim
                             </h1>
 
                             <p className="text-xl text-center text-muted-foreground mb-4 mt-3 uppercase">
