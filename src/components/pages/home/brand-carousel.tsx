@@ -50,7 +50,7 @@ export function BrandCarousel() {
             key={`${brand}-${index}`}
             className={cn(
               "flex-shrink-0 flex items-center justify-center",
-              "text-2xl font-medium text-muted-foreground/70",
+              "text-4xl font-medium",
               "hover:text-foreground transition-colors duration-300",
               "whitespace-nowrap select-none",
               // Different font styles for variety

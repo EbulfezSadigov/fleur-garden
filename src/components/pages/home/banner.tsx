@@ -64,7 +64,7 @@ export function ProductCarousel() {
                     >
                         <CarouselContent className="-ml-2 md:-ml-4">
                             {products.map((product) => (
-                                <CarouselItem key={product.id}>
+                                <CarouselItem key={product.id} className="pl-0">
                                     <div className="border-0 bg-card/50 transition-all duration-300 hover:scale-105">
                                         <div>
                                             <div className="relative overflow-hidden">

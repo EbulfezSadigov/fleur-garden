@@ -32,7 +32,7 @@ function LanguageSelector() {
                     <ChevronDown className="ml-1 h-4 w-4" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-fit p-2">
+            <PopoverContent align="end" className="w-fit p-2 z-[150]">
                 <div className="flex flex-col gap-1">
                     {locales.map((locale) => (
                         <button

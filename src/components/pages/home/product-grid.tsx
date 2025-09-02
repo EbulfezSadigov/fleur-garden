@@ -1,5 +1,6 @@
 import Container from "@/components/shared/container"
 import ProductCard from "./product-card"
+import Link from "next/link"
 
 interface Product {
     id: number
@@ -90,7 +91,7 @@ export default function ProductGrid() {
     return (
         <Container className="py-[72px]">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-8">
                 <h1 className="text-4xl font-medium text-primary">Ən Çox Satılanlar</h1>
                 <nav className="flex items-center gap-6">
                     <button className="text-primary font-medium relative flex items-center gap-2">
@@ -112,9 +113,9 @@ export default function ProductGrid() {
 
             {/* Load More Button */}
             <div className="flex justify-center">
-                <button className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
+                <Link href="/products" className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
                     Daha çox
-                </button>
+                </Link>
             </div>
         </Container>
     )

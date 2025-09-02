@@ -9,6 +9,7 @@ import { QueryProvider } from "@/providers/QueryProvider";
 import { Toaster } from "sonner";
 import { Header } from "@/components/navigation/header";
 import Footer from "@/components/navigation/footer";
+import TopLoader from "@/components/shared/top-loader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
-  const {locale} = await params;
+  const { locale } = await params;
   const messages = (await getMessages()) as Record<string, string>;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
@@ -42,11 +43,12 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>
           <NextIntlClientProvider messages={messages}>
-            <main>
+            <main className="md:pt-36 pt-20">
               <Header />
               {children}
               <Footer />
             </main>
+            <TopLoader />
             <Toaster position="top-center" richColors />
           </NextIntlClientProvider>
         </QueryProvider>
