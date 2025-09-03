@@ -26,7 +26,7 @@ export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: Log
         <>
           {/* Backdrop/Overlay */}
           <div 
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-40 top-[140px] bg-[#20201E85]"
             onClick={onClose}
           />
           

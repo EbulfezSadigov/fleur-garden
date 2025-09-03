@@ -23,7 +23,7 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
         <>
           {/* Backdrop/Overlay */}
           <div 
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 top-[140px] bg-[#20201E85] z-40"
             onClick={onClose}
           />
           

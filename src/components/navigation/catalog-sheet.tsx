@@ -164,6 +164,12 @@ export function CatalogSheet() {
       {/* Custom Modal/Overlay */}
       {isOpen && (
         <>
+          {/* Backdrop/Overlay */}
+          <div 
+            className="fixed inset-0 top-[140px] bg-[#20201E85] z-40"
+            onClick={handleClose}
+          />
+          
           {/* Modal Content */}
           <div className={`fixed left-0 h-[calc(100vh-140px)] top-auto bottom-0 w-full max-w-[714px] bg-white z-50 px-6 flex flex-col transform transition-transform duration-300 ease-out ${
             isAnimating ? 'translate-x-0' : '-translate-x-full'

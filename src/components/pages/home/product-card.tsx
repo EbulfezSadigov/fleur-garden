@@ -1,28 +1,131 @@
-import { Star } from 'lucide-react'
+"use client"
+
+import { ArrowRight, Heart, Scale, Star } from 'lucide-react'
+import Link from 'next/link'
 import Image from 'next/image'
 import React from 'react'
-
-interface Product {
-    id: number
-    name: string
-    brand: string
-    price: string
-    rating: number
-    inStock: boolean
-    image: string
-}
-
-interface ProductCardProps {
-    product: Product
-}
+import { ProductCardProps } from '@/types'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 function ProductCard({ product }: ProductCardProps) {
+    const [isOpen, setIsOpen] = React.useState(false)
+    const [isComparisonOpen, setIsComparisonOpen] = React.useState(false)
+    const [isFavorite, setIsFavorite] = React.useState(false)
+    const router = useRouter()
+    // Check if product is in favorites on component mount
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]')
+            const isInFavorites = favorites.some((item: { id: number; product: typeof product }) => item.id === product.id)
+            setIsFavorite(isInFavorites)
+        }
+    }, [product.id])
+
+    function handleAddToCart(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        try {
+            const storageKey = 'cart'
+            const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
+            const cart: Array<{ id: number; qty: number; product: typeof product }> = raw ? JSON.parse(raw) : []
+
+            const existingIndex = cart.findIndex(item => item.id === product.id)
+            if (existingIndex >= 0) {
+                cart[existingIndex].qty += 1
+            } else {
+                cart.push({ id: product.id, qty: 1, product })
+            }
+
+            window.localStorage.setItem(storageKey, JSON.stringify(cart))
+            setIsOpen(true)
+        } catch (error) {
+            console.error('Failed to write cart to localStorage', error)
+        }
+    }
+
+    function handleAddToComparison(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        try {
+            const storageKey = 'comparison'
+            const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
+            const comparison: Array<{ id: number; product: typeof product }> = raw ? JSON.parse(raw) : []
+
+            const existingIndex = comparison.findIndex(item => item.id === product.id)
+            if (existingIndex === -1) {
+                comparison.push({ id: product.id, product })
+                window.localStorage.setItem(storageKey, JSON.stringify(comparison))
+                setIsComparisonOpen(true)
+                toast.success('Məhsul müqayisə siyahısına əlavə olundu')
+                // Notify header and others
+                window.dispatchEvent(new CustomEvent('comparisonChanged'))
+            }
+            else {
+                toast.error('Məhsul artıq müqayisə siyahısına əlavə olunub')
+            }
+        } catch (error) {
+            console.error('Failed to write comparison to localStorage', error)
+        }
+    }
+
+    function handleToggleFavorite(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        try {
+            const storageKey = 'favorites'
+            const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
+            const favorites: Array<{ id: number; product: typeof product }> = raw ? JSON.parse(raw) : []
+
+            const existingIndex = favorites.findIndex(item => item.id === product.id)
+
+            if (existingIndex >= 0) {
+                // Remove from favorites
+                favorites.splice(existingIndex, 1)
+                setIsFavorite(false)
+                toast.success('Məhsul sevimlilərdən çıxarıldı')
+            } else {
+                // Add to favorites
+                favorites.push({ id: product.id, product })
+                setIsFavorite(true)
+                toast.success('Məhsul sevimlilərə əlavə olundu')
+            }
+
+            window.localStorage.setItem(storageKey, JSON.stringify(favorites))
+
+            // Dispatch custom event to notify other components
+            window.dispatchEvent(new CustomEvent('favoritesChanged'))
+        } catch (error) {
+            console.error('Failed to write favorites to localStorage', error)
+            toast.error('Xəta baş verdi')
+        }
+    }
+
     return (
-        <div key={product.id} className="bg-white border border-[#F2F4F8] rounded-[12px] p-4"
+        <div onClick={() => router.push(`/products/${product.id}`)} key={product.id} className="bg-white relative group border border-[#F2F4F8] rounded-[12px] p-4"
             style={{
                 boxShadow: "0px 8px 12px 0px #00000008",
             }}
         >
+            <div className="flex flex-col items-center justify-end z-10 absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Button variant="ghost" size="sm" className="p-2" onClick={handleToggleFavorite}>
+                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                </Button>
+                <Button variant="ghost" size="sm" className="p-2" onClick={handleAddToComparison}>
+                    <Scale className="w-5 h-5 text-gray-600" />
+                </Button>
+            </div>
             {/* Product Image */}
             <div className="aspect-[3/4] mb-4 rounded-lg overflow-hidden">
                 <Image
@@ -52,7 +155,7 @@ function ProductCard({ product }: ProductCardProps) {
 
                 <div className="flex items-center justify-between pt-2">
                     <span className="text-lg font-semibold text-primary">{product.price}</span>
-                    <button className="bg-primary text-white px-4 py-2 rounded-md text-xs font-medium hover:bg-gray-800 transition-colors flex items-center gap-2">
+                    <button onClick={handleAddToCart} className="bg-primary text-white px-4 py-2 rounded-md text-xs font-medium hover:bg-gray-800 transition-colors flex items-center gap-2">
                         Səbətə at
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -60,6 +163,121 @@ function ProductCard({ product }: ProductCardProps) {
                     </button>
                 </div>
             </div>
+            <Dialog open={isOpen} onOpenChange={(open) => {
+                setIsOpen(open)
+                if (!open) {
+                    // Prevent event bubbling when dialog closes
+                    setTimeout(() => {
+                        // Small delay to ensure the dialog close event doesn't bubble
+                    }, 0)
+                }
+            }}>
+                <DialogContent className="max-w-xl p-0" onClick={(e) => e.stopPropagation()}>
+                    <div className="p-4 sm:p-6">
+                        <DialogHeader>
+                            <DialogTitle>Məhsul səbətinizə əlavə olundu</DialogTitle>
+                            <DialogDescription />
+                        </DialogHeader>
+
+                        <div className="mt-4 grid grid-cols-[72px_1fr_auto] gap-4 items-center">
+                            <div className="w-18 h-18 bg-white py-3 rounded-md border flex items-center justify-center overflow-hidden">
+                                <Image
+                                    width={72}
+                                    height={72}
+                                    src={product.image || '/placeholder.svg'}
+                                    alt={product.name}
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium text-primary">{product.name}</p>
+                                <p className="text-xs text-[#77777B] mt-1">{product.brand}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-sm font-semibold text-primary">(x1) {product.price}</p>
+                                <p className="text-[10px] text-muted-foreground">200 ml (1.50 a/ml)</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex items-center justify-between text-xs text-[#77777B] border-t pt-2">
+                            <span>Səbətinizdə məhsullar var</span>
+                            <span className="text-primary">Səbətin ilkin dəyəri {product.price}</span>
+                        </div>
+
+                        <div className="mt-4 w-full flex justify-end gap-2">
+                            <Link
+                                href={`/cart`}
+                                className="flex gap-2 items-center bg-primary text-white rounded-md px-3 py-2 text-xs text-center"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setIsOpen(false)
+                                }}
+                            >
+                                Səbətə keç <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Comparison Dialog */}
+            <Dialog open={isComparisonOpen} onOpenChange={(open) => {
+                setIsComparisonOpen(open)
+                if (!open) {
+                    // Prevent event bubbling when dialog closes
+                    setTimeout(() => {
+                        // Small delay to ensure the dialog close event doesn't bubble
+                    }, 0)
+                }
+            }}>
+                <DialogContent className="max-w-md p-0" onClick={(e) => e.stopPropagation()}>
+                    <div className="p-6">
+                        <DialogHeader>
+                            <DialogTitle className="text-lg font-medium">Məhsul müqayisə siyahısına əlavə olundu</DialogTitle>
+                        </DialogHeader>
+
+                        <div className="mt-4 flex items-center gap-4">
+                            <div className="w-16 h-16 bg-white rounded-md border flex items-center justify-center overflow-hidden flex-shrink-0">
+                                <Image
+                                    width={64}
+                                    height={64}
+                                    src={product.image || '/placeholder.svg'}
+                                    alt={product.name}
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                    <h3 className="font-medium text-primary">{product.name}</h3>
+                                    <div className="flex items-center gap-1">
+                                        <Star className="w-4 h-4 fill-orange-400 text-orange-400" />
+                                        <span className="text-sm text-orange-400 font-medium">{product.rating}</span>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-[#77777B] mt-1">{product.brand}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-sm font-semibold text-primary">{product.price}</p>
+                                <p className="text-xs text-[#77777B]">200 ml (1.50 ₼ / ml)</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
+                            <Link
+                                href="/comparison"
+                                className="flex items-center gap-2 bg-gray-800 text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700 transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setIsComparisonOpen(false)
+                                }}
+                            >
+                                Müqayisə siyahısı
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

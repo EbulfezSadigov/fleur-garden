@@ -8,7 +8,7 @@ export default function AboutPage() {
         {/* Hero Section */}
         <div className="grid lg:grid-cols-2 items-start gap-12 mb-20">
           <div className="space-y-6">
-            <h1 className="text-4xl font-bold text-foreground text-balance">Şirketimiz haqqında</h1>
+            <h1 className="text-4xl font-semibold text-foreground text-balance">Şirketimiz haqqında</h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Biz, müştərilərimizə ən yüksək keyfiyyətli ətirlari təqdim etməyi hədəfləyən bir şirkətik. Parfüm
               seçiminin insanların gündəlik həyatında xüsusi bir yer tutduğunu bilirik. Məhsullarımız dünyaca məşhur
@@ -36,7 +36,7 @@ export default function AboutPage() {
 
         {/* Mission and Values Section */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-foreground mb-8 text-balance">Missiyamız və Dəyərlərimiz</h2>
+          <h2 className="text-3xl font-semibold text-foreground mb-8 text-balance">Missiyamız və Dəyərlərimiz</h2>
           <div className="space-y-6 text-muted-foreground leading-relaxed">
             <p className="text-lg">
               Missiyamız, insanların gündəlik həyatını ətirlarlə zənginləşdirməkdir. Biz müştərilərimizin fərdi

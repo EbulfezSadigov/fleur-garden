@@ -5,10 +5,10 @@ export default function TopLoader() {
   return (
     <>
       <NextTopLoader
-        color="#BEFF6C"
+        color="#20201E"
         initialPosition={0.08}
         crawlSpeed={200}
-        height={5}
+        height={7}
         crawl={true}
         showSpinner={false}
         easing="ease"
