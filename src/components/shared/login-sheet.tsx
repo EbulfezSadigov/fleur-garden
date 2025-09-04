@@ -7,6 +7,13 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { loginAction } from "@/services/auth/server-actions"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 interface LoginSheetProps {
   isOpen: boolean
@@ -18,6 +25,37 @@ interface LoginSheetProps {
 export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: LoginSheetProps) {
   const [showPassword, setShowPassword] = useState(false)
   const t = useTranslations("navigation")
+  const router = useRouter()
+
+  const LoginSchema = z.object({
+    email: z.string().email({ message: "Düzgün email daxil edin" }),
+    password: z.string().min(6, { message: "Şifrə minimum 6 simvol olmalıdır" }),
+    remember: z.boolean().optional(),
+  })
+
+  type LoginFormValues = z.infer<typeof LoginSchema>
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      remember: false,
+    },
+    mode: "onSubmit",
+  })
+
+  async function onSubmit(values: LoginFormValues) {
+    try {
+      await loginAction(values.email, values.password)
+      toast.success(t("login"))
+      onClose()
+      router.refresh()
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Giriş uğursuz oldu"
+      toast.error(message)
+    }
+  }
 
   return (
     <>
@@ -42,80 +80,106 @@ export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: Log
             </div>
             
             {/* Login Form */}
-            <div className="flex-1 space-y-6">
-              {/* Email Field */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Email adresinizi qeyd edin"
-                  className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
+                {/* Email Field */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Email adresinizi qeyd edin"
+                          className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              {/* Password Field */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                  Şifrə
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Şifrənizi daxil edin"
-                    className="w-full h-12 px-4 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                {/* Password Field */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">Şifrə</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Şifrənizi daxil edin"
+                            className="w-full h-12 px-4 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                            {...field}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="w-5 h-5" />
+                            ) : (
+                              <Eye className="w-5 h-5" />
+                            )}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <FormField
+                      control={form.control}
+                      name="remember"
+                      render={({ field }) => (
+                        <>
+                          <Checkbox id="remember" checked={!!field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} />
+                          <Label htmlFor="remember" className="text-sm text-gray-600">
+                            Şifrəni yadda saxla
+                          </Label>
+                        </>
+                      )}
+                    />
+                  </div>
+                  <button type="button" className="text-sm text-primary hover:text-primary/80">
+                    Şifrəmi unutdum
                   </button>
                 </div>
-              </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="remember" />
-                  <Label htmlFor="remember" className="text-sm text-gray-600">
-                    Şifrəni yadda saxla
-                  </Label>
-                </div>
-                <button className="text-sm text-primary hover:text-primary/80">
-                  Şifrəmi unutdum
-                </button>
-              </div>
-
-              {/* Login Button */}
-              <Button 
-                className="w-full h-12 bg-gray-800 hover:bg-gray-900 text-white rounded-lg font-medium"
-                onClick={onClose}
-              >
-                {t("login")}
-              </Button>
-
-              {/* Register Link */}
-              <div className="text-center">
-                <span className="text-sm text-gray-600">
-                  Hesabın yoxdur?{" "}
-                </span>
-                <button 
-                  className="text-sm text-primary hover:text-primary/80 font-medium"
-                  onClick={onOpenRegister}
+                {/* Login Button */}
+                <Button 
+                  className="w-full h-12 bg-gray-800 hover:bg-gray-900 text-white rounded-lg font-medium"
+                  type="submit"
+                  disabled={form.formState.isSubmitting}
                 >
-                  Qeydiyyatdan keç
-                </button>
-              </div>
-            </div>
+                  {form.formState.isSubmitting ? "Giriş edilir..." : t("login")}
+                </Button>
+
+                {/* Register Link */}
+                <div className="text-center">
+                  <span className="text-sm text-gray-600">
+                    Hesabın yoxdur?{" "}
+                  </span>
+                  <button 
+                    type="button"
+                    className="text-sm text-primary hover:text-primary/80 font-medium"
+                    onClick={onOpenRegister}
+                  >
+                    Qeydiyyatdan keç
+                  </button>
+                </div>
+              </form>
+            </Form>
           </div>
         </>
       )}

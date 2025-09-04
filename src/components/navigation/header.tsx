@@ -1,76 +1,29 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { Search, ShoppingCart, Heart, Scale } from "lucide-react"
+import { Search, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import UserPopover from "../shared/user-popover"
 import LanguageSelector from "../shared/language-selector"
 import { navigationItems } from "@/utils/static"
-import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { CatalogSheet } from "./catalog-sheet"
 import { MobileMenu } from "./mobile-menu"
 import Container from "../shared/container"
+import FavComp from "./favcomp"
+import { getTranslations } from "next-intl/server"
+import { getServerQueryClient } from "@/providers/server"
+import { getUserQuery } from "@/services/auth/queries"
+import { cookies } from "next/headers"
+import { User } from "@/types"
 
-export function Header() {
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-  const [favoritesCount, setFavoritesCount] = useState(0)
-  const [comparisonCount, setComparisonCount] = useState(0)
+export async function Header() {
+  const t = await getTranslations("navigation")
+  const token = (await cookies()).get("access_token")?.value as string;
+  const queryClient = getServerQueryClient();
 
-  const t = useTranslations("navigation")
-
-  useEffect(() => {
-    const updateFavoritesCount = () => {
-      if (typeof window !== 'undefined') {
-        try {
-          const favoritesData = localStorage.getItem('favorites')
-          if (favoritesData) {
-            const favorites = JSON.parse(favoritesData)
-            setFavoritesCount(favorites.length)
-          } else {
-            setFavoritesCount(0)
-          }
-        } catch (error) {
-          console.error('Failed to load favorites count', error)
-          setFavoritesCount(0)
-        }
-      }
-    }
-
-    const updateComparisonCount = () => {
-      if (typeof window !== 'undefined') {
-        try {
-          const comparisonData = localStorage.getItem('comparison')
-          if (comparisonData) {
-            const comparison = JSON.parse(comparisonData)
-            setComparisonCount(comparison.length)
-          } else {
-            setComparisonCount(0)
-          }
-        } catch (error) {
-          console.error('Failed to load comparison count', error)
-          setComparisonCount(0)
-        }
-      }
-    }
-
-    updateFavoritesCount()
-    updateComparisonCount()
-
-    window.addEventListener('favoritesChanged', updateFavoritesCount)
-    window.addEventListener('comparisonChanged', updateComparisonCount)
-    window.addEventListener('storage', updateFavoritesCount)
-    window.addEventListener('storage', updateComparisonCount)
-
-    return () => {
-      window.removeEventListener('favoritesChanged', updateFavoritesCount)
-      window.removeEventListener('comparisonChanged', updateComparisonCount)
-      window.removeEventListener('storage', updateFavoritesCount)
-      window.removeEventListener('storage', updateComparisonCount)
-    }
-  }, [])
-
+  await Promise.all([queryClient.prefetchQuery(getUserQuery(token))]);
+  const userData = queryClient.getQueryData(getUserQuery(token).queryKey);
+  const user = userData?.data;
+  console.log(user);
   return (
     <div>
       <header className="w-full bg-white border-b fixed z-50 top-0 left-0 right-0">
@@ -87,7 +40,7 @@ export function Header() {
               <div className="flex items-center space-x-4">
                 <LanguageSelector />
                 <div className="w-px h-4 bg-gray-200" />
-                <UserPopover />
+                <UserPopover user={user as User} />
               </div>
             </div>
           </Container>
@@ -97,7 +50,7 @@ export function Header() {
           <div className="flex items-center justify-between h-[84px]">
             <div className="flex items-center gap-2 md:gap-8">
               <div className="md:hidden">
-                <MobileMenu isOpen={isSheetOpen} onOpenChange={setIsSheetOpen} />
+                <MobileMenu user={user as User} />
               </div>
 
               <Link href="/" className="flex items-center">
@@ -131,28 +84,10 @@ export function Header() {
                   <ShoppingCart className="w-5 h-5 text-gray-600" />
                 </Button>
               </Link>
-              <Link href="/favorites">
-                <Button variant="ghost" size="sm" className="p-2 relative">
-                  <Heart className="w-5 h-5 text-gray-600" />
-                  {favoritesCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-medium">
-                      {favoritesCount > 99 ? '99+' : favoritesCount}
-                    </span>
-                  )}
-                </Button>
-              </Link>
-              <Link href="/comparison">
-                <Button variant="ghost" size="sm" className="p-2 relative">
-                  <Scale className="w-5 h-5 text-gray-600" />
-                  {comparisonCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-gray-900 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-medium">
-                      {comparisonCount > 99 ? '99+' : comparisonCount}
-                    </span>
-                  )}
-                </Button>
-              </Link>
+              <FavComp />
+             
               <div className="block md:hidden">
-                <UserPopover />
+                <UserPopover user={user as User} />
               </div>
             </div>
           </div>

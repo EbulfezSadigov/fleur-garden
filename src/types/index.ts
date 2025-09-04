@@ -16,6 +16,35 @@ export interface ApiResponse<T> {
     data: T;
   }
 
+// Auth
+export interface AuthUserInfo {
+    name: string
+    email: string
+    mobile: string
+    sv: number
+    token_type: string
+}
+
+export interface AuthLoginResponse {
+    data: {
+        token: string
+        user: AuthUserInfo
+    }
+    message: string
+}
+
+export interface AuthRegisterResponse {
+    remark: string
+    status: string
+    data: {
+        access_token: string
+        name: string
+        email: string
+        sv: number
+        token_type: string
+    }
+}
+
 export interface Product {
     id: number
     name: string
@@ -28,4 +57,18 @@ export interface Product {
 
 export interface ProductCardProps {
     product: Product
+}
+
+export interface User {
+    name: string
+    email: string
+    mobile: string
+    password: string
+}
+
+// Payload for updating basic user profile information
+export interface UpdateUserPayload {
+    name: string
+    email: string
+    mobile: string
 }

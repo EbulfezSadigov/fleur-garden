@@ -12,19 +12,15 @@ import { useSearchParams } from "next/navigation"
 import { routing } from "@/i18n/routing"
 import Link from "next/link"
 import UserPopover from "../shared/user-popover"
+import { User } from "@/types"
 
-interface MobileMenuProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-}
-
-export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
+export function MobileMenu({ user }: { user: User }) {
   const t = useTranslations("navigation")
   const router = useRouter()
   const pathname = usePathname()
   const activeLocale = useLocale()
   const searchParams = useSearchParams()
-
+  const [isOpen, setIsOpen] = useState(false)
   // State for managing subcategory view
   const [currentView, setCurrentView] = useState<'main' | 'subcategory'>('main')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -128,7 +124,7 @@ export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="sm" className="p-2">
           <Menu className="w-6 h-6" />
@@ -139,7 +135,7 @@ export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
         <div className="bg-white border-b px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)} className="p-1">
+              <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)} className="p-1">
                 <X className="w-5 h-5" />
               </Button>
               <h1 className="text-lg font-semibold">Fleur Garden</h1>
@@ -155,7 +151,7 @@ export function MobileMenu({ isOpen, onOpenChange }: MobileMenuProps) {
               <Button variant="ghost" size="sm" className="p-2">
                 <ShoppingCart className="w-5 h-5 text-gray-600" />
               </Button>
-              <UserPopover/>
+              <UserPopover user={user} />
             </div>
           </div>
 

@@ -7,10 +7,17 @@ import Link from 'next/link'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { AlertTriangle } from 'lucide-react'
+import { LogoutMutation } from '@/services/auth/mutations'
 
 function ProfileSidebar() {
     const pathname = usePathname()
     const activeItem = sidebarItems.find((item) => item.href === pathname)
+
+    const { mutate: logoutMutation } = LogoutMutation()
+
+    const handleLogout = () => {
+        logoutMutation()
+    }
     return (
         <div className="w-full bg-white p-6"
             style={{
@@ -60,7 +67,7 @@ function ProfileSidebar() {
                                         </Button>
                                     </DialogClose>
                                     <DialogClose asChild>
-                                        <Button variant="destructive" className="rounded-[12px] min-w-32">
+                                        <Button onClick={handleLogout} variant="destructive" className="rounded-[12px] min-w-32">
                                             Sil
                                         </Button>
                                     </DialogClose>
