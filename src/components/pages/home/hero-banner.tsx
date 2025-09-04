@@ -4,19 +4,13 @@ import Link from "next/link"
 
 import Container from "@/components/shared/container"
 import { Button } from "@/components/ui/button"
-
-interface HeroBannerProps {
-    label?: string
-    title: string
-    subtitle?: string
-    ctaText?: string
-    ctaHref?: string
-    imageSrc: string
-    imageAlt?: string
-}
+import { Banner } from "@/types/home"
 
 export function HeroBanner({
-}: HeroBannerProps) {
+    banner
+}: {
+    banner: Banner
+}) {
     return (
         <section className="w-full">
             <Container>
@@ -27,16 +21,16 @@ export function HeroBanner({
                                 BYREDO
                             </p>
                             <h1 className="text-3xl sm:text-4xl md:text-[56px] font-semibold leading-tight text-primary">
-                            50%-dək endirim
+                                {banner.title}
                             </h1>
 
                             <p className="text-xl text-center text-muted-foreground mb-4 mt-3 uppercase">
-                                Bu fürsəti qaçırma – indi al!
+                                {banner.description}
                             </p>
                             <div className="mt-8">
                                 <Button asChild className="bg-white border border-primary text-primary hover:bg-primary hover:text-white">
-                                    <Link href="/" aria-label="ctaText">
-                                        Shop now
+                                    <Link href={banner.btn_link} aria-label="ctaText">
+                                        {banner.btn_text}
                                         <span aria-hidden>→</span>
                                     </Link>
                                 </Button>
@@ -47,7 +41,7 @@ export function HeroBanner({
 
                     <div className="relative h-[260px] sm:h-[320px] md:h-[420px] lg:h-[520px]">
                         <Image
-                            src="/images/banner.jpg"
+                            src={banner.image}
                             alt="Banner image"
                             fill
                             sizes="(max-width: 1024px) 100vw, 50vw"

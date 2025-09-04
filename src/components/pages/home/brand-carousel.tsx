@@ -2,10 +2,9 @@
 
 import { useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
+import { Partner } from "@/types/home"
 
-const brands = ["seluz", "Givaudan", "NINO", "ZINE", "MAX", "flow", "Givaudan", "InTre"]
-
-export function BrandCarousel() {
+export function BrandCarousel({ partners }: { partners: Partner[] }) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export function BrandCarousel() {
         }}
       >
         {/* Duplicate the brands array to create seamless loop */}
-        {[...brands, ...brands, ...brands].map((brand, index) => (
+        {[...partners, ...partners, ...partners, ...partners, ...partners, ...partners].map((brand, index) => (
           <div
             key={`${brand}-${index}`}
             className={cn(
@@ -53,17 +52,9 @@ export function BrandCarousel() {
               "text-4xl font-medium",
               "hover:text-foreground transition-colors duration-300",
               "whitespace-nowrap select-none",
-              // Different font styles for variety
-              brand === "flow" && "italic",
-              brand === "MAX" && "font-bold tracking-wider",
-              brand === "NINO" && "font-light tracking-widest",
-              brand === "ZINE" && "font-bold",
-              brand === "Givaudan" && "font-serif",
-              brand === "seluz" && "font-light",
-              brand === "InTre" && "font-medium tracking-wide",
             )}
           >
-            {brand}
+            {brand.name}
           </div>
         ))}
       </div>

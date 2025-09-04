@@ -1,0 +1,15 @@
+import { ApiResponse } from "@/types";
+import { get } from "@/lib/api";
+import { Advantage, About } from "@/types/home";
+
+const getAbout = async (locale: string) => {
+    const response = await get<ApiResponse<About>>(`about`, { params: { locale } });
+    return response;
+};
+
+const getAdvantages = async (locale: string) => {
+    const response = await get<ApiResponse<Advantage[]>>(`advantages`, { params: { locale } });
+    return response;
+};
+
+export { getAbout, getAdvantages };

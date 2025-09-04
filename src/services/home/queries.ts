@@ -1,0 +1,46 @@
+import { queryOptions } from "@tanstack/react-query";
+import { getSliders, getBanners, getPartners, getPartner, getContact, getSocials } from "./api";
+
+const getSlidersQuery = () => {
+    return queryOptions({
+        queryKey: ["sliders"],
+        queryFn: () => getSliders(),
+    });
+}
+
+const getBannersQuery = (locale: string) => {
+    return queryOptions({
+        queryKey: ["banners"],
+        queryFn: () => getBanners(locale),
+    });
+}
+
+const getPartnersQuery = (locale: string) => {
+    return queryOptions({
+        queryKey: ["partners"],
+        queryFn: () => getPartners(locale),
+    });
+}
+
+const getPartnerQuery = (locale: string, slug: string) => {
+    return queryOptions({
+        queryKey: ["partner", slug],
+        queryFn: () => getPartner(locale, slug),
+    });
+}
+
+const getContactQuery = () => {
+    return queryOptions({
+        queryKey: ["contact"],
+        queryFn: () => getContact(),
+    });
+}
+
+const getSocialsQuery = () => {
+    return queryOptions({
+        queryKey: ["socials"],
+        queryFn: () => getSocials(),
+    });
+}
+
+export { getSlidersQuery, getBannersQuery, getPartnersQuery, getPartnerQuery, getContactQuery, getSocialsQuery };

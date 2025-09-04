@@ -10,27 +10,9 @@ import {
     CarouselApi,
 } from "@/components/ui/carousel"
 import Image from "next/image"
+import { Slider } from "@/types/home"
 
-const products = [
-    {
-        id: 1,
-        image: "/images/banner.jpg",
-    },
-    {
-        id: 2,
-        image: "/images/banner.jpg",
-    },
-    {
-        id: 3,
-        image: "/images/banner.jpg",
-    },
-    {
-        id: 4,
-        image: "/images/banner.jpg",
-    }
-]
-
-export function ProductCarousel() {
+export function ProductCarousel({ sliders }: { sliders: Slider[] }) {
     const [api, setApi] = React.useState<CarouselApi>()
     const [current, setCurrent] = React.useState(0)
     const [count, setCount] = React.useState(0)
@@ -63,17 +45,17 @@ export function ProductCarousel() {
                         }}
                     >
                         <CarouselContent className="-ml-2 md:-ml-4">
-                            {products.map((product) => (
-                                <CarouselItem key={product.id} className="pl-0">
+                            {sliders.map((slider) => (
+                                <CarouselItem key={slider.image} className="pl-0">
                                     <div className="border-0 bg-card/50 transition-all duration-300 hover:scale-105">
                                         <div>
                                             <div className="relative overflow-hidden">
                                                 <Image
                                                     width={100}
                                                     height={100}
-                                                    src={product.image}
+                                                    src={slider.image}
                                                     unoptimized
-                                                    alt={`Product ${product.id}`}
+                                                    alt={`Product ${slider.image}`}
                                                     className="w-full h-[549px] object-cover"
                                                 />
                                             </div>

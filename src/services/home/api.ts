@@ -1,0 +1,40 @@
+import { get, post } from "@/lib/api";
+import { ApiResponse } from "@/types";
+import { Slider, Banner, Partner, Contact, Social } from "@/types/home";
+
+const getSliders = async () => {
+    const response = await get<ApiResponse<Slider[]>>(`sliders`);
+    return response;
+};
+
+const getBanners = async (locale: string) => {
+    const response = await get<ApiResponse<Banner>>(`banner`, { params: { locale } });
+    return response;
+};
+
+const getPartners = async (locale: string) => {
+    const response = await get<ApiResponse<Partner[]>>(`partners`, { params: { locale } });
+    return response;
+};
+
+const getPartner = async (locale: string, slug: string) => {
+    const response = await get<ApiResponse<Partner>>(`partner/${slug}`, { params: { locale } });
+    return response;
+};
+
+const getContact = async () => {
+    const response = await get<ApiResponse<Contact>>(`contact`);
+    return response;
+};
+
+const getSocials = async () => {
+    const response = await get<ApiResponse<Social[]>>(`sosial-media`);
+    return response;
+};
+
+const subscribe = async (email: string) => {
+    const response = await post<ApiResponse<void>>(`subscribe`, { email });
+    return response;
+};
+
+export { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, subscribe };

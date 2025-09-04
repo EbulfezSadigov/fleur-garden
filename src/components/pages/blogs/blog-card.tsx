@@ -1,21 +1,20 @@
 import Link from "next/link"
 import Image from "next/image"
-
-interface BlogPost {
-  id: number
-  date: string
-  title: string
-  description: string
-  image: string
-}
+import { Blog } from "@/types/blogs"
 
 interface BlogCardProps {
-  post: BlogPost
+  post: Blog
+}
+
+function stripHtml(html: string) {
+  if (!html) return ""
+  return html.replace(/<[^>]*>/g, "").trim()
 }
 
 export function BlogCard({ post }: BlogCardProps) {
+  const description = stripHtml(post.description)
   return (
-    <Link href={`/blogs/${post.id}`} className="overflow-hidden border-0 shadow-none bg-transparent p-4 pb-6"
+    <Link href={`/blogs/${post.slug}`} className="overflow-hidden border-0 shadow-none bg-transparent p-4 pb-6"
       style={{
         borderRadius: "12px",
         border: "1px solid #F2F4F8",
@@ -24,12 +23,14 @@ export function BlogCard({ post }: BlogCardProps) {
       }}
     >
       <div className="aspect-[4/3] relative mb-4">
-        <Image src={post.image || "/placeholder.svg"} alt={post.title} fill className="object-cover rounded-lg" />
+        <Image src={post.thumb_image || post.image || "/placeholder.svg"} alt={post.title} fill className="object-cover rounded-lg" />
       </div>
       <div className="p-0 space-y-2">
-        <p className="text-xs text-muted-foreground">{post.date}</p>
-        <h3 className="text-xl font-semibold text-foreground">{post.title}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">{post.description}</p>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span>{post.read_min}</span>
+        </div>
+        <h3 className="text-xl font-semibold text-foreground line-clamp-2">{post.title}</h3>
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{description}</p>
       </div>
     </Link>
   )

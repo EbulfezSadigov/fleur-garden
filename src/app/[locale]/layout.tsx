@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
@@ -11,13 +11,8 @@ import { Header } from "@/components/navigation/header";
 import Footer from "@/components/navigation/footer";
 import TopLoader from "@/components/shared/top-loader";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -40,7 +35,7 @@ export default async function RootLayout({
   }
   return (
     <html lang={locale}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${inter.variable}`}>
         <QueryProvider>
           <NextIntlClientProvider messages={messages}>
             <main className="md:pt-36 pt-20">

@@ -1,11 +1,21 @@
-import { Instagram, Linkedin, Twitter, Dribbble, Globe } from "lucide-react"
 import Container from "../shared/container"
 import { navigationItems } from "@/utils/static"
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
 import Link from "next/link"
+import { getServerQueryClient } from "@/providers/server"
+import { getContactQuery, getSocialsQuery } from "@/services/home/queries"
+import Image from "next/image"
 
-export default function Footer() {
-  const t = useTranslations("navigation")
+export default async function Footer() {
+  const t = await getTranslations("navigation")
+  const queryClient = getServerQueryClient();
+
+  await Promise.all([queryClient.prefetchQuery(getContactQuery()), queryClient.prefetchQuery(getSocialsQuery())]);
+  const contactData = queryClient.getQueryData(getContactQuery().queryKey);
+  const contact = contactData?.data;
+  const socialsData = queryClient.getQueryData(getSocialsQuery().queryKey);
+  const socials = socialsData?.data;
+
   return (
     <footer className="bg-black text-white py-12">
       <Container>
@@ -15,22 +25,13 @@ export default function Footer() {
             <h2 className="text-2xl font-bold mb-4">Fleur Garden</h2>
             <p className="text-gray-400 mb-6">Bizi izləyin</p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Instagram size={20} />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Linkedin size={20} />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Twitter size={20} />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Dribbble size={20} />
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Globe size={20} />
-              </Link>
+              {socials?.map((social) => (
+                <Link href={social.link} className="text-gray-400 hover:text-white transition-colors" key={social.name}>
+                  <Image src={social.image || ""} alt={social.name} width={20} height={20} />
+                </Link>
+              ))}
             </div>
+
           </div>
 
           {/* Business Section */}
@@ -51,20 +52,15 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">{t("contact")}</h3>
             <ul className="space-y-3">
-              <li className="text-gray-400">Nizami rayonu, Bakı, Azərbaycan</li>
+              <li className="text-gray-400">{contact?.address}</li>
               <li>
-                <Link href="mailto:info@fleurgarden.com" className="text-gray-400 hover:text-white transition-colors">
-                  info@fleurgarden.com
+                <Link href={`mailto:${contact?.email}`} className="text-gray-400 hover:text-white transition-colors">
+                  {contact?.email}
                 </Link>
               </li>
               <li>
-                <Link href="tel:+994777777770" className="text-gray-400 hover:text-white transition-colors">
-                  +994 777 77 70
-                </Link>
-              </li>
-              <li>
-                <Link href="tel:+994777777770" className="text-gray-400 hover:text-white transition-colors">
-                  +994 777 77 70
+                <Link href={`tel:${contact?.phone}`} className="text-gray-400 hover:text-white transition-colors">
+                  {contact?.phone}
                 </Link>
               </li>
             </ul>

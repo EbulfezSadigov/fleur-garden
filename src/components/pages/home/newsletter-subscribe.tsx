@@ -1,7 +1,6 @@
 import Container from "@/components/shared/container";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { getTranslations } from "next-intl/server";
+import { NewsletterSubscribeForm } from "./newsletter-subscribe-form";
 
 export async function NewsletterSubscribe() {
   const t = await getTranslations("newsletter");
@@ -19,17 +18,11 @@ export async function NewsletterSubscribe() {
                 {t("subtitle")}
               </p>
             </div>
-            <form className="flex w-full items-center gap-3 md:justify-end">
-              <Input
-                type="email"
-                placeholder={t("placeholder")}
-                aria-label={t("emailLabel")}
-                className="h-12 w-full max-w-[520px] rounded-lg md:w-[520px]"
-              />
-              <Button className="h-12 rounded-lg px-6 md:px-8">
-                {t("cta")}
-              </Button>
-            </form>
+            <NewsletterSubscribeForm
+              placeholder={t("placeholder")}
+              emailLabel={t("emailLabel")}
+              cta={t("cta")}
+            />
           </div>
         </div>
       </Container>
