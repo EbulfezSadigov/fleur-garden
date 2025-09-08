@@ -2,6 +2,7 @@ import Image from "next/image"
 import { Clock, Linkedin, TwitterIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { InstagramShareButton } from "./instagram-share-button"
+import { useTranslations } from "next-intl"
 
 interface BlogPostHeaderProps {
   title: string
@@ -12,6 +13,7 @@ interface BlogPostHeaderProps {
 
 export function BlogPostHeader({ title, heroImage, readingTime, shareUrl }: BlogPostHeaderProps) {
   const encodedUrl = shareUrl ? encodeURIComponent(shareUrl) : undefined
+  const t = useTranslations("blogs")
   const encodedText = encodeURIComponent(title)
   const twitterHref = encodedUrl ? `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}` : undefined
   const linkedinHref = encodedUrl ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}` : undefined
@@ -26,11 +28,11 @@ export function BlogPostHeader({ title, heroImage, readingTime, shareUrl }: Blog
       <div className="flex items-center flex-wrap gap-4 px-12">
         <div className="flex items-center gap-2 text-muted-foreground bg-[#F2F4F8] px-4 py-2 rounded-[8px]">
           <Clock className="w-4 h-4" />
-          <span className="text-sm">{readingTime} oxuma vaxtı</span>
+          <span className="text-sm">{readingTime} {t("reading_time")}</span>
         </div>
 
         <div className="flex items-center gap-2 bg-[#F2F4F8] px-4 py-[3px] rounded-[8px]">
-          <span className="text-sm text-muted-foreground mr-2">Paylaş:</span>
+          <span className="text-sm text-muted-foreground mr-2">{t("share")}:</span>
           <InstagramShareButton shareUrl={shareUrl} />
           {linkedinHref ? (
             <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -41,7 +43,6 @@ export function BlogPostHeader({ title, heroImage, readingTime, shareUrl }: Blog
           ) : (
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" disabled>
               <Linkedin className="w-4 h-4" />
-              <span className="sr-only">Linkedin-da paylaş</span>
             </Button>
           )}
           {twitterHref ? (
@@ -53,7 +54,6 @@ export function BlogPostHeader({ title, heroImage, readingTime, shareUrl }: Blog
           ) : (
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" disabled>
               <TwitterIcon className="w-4 h-4" />
-              <span className="sr-only">Twitter-da paylaş</span>
             </Button>
           )}
         </div>

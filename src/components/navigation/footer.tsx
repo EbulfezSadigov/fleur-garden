@@ -1,7 +1,7 @@
 import Container from "../shared/container"
 import { navigationItems } from "@/utils/static"
 import { getTranslations } from "next-intl/server"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { getServerQueryClient } from "@/providers/server"
 import { getContactQuery, getSocialsQuery } from "@/services/home/queries"
 import Image from "next/image"
@@ -23,7 +23,7 @@ export default async function Footer() {
           {/* Brand Section */}
           <div className="md:col-span-2">
             <h2 className="text-2xl font-bold mb-4">Fleur Garden</h2>
-            <p className="text-gray-400 mb-6">Bizi izləyin</p>
+            <p className="text-gray-400 mb-6">{t("watch_us")}</p>
             <div className="flex space-x-4">
               {socials?.map((social) => (
                 <Link href={social.link} className="text-gray-400 hover:text-white transition-colors" key={social.name}>

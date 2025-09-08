@@ -11,14 +11,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { UpdateUserMutation, UpdatePasswordMutation } from '@/services/auth/mutations'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 
 function MainProfile({ user }: { user: User }) {
+    const t = useTranslations("profile")
     const updateUserMutation = UpdateUserMutation()
 
     const ProfileSchema = z.object({
-        name: z.string().min(2, { message: "Ad minimum 2 simvol" }),
-        email: z.string().email({ message: "Düzgün email daxil edin" }),
-        mobile: z.string().min(7, { message: "Düzgün mobil nömrə daxil edin" })
+        name: z.string().min(2, { message: t("name_minimum_2_simvol") }),
+        email: z.string().email({ message: t("correct_email_input") }),
+        mobile: z.string().min(7, { message: t("correct_mobile_input") })
     })
 
     type ProfileFormValues = z.infer<typeof ProfileSchema>
@@ -36,7 +38,7 @@ function MainProfile({ user }: { user: User }) {
     function onSubmit(values: ProfileFormValues) {
         updateUserMutation.mutate(values, {
             onSuccess: () => {
-                toast.success("Profil məlumatları yeniləndi")
+                toast.success(t("profile_information_updated"))
             },
             onError: (error: unknown) => {
                 const message = error instanceof Error ? error.message : "Yeniləmə zamanı xəta baş verdi"
@@ -57,7 +59,7 @@ function MainProfile({ user }: { user: User }) {
                 }}
             >
                 <div className='mb-8'>
-                    <h1 className="text-xl font-medium text-gray-900">Hesab Məlumatları</h1>
+                    <h1 className="text-xl font-medium text-gray-900">{t("profile_information")}</h1>
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 flex flex-col h-full">
@@ -66,7 +68,7 @@ function MainProfile({ user }: { user: User }) {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-sm text-gray-600">Ad,soyad</FormLabel>
+                                    <FormLabel className="text-sm text-gray-600">{t("full_name")}</FormLabel>
                                     <FormControl>
                                         <Input className="bg-gray-50 border-gray-200" {...field} />
                                     </FormControl>
@@ -80,7 +82,7 @@ function MainProfile({ user }: { user: User }) {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-sm text-gray-600">Email</FormLabel>
+                                    <FormLabel className="text-sm text-gray-600">{t("email")}</FormLabel>
                                     <FormControl>
                                         <Input type="email" className="bg-gray-50 border-gray-200" {...field} />
                                     </FormControl>
@@ -94,7 +96,7 @@ function MainProfile({ user }: { user: User }) {
                             name="mobile"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-sm text-gray-600">Mobile</FormLabel>
+                                    <FormLabel className="text-sm text-gray-600">{t("mobile")}</FormLabel>
                                     <FormControl>
                                         <Input className="bg-gray-50 border-gray-200" {...field} />
                                     </FormControl>
@@ -104,7 +106,7 @@ function MainProfile({ user }: { user: User }) {
                         />
 
                         <Button type="submit" disabled={updateUserMutation.isPending || form.formState.isSubmitting} className="w-fit self-end bg-gray-900 hover:bg-gray-800 text-white mt-6">
-                            {updateUserMutation.isPending || form.formState.isSubmitting ? "Yadda saxlanılır..." : "Yadda saxla"}
+                            {updateUserMutation.isPending || form.formState.isSubmitting ? t("saving") : t("save")}
                         </Button>
                     </form>
                 </Form>
@@ -121,7 +123,7 @@ function MainProfile({ user }: { user: User }) {
                 }}
             >
                 <div className='mb-8'>
-                    <h1 className="text-xl font-medium text-gray-900">Şifrə Yenilənmə</h1>
+                    <h1 className="text-xl font-medium text-gray-900">{t("password_update")}</h1>
                 </div>
                 <PasswordForm />
             </div>
@@ -135,15 +137,16 @@ function PasswordForm() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false)
     const [showNewPassword, setShowNewPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const t = useTranslations("profile")
     const updatePasswordMutation = UpdatePasswordMutation()
 
     const PasswordSchema = z.object({
-        old_password: z.string().min(1, { message: "Mövcud şifrə tələb olunur" }),
-        password: z.string().min(6, { message: "Minimum 6 simvol" }),
-        password_confirmation: z.string().min(6, { message: "Minimum 6 simvol" })
+        old_password: z.string().min(1, { message: t("current_password_required") }),
+        password: z.string().min(6, { message: t("minimum_6_simvol") }),
+        password_confirmation: z.string().min(6, { message: t("minimum_6_simvol") })
     }).refine((data) => data.password === data.password_confirmation, {
         path: ["password_confirmation"],
-        message: "Şifrələr uyğun deyil"
+        message: t("passwords_do_not_match")
     })
 
     type PasswordFormValues = z.infer<typeof PasswordSchema>
@@ -157,14 +160,14 @@ function PasswordForm() {
     function onSubmit(values: PasswordFormValues) {
         updatePasswordMutation.mutate(values, {
             onSuccess: () => {
-                toast.success("Şifrə yeniləndi")
+                toast.success(t("password_updated"))
                 form.reset()
                 setShowCurrentPassword(false)
                 setShowNewPassword(false)
                 setShowConfirmPassword(false)
             },
             onError: (error: unknown) => {
-                const message = error instanceof Error ? error.message : "Yeniləmə zamanı xəta baş verdi"
+                const message = error instanceof Error ? error.message : t("error_occurred_while_updating_password")
                 toast.error(message)
             }
         })
@@ -178,13 +181,13 @@ function PasswordForm() {
                     name="old_password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-sm text-gray-600">Şifrə</FormLabel>
+                            <FormLabel className="text-sm text-gray-600">{t("password")}</FormLabel>
                             <FormControl>
                                 <div className="relative">
                                     <Input
                                         id="current-password"
                                         type={showCurrentPassword ? "text" : "password"}
-                                        placeholder="Şifrenizi daxil edin"
+                                        placeholder={t("password_placeholder")}
                                         className="bg-gray-50 border-gray-200 pr-10"
                                         {...field}
                                     />
@@ -207,13 +210,13 @@ function PasswordForm() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-sm text-gray-600">Yeni şifrə</FormLabel>
+                            <FormLabel className="text-sm text-gray-600">{t("new_password")}</FormLabel>
                             <FormControl>
                                 <div className="relative">
                                     <Input
                                         id="new-password"
                                         type={showNewPassword ? "text" : "password"}
-                                        placeholder="Yeni şifrenizi daxil edin"
+                                        placeholder={t("new_password_placeholder")}
                                         className="bg-gray-50 border-gray-200 pr-10"
                                         {...field}
                                     />
@@ -236,13 +239,13 @@ function PasswordForm() {
                     name="password_confirmation"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-sm text-gray-600">Şifrənin təkrarı</FormLabel>
+                            <FormLabel className="text-sm text-gray-600">{t("password_confirmation")}</FormLabel>
                             <FormControl>
                                 <div className="relative">
                                     <Input
                                         id="confirm-password"
                                         type={showConfirmPassword ? "text" : "password"}
-                                        placeholder="Şifrenizi təkrar edin"
+                                        placeholder={t("password_confirmation_placeholder")}
                                         className="bg-gray-50 border-gray-200 pr-10"
                                         {...field}
                                     />
@@ -261,7 +264,7 @@ function PasswordForm() {
                 />
 
                 <Button type="submit" disabled={updatePasswordMutation.isPending || form.formState.isSubmitting} className="w-fit self-end bg-gray-900 hover:bg-gray-800 text-white mt-6">
-                    {updatePasswordMutation.isPending || form.formState.isSubmitting ? "Yadda saxlanılır..." : "Yadda saxla"}
+                    {updatePasswordMutation.isPending || form.formState.isSubmitting ? t("saving") : t("save")}
                 </Button>
             </form>
         </Form>

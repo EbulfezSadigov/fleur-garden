@@ -8,9 +8,9 @@ export const navigationItems = [
 ]
 
 export const sidebarItems = [
-  { icon: UserCircle, label: "Hesab məlumatları", href: "/profile" },
-  { icon: Package, label: "Sifarişlər", href: "/profile/orders" },
-  { icon: Bell, label: "Bildirişlər", href: "/profile/notifications"  },
-  { icon: HelpCircle, label: "Yardım", href: "/profile/help" },
-  { icon: LogOut, label: "Hesabdan çıxış" },
+  { icon: UserCircle, label: "profile_information", href: "/profile" },
+  { icon: Package, label: "orders", href: "/profile/orders" },
+  { icon: Bell, label: "notifications", href: "/profile/notifications"  },
+  { icon: HelpCircle, label: "help", href: "/profile/help" },
+  { icon: LogOut, label: "logout", href: "/profile/help" },
 ]

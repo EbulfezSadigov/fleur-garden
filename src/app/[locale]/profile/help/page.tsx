@@ -2,11 +2,12 @@
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useTranslations } from "next-intl"
 
 const tabs = [
-    { id: "orders", label: "Sifarış və Ödəniş" },
-    { id: "delivery", label: "Çatdırılma və Qaytarma" },
-    { id: "products", label: "Məhsullar və Keyfiyyət" },
+    { id: "orders", label: "orders" },
+    { id: "delivery", label: "delivery" },
+    { id: "products", label: "products" },
 ]
 
 const faqData = {
@@ -59,6 +60,7 @@ const faqData = {
 }
 
 export default function FAQSection() {
+    const t = useTranslations("help")
     return (
         <div className="col-span-3 lg:pl-8 lg:px-6 mt-5 lg:mt-0 space-y-6">
             <h1
@@ -67,7 +69,7 @@ export default function FAQSection() {
                     border: "1px solid #F2F4F8",
                     background: "#FFF",
                     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
-                }} className="text-xl font-medium mb-8 text-gray-900 p-4">Yardım</h1>
+                }} className="text-xl font-medium mb-8 text-gray-900 p-4">{t("help")}</h1>
 
             {/* Tab Navigation */}
             <div
@@ -86,7 +88,7 @@ export default function FAQSection() {
                                 value={tab.id}
                                 className="flex-1 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900 text-gray-600"
                             >
-                                {tab.label}
+                                {t(tab.label)}
                             </TabsTrigger>
                         ))}
                     </TabsList>

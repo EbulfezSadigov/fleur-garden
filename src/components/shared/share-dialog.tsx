@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Share } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Copy } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -54,8 +54,7 @@ function ShareDialog() {
           variant="outline"
           className="flex items-center border-none shadow-none cursor-pointer gap-2"
         >
-          <Share className="h-4 w-4" />
-          <span>{t('share.share_button')}</span>
+          <Share2 className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md bg-white rounded-2xl p-0 gap-0">

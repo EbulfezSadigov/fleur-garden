@@ -2,7 +2,7 @@
 import { Heart, Scale } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
 function FavComp() {
     const [favoritesCount, setFavoritesCount] = useState(0)

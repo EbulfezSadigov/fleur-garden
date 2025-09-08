@@ -3,13 +3,14 @@
 import React from 'react'
 import Image from 'next/image'
 import { Plus, Minus, Trash2 } from 'lucide-react'
-import Link from 'next/link'
 
 import Container from '@/components/shared/container'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 
 interface CartItemData {
     id: string
@@ -123,6 +124,8 @@ function Cart() {
     const [items, setItems] = React.useState<CartItemData[]>([])
     const [isInitialized, setIsInitialized] = React.useState(false)
 
+    const t = useTranslations("cart")
+
     // Load cart data from localStorage on component mount
     React.useEffect(() => {
         try {
@@ -182,10 +185,10 @@ function Cart() {
     function applyPromo() {
         if (promo.trim().toUpperCase() === 'FLEUR20') {
             setPromoApplied(true)
-            setPromoMessage('20% Promo kod tətbiq olundu!')
+            setPromoMessage(t("promo_code_applied"))
         } else {
             setPromoApplied(false)
-            setPromoMessage('Promo kod yanlışdır')
+            setPromoMessage(t('promo_code_invalid'))
         }
     }
 
@@ -194,7 +197,7 @@ function Cart() {
             <Breadcrumb className="mb-6 md:mb-8">
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="#">Ana səhifə</BreadcrumbLink>
+                        <BreadcrumbLink href="#">{t("home")}</BreadcrumbLink>
                     </BreadcrumbItem>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <g clipPath="url(#clip0_355_8453)">
@@ -207,7 +210,7 @@ function Cart() {
                         </defs>
                     </svg>
                     <BreadcrumbItem>
-                        <BreadcrumbPage>Səbətim</BreadcrumbPage>
+                        <BreadcrumbPage>{t("cart")}</BreadcrumbPage>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
@@ -224,9 +227,9 @@ function Cart() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <Checkbox checked={allSelected} onCheckedChange={(v) => handleToggleAll(Boolean(v))} />
-                                <span className="text-base md:text-lg">Hamısını seç</span>
+                                <span className="text-base md:text-lg">{t("select_all")}</span>
                             </div>
-                            <div className="text-base md:text-lg font-semibold">Səbət ({items.length} Məhsul)</div>
+                            <div className="text-base md:text-lg font-semibold">{t("cart")} ({items.length} {t("products")})</div>
                         </div>
                     </div>
 
@@ -235,7 +238,7 @@ function Cart() {
                             <CartItem key={item.id} item={item} onChange={(n) => handleItemChange(n, item.id)} />
                         ))}
                         {items.length === 0 && (
-                            <div className="border rounded-2xl p-8 text-center text-muted-foreground">Səbət boşdur</div>
+                            <div className="border rounded-2xl p-8 text-center text-muted-foreground">{t("cart_empty")}</div>
                         )}
                     </div>
                 </div>
@@ -249,11 +252,11 @@ function Cart() {
                         }}
                     >
                         <div>
-                            <div className="text-lg md:text-xl font-semibold mb-3">Promo kod</div>
-                            <p className="text-muted-foreground text-sm mb-3">Diqqət! Yalnız bir promo kod istifadə oluna bilər.</p>
+                            <div className="text-lg md:text-xl font-semibold mb-3">{t("promo_code")}</div>
+                            <p className="text-muted-foreground text-sm mb-3">{t("promo_code_description")}</p>
                             <div className="flex gap-2">
                                 <Input placeholder="FLEUR20" value={promo} onChange={(e) => setPromo(e.target.value)} />
-                                <Button variant="outline" onClick={applyPromo}>Tətbiq et</Button>
+                                <Button variant="outline" onClick={applyPromo}>{t("apply")}</Button>
                             </div>
                             {promoMessage && (
                                 <div className={promoApplied ? 'text-emerald-600 text-sm mt-2' : 'text-red-500 text-sm mt-2'}>
@@ -264,11 +267,11 @@ function Cart() {
 
                         <div className="space-y-2 text-sm">
                             <div className="flex items-center justify-between">
-                                <span>Məhsulların qiyməti</span>
+                                <span>{t("products_price")}</span>
                                 <span className="font-medium">{formatCurrency(subtotal)}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span>Endirim</span>
+                                <span>{t("discount")}</span>
                                 <span className="font-medium">{formatCurrency(discount)}</span>
                             </div>
                         </div>
@@ -276,12 +279,12 @@ function Cart() {
                         <div className="h-px bg-border" />
 
                         <div className="flex items-center justify-between text-lg font-semibold">
-                            <span>Yekun qiymət</span>
+                            <span>{t("total_price")}</span>
                             <span>{formatCurrency(total)}</span>
                         </div>
 
                         <Link href="/cart/order">
-                            <Button className="w-full h-11">Sifarişi tamamla</Button>
+                            <Button className="w-full h-11">{t("complete_order")}</Button>
                         </Link>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { BlogPostHeader } from "@/components/pages/blogs/blog-post-header"
 import { getBlogPostQuery } from "@/services/blogs/queries"
 import { BlogCard } from "@/components/pages/blogs/blog-card"
+import { useTranslations } from "next-intl"
 
 interface BlogPostClientProps {
   locale: string
@@ -12,6 +13,7 @@ interface BlogPostClientProps {
 }
 
 export function BlogPostClient({ locale, slug }: BlogPostClientProps) {
+  const t = useTranslations("blogs")
   const { data, isLoading, isError } = useQuery(getBlogPostQuery(locale, slug))
 
   if (isLoading) {
@@ -46,7 +48,7 @@ export function BlogPostClient({ locale, slug }: BlogPostClientProps) {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink href="/" className="text-muted-foreground hover:text-foreground">
-                Bloqlar
+                {t("title")}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -75,7 +77,7 @@ export function BlogPostClient({ locale, slug }: BlogPostClientProps) {
 
         {otherBlogs.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-2xl font-semibold mb-6">Oxşar bloqlar</h2>
+            <h2 className="text-2xl font-semibold mb-6">{t("similar_blogs")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {otherBlogs.map((b) => (
                 <BlogCard key={b.slug} post={b} />

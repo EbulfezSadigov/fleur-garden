@@ -12,9 +12,10 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import React from "react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useTranslations } from "next-intl"
 
 interface Product {
     id: number
@@ -29,6 +30,8 @@ interface Product {
 export default function FavoritesPage() {
     const [favorites, setFavorites] = React.useState<Product[]>([])
     const [isLoading, setIsLoading] = React.useState(true)
+
+    const t = useTranslations("favorites")
 
     // Load favorites from localStorage
     React.useEffect(() => {
@@ -80,29 +83,29 @@ export default function FavoritesPage() {
         <section className="w-full py-9">
             <Container>
                 <div className="flex flex-col gap-4 mb-6">
-                    <h1 className="text-[28px] md:text-[32px] font-medium text-foreground">Favorilərim</h1>
+                    <h1 className="text-[28px] md:text-[32px] font-medium text-foreground">{t("favorites")}</h1>
 
                     <div className="flex flex-col md:flex-row justify-between gap-3 w-full md:w-auto items-center">
                         <div className="flex gap-3">
                             <Select>
                                 <SelectTrigger className="h-10 rounded-[8px] border-[#D3D4D6]">
-                                    <SelectValue placeholder="Kateqoriya" />
+                                    <SelectValue placeholder={t("category")} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">Bütün kateqoriyalar</SelectItem>
-                                    <SelectItem value="perfume">Ətirlər</SelectItem>
-                                    <SelectItem value="cosmetics">Kosmetika</SelectItem>
-                                    <SelectItem value="skincare">Dəri qulluğu</SelectItem>
-                                    <SelectItem value="haircare">Saç qulluğu</SelectItem>
+                                    <SelectItem value="all">{t("all_categories")}</SelectItem>
+                                    <SelectItem value="perfume">{t("perfume")}</SelectItem>
+                                    <SelectItem value="cosmetics">{t("cosmetics")}</SelectItem>
+                                    <SelectItem value="skincare">{t("skin_care")}</SelectItem>
+                                    <SelectItem value="haircare">{t("hair_care")}</SelectItem>
                                 </SelectContent>
                             </Select>
 
                             <Select>
                                 <SelectTrigger className="h-10 rounded-[8px] border-[#D3D4D6] text-black">
-                                    <SelectValue className="text-black" placeholder="Brend" />
+                                    <SelectValue className="text-black" placeholder={t("brand")} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">Bütün brendlər</SelectItem>
+                                    <SelectItem value="all">{t("all_brands")}</SelectItem>
                                     <SelectItem value="ysl">Yves Saint Laurent</SelectItem>
                                     <SelectItem value="chanel">Chanel</SelectItem>
                                     <SelectItem value="dior">Dior</SelectItem>
@@ -112,14 +115,14 @@ export default function FavoritesPage() {
                             </Select>
 
                             <label className="h-9 text-sm flex items-center gap-2 text-primary border border-[#D3D4D6] rounded-[8px] p-2">
-                                <Checkbox /> Stokda olanlar
+                                <Checkbox /> {t("in_stock")}
                             </label>
                         </div>
 
                         <div className="relative">
                             <Input
                                 type="text"
-                                placeholder="Search"
+                                placeholder={t("search")}
                                 className="pl-4 w-[381px] pr-12 h-12 py-4 border border-gray-300 rounded-[16px] focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
                             <Button
@@ -136,7 +139,7 @@ export default function FavoritesPage() {
                     <div className="flex justify-center items-center py-12">
                         <div className="text-center">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                            <p className="text-gray-600">Yüklənir...</p>
+                            <p className="text-gray-600">{t("loading")}</p>
                         </div>
                     </div>
                 ) : favorites.length > 0 ? (
@@ -162,13 +165,13 @@ export default function FavoritesPage() {
                                 />
                             </svg>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Sevimli məhsulunuz yoxdur</h3>
-                        <p className="text-gray-600 mb-6">Bəyəndiyiniz məhsulları sevimlilərə əlavə etmək üçün ürək simvoluna klikləyin.</p>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">{t("no_favorites")}</h3>
+                        <p className="text-gray-600 mb-6">{t("no_favorites_description")}</p>
                         <Link
                             href="/products"
                             className="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
                         >
-                            Məhsullara bax
+                            {t("products")}
                         </Link>
                     </div>
                 )}

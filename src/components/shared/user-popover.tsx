@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl'
 import { LoginSheet, useLoginSheet } from './login-sheet'
 import { RegisterSheet, useRegisterSheet } from './register-sheet'
 import { User } from '@/types'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
 function UserPopover({ user }: { user: User }) {
     const t = useTranslations("navigation")

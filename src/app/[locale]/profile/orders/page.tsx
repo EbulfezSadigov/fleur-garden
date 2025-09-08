@@ -5,7 +5,8 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Check } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
+import { useTranslations } from "next-intl"
 
 interface OrderItem {
     id: string
@@ -90,20 +91,23 @@ const MOCK_ORDERS: Order[] = [
 ]
 
 export function StatusBadge({ status }: { status: Order["status"] }) {
+    const t = useTranslations("order")
     if (status === "delivered")
         return (
             <div className="inline-flex items-center gap-2">
                 <Check color="#34C759" size={20} />
-                <span>Çatdırıldı</span>
+                <span>{t("delivered")}</span>
             </div>
         )
     if (status === "processing")
-        return <span className="text-amber-600">Hazırlanır</span>
-    return <span className="text-rose-600">Ləğv edildi</span>
+        return <span className="text-amber-600">{t("processing")}</span>
+    return <span className="text-rose-600">{t("cancelled")}</span>
 }
 
 function OrderCard({ order }: { order: Order }) {
     const item = order.items[0]
+
+    const t = useTranslations("order")
     return (
         <div
             style={{
@@ -115,23 +119,23 @@ function OrderCard({ order }: { order: Order }) {
         >
             <div className="grid grid-cols-5 gap-4 px-6 py-4 text-sm text-muted-foreground">
                 <div>
-                    <div className="font-medium text-foreground">Sifariş tarixi</div>
+                    <div className="font-medium text-foreground">{t("order_date")}</div>
                     <div>{new Date(order.createdAt).toLocaleDateString("az-AZ")}</div>
                 </div>
                 <div>
-                    <div className="font-medium text-foreground">Alıcı</div>
+                    <div className="font-medium text-foreground">{t("recipient")}</div>
                     <div>{order.recipient}</div>
                 </div>
                 <div>
-                    <div className="font-medium text-foreground">Həcm</div>
+                    <div className="font-medium text-foreground">{t("volume")}</div>
                     <div>{item.volume}</div>
                 </div>
                 <div>
-                    <div className="font-medium text-foreground">Miqdar</div>
-                    <div>{order.quantity} ədəd</div>
+                    <div className="font-medium text-foreground">{t("quantity")}</div>
+                    <div>{order.quantity} {t("items")}</div>
                 </div>
                 <div className="text-right">
-                    <div className="font-medium text-foreground">Toplam</div>
+                    <div className="font-medium text-foreground">{t("total")}</div>
                     <div>{order.totalAzn} AZN</div>
                 </div>
             </div>
@@ -160,7 +164,7 @@ function OrderCard({ order }: { order: Order }) {
                 <div className="flex flex-col gap-4">
                     <StatusBadge status={order.status} />
                     <Link href={`/profile/orders/${order.id}`}>
-                        <Button variant="secondary" className="bg-black hover:bg-black/80 text-white">Sifariş detalları</Button>
+                        <Button variant="secondary" className="bg-black hover:bg-black/80 text-white">{t("order_details")}</Button>
                     </Link>
                 </div>
             </div>
@@ -176,6 +180,8 @@ export default function OrdersList() {
         return MOCK_ORDERS.filter((o) => daysBetween(o.createdAt, now) <= limit)
     }, [timeFilter])
 
+    const t = useTranslations("order")
+
     return (
         <div className="w-full col-span-3 lg:pl-8 lg:px-6 mt-5 lg:mt-0 space-y-6">
             {/* Header */}
@@ -187,15 +193,15 @@ export default function OrdersList() {
                     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
                 }}
             >
-                <h1 className="text-xl font-medium">Sifarişlər</h1>
+                <h1 className="text-xl font-medium">{t("orders")}</h1>
                 <Select value={timeFilter} onValueChange={setTimeFilter}>
                     <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Zaman aralığı" />
+                        <SelectValue placeholder={t("time_range")} />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="7">Son 7 gün</SelectItem>
-                        <SelectItem value="30">Son 30 gün</SelectItem>
-                        <SelectItem value="90">Son 90 gün</SelectItem>
+                        <SelectItem value="7">{t("last_7_days")}</SelectItem>
+                        <SelectItem value="30">{t("last_30_days")}</SelectItem>
+                        <SelectItem value="90">{t("last_90_days")}</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

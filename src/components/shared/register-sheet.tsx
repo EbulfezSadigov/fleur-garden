@@ -9,8 +9,9 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { registerAction } from "@/services/auth/server-actions"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useRouter } from "@/i18n/navigation"
+import { useTranslations } from "next-intl"
 
 interface RegisterSheetProps {
   isOpen: boolean
@@ -22,7 +23,7 @@ interface RegisterSheetProps {
 export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: RegisterSheetProps) {
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
-
+  const t = useTranslations("register")
   const RegisterSchema = z.object({
     name: z.string().min(2, { message: "Ad minimum 2 simvol olmalıdır" }),
     email: z.string().email({ message: "Düzgün email daxil edin" }),
@@ -72,7 +73,7 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
           }`} onClick={(e) => e.stopPropagation()}>
             <div className="text-left mb-8">
               <h2 className="text-2xl font-semibold text-gray-900">
-                Qeydiyyatdan keç
+                {t("title")}
               </h2>
             </div>
 
@@ -83,11 +84,11 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium text-gray-700">Adınız</FormLabel>
+                      <FormLabel className="text-sm font-medium text-gray-700">{t("name")}</FormLabel>
                       <FormControl>
                         <Input
                           type="text"
-                          placeholder="Adınızı qeyd edin"
+                          placeholder={t("name_placeholder")}
                           className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           {...field}
                         />
@@ -102,11 +103,11 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                      <FormLabel className="text-sm font-medium text-gray-700">{t("email")}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="Email adresinizi qeyd edin"
+                          placeholder={t("email_placeholder")}
                           className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           {...field}
                         />
@@ -121,12 +122,12 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium text-gray-700">Şifrə</FormLabel>
+                      <FormLabel className="text-sm font-medium text-gray-700">{t("password")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Şifrənizi daxil edin"
+                            placeholder={t("password_placeholder")}
                             className="w-full h-12 px-4 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                             {...field}
                           />
@@ -153,17 +154,17 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
                   type="submit"
                   disabled={form.formState.isSubmitting}
                 >
-                  {form.formState.isSubmitting ? "Qeydiyyat edilir..." : "Qeydiyyatdan keç"}
+                  {form.formState.isSubmitting ? t("loading") : t("register_link")}
                 </Button>
 
                 <div className="text-center">
-                  <span className="text-sm text-gray-600">Hesabın var? </span>
+                  <span className="text-sm text-gray-600">{t("no_account")} </span>
                   <button
                     type="button"
                     className="text-sm text-primary hover:text-primary/80 font-medium"
                     onClick={onOpenLogin}
                   >
-                    Daxil ol
+                    {t("login_link")}
                   </button>
                 </div>
               </form>

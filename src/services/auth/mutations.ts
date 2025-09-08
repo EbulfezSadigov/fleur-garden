@@ -3,7 +3,7 @@ import { logout, updatePassword, updateUser } from "./api";
 import { AuthLoginResponse, UpdateUserPayload } from "@/types";
 import { loginAction, logoutAction, registerAction } from "./server-actions";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 const LoginMutation = (email: string, password: string) => {
     return useMutation<AuthLoginResponse, unknown, void>({

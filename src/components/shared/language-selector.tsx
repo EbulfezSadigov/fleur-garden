@@ -6,8 +6,8 @@ import {Button} from '../ui/button'
 import {ChevronDown} from 'lucide-react'
 import {useLocale} from 'next-intl'
 import {usePathname, useRouter} from '@/i18n/navigation'
-import {useSearchParams} from 'next/navigation'
 import {routing} from '@/i18n/routing'
+import { useSearchParams } from 'next/navigation'
 
 function LanguageSelector() {
     const [isOpen, setIsOpen] = React.useState(false)

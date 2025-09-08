@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 
 interface FilterSectionProps {
   title: string
@@ -36,12 +37,13 @@ export interface FilterSidebarProps {
 }
 
 export function FilterSidebar({ className }: FilterSidebarProps) {
+  const t = useTranslations("product_grid")
   return (
     <aside
       className={`w-full lg:w-[280px] rounded-[12px] bg-white border border-[#F2F4F8] p-4 ${className ?? ""}`}
       style={{ boxShadow: "0px 8px 12px 0px #00000008" }}
     >
-      <FilterSection title="Qiymət" defaultOpen>
+      <FilterSection title={t("price")} defaultOpen>
         <div className="flex items-center gap-3">
           <Input placeholder="Min" className="h-9" />
           <span className="text-sm text-[#77777B]">—</span>
@@ -50,15 +52,15 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         <PriceRangeSlider min={0} max={5600} step={10} />
       </FilterSection>
 
-      <FilterSection title="Məhsul" defaultOpen>
+      <FilterSection title={t("product")} defaultOpen>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox className="border-primary" /> Endirimli məhsullar
+          <Checkbox className="border-primary" /> {t("discounted_products")}
         </label>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox className="border-primary" /> Ən yeni
+          <Checkbox className="border-primary" /> {t("new_products")}
         </label>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox className="border-primary" /> Ən çox satılanlar
+          <Checkbox className="border-primary" /> {t("best_sellers")}
         </label>
       </FilterSection>
 
@@ -82,11 +84,11 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
         </div>
       </FilterSection>
 
-      <FilterSection title="Qoxu tipi" defaultOpen>
+      <FilterSection title={t("type")} defaultOpen>
         {[
-          { id: "woman", label: "Qadın" },
-          { id: "man", label: "Kişi" },
-          { id: "unisex", label: "Unisex" },
+          { id: "woman", label: t("woman") },
+          { id: "man", label: t("man") },
+          { id: "unisex", label: t("unisex") },
         ].map((g) => (
           <label key={g.id} className="flex items-center gap-2 text-sm text-primary">
             <Checkbox className="border-primary" /> {g.label}

@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, MapPin } from "lucide-react"
 import Container from "@/components/shared/container"
 import PhoneInput from "react-phone-input-2"
+import { useTranslations } from "next-intl"
 
 export default function ContactPage() {
+  const t = useTranslations("contact")
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,7 +35,7 @@ export default function ContactPage() {
       <Container>
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-[32px] font-semibold text-gray-900 mb-8">Əlaqə</h1>
+          <h1 className="text-[32px] font-semibold text-gray-900 mb-8">{t("title")}</h1>
 
           {/* Contact Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -42,7 +44,7 @@ export default function ContactPage() {
                 <div className="flex items-center gap-4">
                   <Phone className="w-5 h-5 text-gray-600" />
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Telefon nömrəsi</p>
+                    <p className="text-sm text-gray-500 mb-1">{t("phone")}</p>
                     <p className="text-lg font-semibold text-gray-900">994 70 700 70 70</p>
                   </div>
                 </div>
@@ -54,7 +56,7 @@ export default function ContactPage() {
                 <div className="flex items-center gap-4">
                   <Mail className="w-5 h-5 text-gray-600" />
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Email</p>
+                    <p className="text-sm text-gray-500 mb-1">{t("email")}</p>
                     <p className="text-lg font-semibold text-gray-900">info@fleurgarden.com</p>
                   </div>
                 </div>
@@ -66,7 +68,7 @@ export default function ContactPage() {
                 <div className="flex items-center gap-4">
                   <MapPin className="w-5 h-5 text-gray-600" />
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Ünvan</p>
+                    <p className="text-sm text-gray-500 mb-1">{t("address")}</p>
                     <p className="text-lg font-semibold text-gray-900">Azadlıq pros. 215, Binəqədi ray., Bakı</p>
                   </div>
                 </div>
@@ -86,14 +88,14 @@ export default function ContactPage() {
         >
           {/* Contact Form */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Sualınız var? Bizə yazın!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">{t("question")}</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Ad soyad</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("name")}</label>
                 <Input
                   type="text"
-                  placeholder="Ad və soyadınızı daxil edin"
+                  placeholder={t("name_placeholder")}
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   className="w-full"
@@ -101,10 +103,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("email")}</label>
                 <Input
                   type="email"
-                  placeholder="Email adresinizi daxil edin"
+                  placeholder={t("email_placeholder")}
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   className="w-full"
@@ -112,7 +114,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Telefon nömrəsi</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("phone")}</label>
                 <PhoneInput
                   country={"az"}
                   value={formData.phone}
@@ -125,14 +127,14 @@ export default function ContactPage() {
                   buttonClass="!border !border-gray-200 !bg-white !rounded-l-md"
                   containerClass="!w-full"
                   dropdownClass="!text-sm"
-                  placeholder="Telefon nömrənizi daxil edin"
+                  placeholder={t("phone_placeholder")}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Mesaj</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("message")}</label>
                 <Textarea
-                  placeholder="Mesajınızı daxil edin"
+                  placeholder={t("message_placeholder")}
                   value={formData.message}
                   onChange={(e) => handleInputChange("message", e.target.value)}
                   className="w-full min-h-32"
@@ -143,7 +145,7 @@ export default function ContactPage() {
                 type="submit"
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-medium"
               >
-                Göndər →
+                {t("send")} →
               </Button>
             </form>
           </div>

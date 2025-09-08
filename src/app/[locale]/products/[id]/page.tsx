@@ -3,14 +3,16 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Heart, Scale, Share2, Star, Plus, Minus } from "lucide-react"
+import { Heart, Scale, Star, Plus, Minus } from "lucide-react"
 import Image from "next/image"
 import Container from "@/components/shared/container"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Product } from "@/types"
 import { toast } from "sonner"
 import ProductInfoTabs from "@/components/pages/products/product-info-tabs"
 import RelatedProducts from "@/components/pages/products/related-products"
+import ShareDialog from "@/components/shared/share-dialog"
+import { useTranslations } from "next-intl"
 
 const products: Product[] = Array.from({ length: 4 }).map((_, index) => ({
   id: index + 1,
@@ -27,6 +29,8 @@ export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState("50 ML")
   const [isFavorite, setIsFavorite] = useState(false)
   const [isInComparison, setIsInComparison] = useState(false)
+
+  const t = useTranslations("product_page")
 
   // Mock product data - in real app this would come from props or API
   const currentProduct: Product = {
@@ -115,7 +119,7 @@ export default function ProductPage() {
       {/* Breadcrumb */}
       <Container>
         <div className="text-sm text-gray-600 mb-6">
-          <Link href="/">Ana səhifə</Link>
+          <Link href="/">{t("home")}</Link>
           <span className="mx-2">/</span>
           <span>YSL Libre</span>
         </div>
@@ -148,9 +152,7 @@ export default function ProductPage() {
                     >
                       <Scale className={`w-5 h-5 ${isInComparison ? 'text-blue-600' : 'text-gray-600'}`} />
                     </button>
-                    <button className="p-2 bg-white border border-none rounded-full hover:bg-gray-50 transition-colors">
-                      <Share2 className="w-5 h-5 text-gray-600" />
-                    </button>
+                    <ShareDialog />
                   </div>
                 </div>
               </div>
@@ -160,7 +162,7 @@ export default function ProductPage() {
             <div className="space-y-14 w-full lg:w-[calc(55%-16px)]">
               {/* Product Code */}
               <div className="space-y-6">
-                <div className="text-sm text-gray-500">Məhsul kodu: 979797979</div>
+                <div className="text-sm text-gray-500">{t("product_code")}: 979797979</div>
 
                 {/* Product Title and Rating */}
                 <div className="flex items-start justify-between">
@@ -169,7 +171,7 @@ export default function ProductPage() {
                     <p className="text-lg text-gray-600">Yves Saint Laurent</p>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-gray-500 mb-1">Stokda var</div>
+                    <div className="text-sm text-gray-500 mb-1">{t("in_stock")}</div>
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 fill-[#FF9500] text-[#FF9500]" />
                       <span className="text-sm font-medium text-[#FF9500]">4.5</span>
@@ -180,7 +182,7 @@ export default function ProductPage() {
 
               {/* Size Selector */}
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-gray-700">Məhsulun həcmi :</label>
+                <label className="text-sm font-medium text-gray-700">{t("product_volume")}:</label>
                 <Select value={selectedSize} onValueChange={setSelectedSize}>
                   <SelectTrigger className="w-32">
                     <SelectValue />
@@ -202,7 +204,7 @@ export default function ProductPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                       <path d="M12 9H12.01M11 12H12V16H13M12 3C19.2 3 21 4.8 21 12C21 19.2 19.2 21 12 21C4.8 21 3 19.2 3 12C3 4.8 4.8 3 12 3Z" stroke="#77777B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <span>Minimum sifariş məbləği 400 AZN təşkil edir.</span>
+                    <span>{t("minimum_order_amount")}: 400 AZN</span>
                   </div>
                 </div>
               </div>
@@ -220,7 +222,7 @@ export default function ProductPage() {
                 </div>
 
                 <Button className="flex-1 bg-black hover:bg-gray-800 text-white py-3 px-8 rounded-[10px] font-medium">
-                  Səbətə at
+                  {t("add_to_cart")}
                 </Button>
               </div>
             </div>

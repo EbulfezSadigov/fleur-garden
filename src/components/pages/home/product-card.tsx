@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowRight, Heart, Scale, Star } from 'lucide-react'
-import Link from 'next/link'
+import { Link, useRouter } from '@/i18n/navigation'
 import Image from 'next/image'
 import React from 'react'
 import { ProductCardProps } from '@/types'
@@ -14,14 +14,16 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 function ProductCard({ product }: ProductCardProps) {
     const [isOpen, setIsOpen] = React.useState(false)
     const [isComparisonOpen, setIsComparisonOpen] = React.useState(false)
     const [isFavorite, setIsFavorite] = React.useState(false)
     const router = useRouter()
-    // Check if product is in favorites on component mount
+
+    const t = useTranslations("product_card")
+
     React.useEffect(() => {
         if (typeof window !== 'undefined') {
             const favorites = JSON.parse(localStorage.getItem('favorites') || '[]')
@@ -67,12 +69,12 @@ function ProductCard({ product }: ProductCardProps) {
                 comparison.push({ id: product.id, product })
                 window.localStorage.setItem(storageKey, JSON.stringify(comparison))
                 setIsComparisonOpen(true)
-                toast.success('Məhsul müqayisə siyahısına əlavə olundu')
+                toast.success(t("add_to_compare_dialog"))
                 // Notify header and others
                 window.dispatchEvent(new CustomEvent('comparisonChanged'))
             }
             else {
-                toast.error('Məhsul artıq müqayisə siyahısına əlavə olunub')
+                toast.error(t("already_in_compare"))
             }
         } catch (error) {
             console.error('Failed to write comparison to localStorage', error)
@@ -94,12 +96,12 @@ function ProductCard({ product }: ProductCardProps) {
                 // Remove from favorites
                 favorites.splice(existingIndex, 1)
                 setIsFavorite(false)
-                toast.success('Məhsul sevimlilərdən çıxarıldı')
+                toast.success(t("remove_from_wishlist_dialog"))
             } else {
                 // Add to favorites
                 favorites.push({ id: product.id, product })
                 setIsFavorite(true)
-                toast.success('Məhsul sevimlilərə əlavə olundu')
+                toast.success(t("add_to_wishlist_dialog"))
             }
 
             window.localStorage.setItem(storageKey, JSON.stringify(favorites))
@@ -149,14 +151,14 @@ function ProductCard({ product }: ProductCardProps) {
                 </div>
                 <p className="text-sm text-[#77777B]">{product.brand}</p>
 
-                {product.inStock && <p className="text-[10px] text-primary bg-[#F2F4F8] rounded-[4px] px-2 py-1 w-fit mt-3">Stokda var</p>}
+                {product.inStock && <p className="text-[10px] text-primary bg-[#F2F4F8] rounded-[4px] px-2 py-1 w-fit mt-3">{t("in_stock")}</p>}
 
                 <div className="h-[1px] bg-[#F2F4F8] w-full" />
 
                 <div className="flex items-center justify-between pt-2">
                     <span className="text-lg font-semibold text-primary">{product.price}</span>
                     <button onClick={handleAddToCart} className="bg-primary text-white px-4 py-2 rounded-md text-xs font-medium hover:bg-gray-800 transition-colors flex items-center gap-2">
-                        Səbətə at
+                        {t("add_to_cart")}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
@@ -166,16 +168,14 @@ function ProductCard({ product }: ProductCardProps) {
             <Dialog open={isOpen} onOpenChange={(open) => {
                 setIsOpen(open)
                 if (!open) {
-                    // Prevent event bubbling when dialog closes
                     setTimeout(() => {
-                        // Small delay to ensure the dialog close event doesn't bubble
                     }, 0)
                 }
             }}>
                 <DialogContent className="max-w-xl p-0" onClick={(e) => e.stopPropagation()}>
                     <div className="p-4 sm:p-6">
                         <DialogHeader>
-                            <DialogTitle>Məhsul səbətinizə əlavə olundu</DialogTitle>
+                            <DialogTitle>{t("add_to_cart_dialog")}</DialogTitle>
                             <DialogDescription />
                         </DialogHeader>
 
@@ -200,20 +200,20 @@ function ProductCard({ product }: ProductCardProps) {
                         </div>
 
                         <div className="mt-6 flex items-center justify-between text-xs text-[#77777B] border-t pt-2">
-                            <span>Səbətinizdə məhsullar var</span>
-                            <span className="text-primary">Səbətin ilkin dəyəri {product.price}</span>
+                            <span>{t("in_cart")}</span>
+                            <span className="text-primary">{t("initial_price")} {product.price}</span>
                         </div>
 
                         <div className="mt-4 w-full flex justify-end gap-2">
                             <Link
                                 href={`/cart`}
                                 className="flex gap-2 items-center bg-primary text-white rounded-md px-3 py-2 text-xs text-center"
-                                onClick={(e) => {
+                                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                                     e.stopPropagation()
                                     setIsOpen(false)
                                 }}
                             >
-                                Səbətə keç <ArrowRight className="w-4 h-4" />
+                                {t("cross_basket")} <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>
                     </div>
@@ -224,16 +224,14 @@ function ProductCard({ product }: ProductCardProps) {
             <Dialog open={isComparisonOpen} onOpenChange={(open) => {
                 setIsComparisonOpen(open)
                 if (!open) {
-                    // Prevent event bubbling when dialog closes
                     setTimeout(() => {
-                        // Small delay to ensure the dialog close event doesn't bubble
                     }, 0)
                 }
             }}>
                 <DialogContent className="max-w-md p-0" onClick={(e) => e.stopPropagation()}>
                     <div className="p-6">
                         <DialogHeader>
-                            <DialogTitle className="text-lg font-medium">Məhsul müqayisə siyahısına əlavə olundu</DialogTitle>
+                            <DialogTitle className="text-lg font-medium">{t("add_to_compare_dialog")}</DialogTitle>
                         </DialogHeader>
 
                         <div className="mt-4 flex items-center gap-4">
@@ -266,12 +264,12 @@ function ProductCard({ product }: ProductCardProps) {
                             <Link
                                 href="/comparison"
                                 className="flex items-center gap-2 bg-gray-800 text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-700 transition-colors"
-                                onClick={(e) => {
+                                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                                     e.stopPropagation()
                                     setIsComparisonOpen(false)
                                 }}
                             >
-                                Müqayisə siyahısı
+                                {t("add_to_compare")}
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
                         </div>

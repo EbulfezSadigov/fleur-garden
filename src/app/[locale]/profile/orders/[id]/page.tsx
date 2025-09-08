@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import { StatusBadge } from "../page"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
+import { useTranslations } from "next-intl"
 
 interface OrderDetailsProps {
     orderId: string
@@ -71,6 +72,7 @@ const mockOrderDetail: OrderDetail = {
 
 export default function OrderDetails({ orderId }: OrderDetailsProps) {
     const order = mockOrderDetail
+    const t = useTranslations("order")
 
     return (
         <div className="col-span-3 lg:pl-8 lg:px-6 mt-5 lg:mt-0 space-y-6">
@@ -86,7 +88,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                 <Link href="/profile/orders" className="p-0 h-auto">
                     <ArrowLeft className="w-5 h-5" />
                 </Link>
-                <h1 className="text-xl font-medium">Bütün sifarişlər</h1>
+                <h1 className="text-xl font-medium">{t("all_orders")}</h1>
             </div>
 
             {/* Delivery Number */}
@@ -99,7 +101,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                 }}
             >
                 <div className="text-sm">
-                    <span className="text-muted-foreground">Çatdırılma № : </span>
+                    <span className="text-muted-foreground">{t("delivery_number")} : </span>
                     <span className="font-medium">{order.deliveryNumber}</span>
                 </div>
 
@@ -114,23 +116,23 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                 >
                     <div className="grid grid-cols-5 gap-4 px-6 py-4 text-sm text-muted-foreground">
                         <div>
-                            <div className="font-medium text-foreground">Sifariş tarixi</div>
+                            <div className="font-medium text-foreground">{t("order_date")}</div>
                             <div>{new Date(order.date).toLocaleDateString("az-AZ")}</div>
                         </div>
                         <div>
-                            <div className="font-medium text-foreground">Alıcı</div>
+                            <div className="font-medium text-foreground">{t("buyer")}</div>
                             <div>{order.buyer}</div>
                         </div>
                         <div>
-                            <div className="font-medium text-foreground">Həcm</div>
+                            <div className="font-medium text-foreground">{t("volume")}</div>
                             <div>{order.volume}</div>
                         </div>
                         <div>
-                            <div className="font-medium text-foreground">Miqdar</div>
-                            <div>{order.quantity} adet</div>
+                            <div className="font-medium text-foreground">{t("quantity")}</div>
+                            <div>{order.quantity} {t("items")}</div>
                         </div>
                         <div className="text-right">
-                            <div className="font-medium text-foreground">Toplam</div>
+                            <div className="font-medium text-foreground">{t("total")}</div>
                             <div>{order.total} AZN</div>
                         </div>
                     </div>
@@ -158,7 +160,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
 
                         <div className="flex flex-col gap-4">
                             <StatusBadge status={order.status} />
-                            <Button variant="secondary" className="bg-black hover:bg-black/80 text-white">Rəy yaz</Button>
+                            <Button variant="secondary" className="bg-black hover:bg-black/80 text-white">{t("write_review")}</Button>
                         </div>
                     </div>
                 </div >
@@ -174,7 +176,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                         boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
                     }}
                     >
-                        <h2 className="text-lg font-medium">Çatdırılma Ünvanı</h2>
+                        <h2 className="text-lg font-medium">{t("delivery_address")}</h2>
                         <div className="space-y-2">
                             <p className="text-sm font-medium">Bakı</p>
                             <p className="text-sm text-muted-foreground">
@@ -192,27 +194,27 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                         boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
                     }}
                     >
-                        <h2 className="text-lg font-medium">Ödəniş Detalları</h2>
+                        <h2 className="text-lg font-medium">{t("payment_details")}</h2>
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Ödəmə üsulu</span>
+                                <span className="text-sm text-muted-foreground">{t("payment_method")}</span>
                                 <span className="text-sm font-medium">{order.paymentDetails.method}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Ümumi Qiymət</span>
+                                <span className="text-sm text-muted-foreground">{t("total_price")}</span>
                                 <span className="text-sm">{order.paymentDetails.subtotal} AZN</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Endirim</span>
+                                <span className="text-sm text-muted-foreground">{t("discount")}</span>
                                 <span className="text-sm">{order.paymentDetails.discount} AZN</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Çatdırılma</span>
+                                <span className="text-sm text-muted-foreground">{t("delivery")}</span>
                                 <span className="text-sm">{order.paymentDetails.delivery} AZN</span>
                             </div>
                             <div className="border-t pt-3">
                                 <div className="flex justify-between items-center">
-                                    <span className="font-medium">Yekun qiymət</span>
+                                    <span className="font-medium">{t("total_price")}</span>
                                     <span className="font-medium text-lg">{order.paymentDetails.finalTotal} AZN</span>
                                 </div>
                             </div>

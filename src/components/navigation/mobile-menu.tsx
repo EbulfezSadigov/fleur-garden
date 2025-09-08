@@ -10,7 +10,7 @@ import { useTranslations, useLocale } from "next-intl"
 import { usePathname, useRouter } from "@/i18n/navigation"
 import { useSearchParams } from "next/navigation"
 import { routing } from "@/i18n/routing"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import UserPopover from "../shared/user-popover"
 import { User } from "@/types"
 

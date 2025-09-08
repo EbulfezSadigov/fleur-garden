@@ -7,8 +7,10 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 import { getBlogs } from "@/services/blogs/api"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 export default function BlogGrid() {
+    const t = useTranslations("blogs")
     const { locale } = useParams<{ locale: string }>()
     const [search, setSearch] = useState("")
     const [debouncedSearch, setDebouncedSearch] = useState("")
@@ -58,7 +60,7 @@ export default function BlogGrid() {
         <section className="w-full py-9">
             <Container>
                 <div className="mb-12">
-                    <h1 className="text-[32px] font-semibold text-foreground mb-8">Bloqlar</h1>
+                    <h1 className="text-[32px] font-semibold text-foreground mb-8">{t("title")}</h1>
                     <div className="relative w-full sm:w-2/3 lg:w-1/3">
                         <Input
                             type="text"

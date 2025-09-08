@@ -1,7 +1,7 @@
 import Container from "@/components/shared/container";
 import { getPartnersQuery } from "@/services/home/queries";
 import { ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { getServerLocale } from "@/lib/utils";
 import { getServerQueryClient } from "@/providers/server";
 import { getTranslations } from "next-intl/server";

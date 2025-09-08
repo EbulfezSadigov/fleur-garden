@@ -1,21 +1,23 @@
 import Container from "@/components/shared/container"
 import { ArrowRight } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Blog } from "@/types/blogs"
+import { getTranslations } from "next-intl/server"
 
-export function BlogSection({ blogPosts }: { blogPosts: Blog[] }) {
+export async function BlogSection({ blogPosts }: { blogPosts: Blog[] }) {
+    const t = await getTranslations("blogs")
     return (
         <section className="w-full py-[72px]">
             {/* Header */}
             <Container>
                 <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-[36px] font-medium text-primary">Bloqlar</h2>
+                    <h2 className="text-[36px] font-medium text-primary">{t("title")}</h2>
                     <Link
                         href="/blogs"
                         className="flex items-center gap-2 font-medium text-primary hover:text-foreground transition-colors group"
                     >
-                        <span>Daha çox</span>
+                        <span>{t("more")}</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>

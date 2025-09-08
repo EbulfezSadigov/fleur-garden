@@ -12,8 +12,8 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { loginAction } from "@/services/auth/server-actions"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useRouter } from "@/i18n/navigation"
 
 interface LoginSheetProps {
   isOpen: boolean
@@ -24,8 +24,8 @@ interface LoginSheetProps {
 
 export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: LoginSheetProps) {
   const [showPassword, setShowPassword] = useState(false)
-  const t = useTranslations("navigation")
   const router = useRouter()
+  const t = useTranslations("login")
 
   const LoginSchema = z.object({
     email: z.string().email({ message: "Düzgün email daxil edin" }),
@@ -88,11 +88,11 @@ export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: Log
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                      <FormLabel className="text-sm font-medium text-gray-700">{t("email")}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="Email adresinizi qeyd edin"
+                          placeholder={t("email_placeholder")}
                           className="w-full h-12 px-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           {...field}
                         />
@@ -108,12 +108,12 @@ export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: Log
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium text-gray-700">Şifrə</FormLabel>
+                      <FormLabel className="text-sm font-medium text-gray-700">{t("password")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Şifrənizi daxil edin"
+                            placeholder={t("password_placeholder")}
                             className="w-full h-12 px-4 pr-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                             {...field}
                           />
@@ -145,14 +145,14 @@ export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: Log
                         <>
                           <Checkbox id="remember" checked={!!field.value} onCheckedChange={(v) => field.onChange(Boolean(v))} />
                           <Label htmlFor="remember" className="text-sm text-gray-600">
-                            Şifrəni yadda saxla
+                            {t("remember")}
                           </Label>
                         </>
                       )}
                     />
                   </div>
                   <button type="button" className="text-sm text-primary hover:text-primary/80">
-                    Şifrəmi unutdum
+                    {t("forgot_password")}
                   </button>
                 </div>
 
@@ -162,20 +162,20 @@ export function LoginSheet({ isOpen, isAnimating, onClose, onOpenRegister }: Log
                   type="submit"
                   disabled={form.formState.isSubmitting}
                 >
-                  {form.formState.isSubmitting ? "Giriş edilir..." : t("login")}
+                  {form.formState.isSubmitting ? t("loading") : t("login")}
                 </Button>
 
                 {/* Register Link */}
                 <div className="text-center">
                   <span className="text-sm text-gray-600">
-                    Hesabın yoxdur?{" "}
+                    {t("no_account")} {" "}
                   </span>
                   <button 
                     type="button"
                     className="text-sm text-primary hover:text-primary/80 font-medium"
                     onClick={onOpenRegister}
                   >
-                    Qeydiyyatdan keç
+                    {t("register_link")}
                   </button>
                 </div>
               </form>
