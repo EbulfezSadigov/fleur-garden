@@ -27,7 +27,7 @@ function ProfileSidebar() {
                 boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
             }}
         >
-            <h1 className="text-xl font-semibold text-gray-900 mb-8">Hesabım & Yardım</h1>
+            <h1 className="text-xl font-medium text-gray-900 mb-8">Hesabım & Yardım</h1>
 
             <nav className="space-y-2">
                 {sidebarItems.map((item, index) => (

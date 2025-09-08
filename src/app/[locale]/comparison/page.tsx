@@ -60,9 +60,9 @@ function ComparisonPage() {
         <div className="w-full py-9">
             <Container>
                 <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-semibold">Məhsul müqayisəsi</h1>
+                    <h1 className="md:text-[32px] text-[28px] font-medium">Məhsul müqayisəsi</h1>
                     {hasItems && (
-                        <button onClick={clearAll} className="text-sm text-red-600 hover:underline">Hamısını sil</button>
+                        <button onClick={clearAll} className="text-sm text-primary hover:underline">Hamısını sil</button>
                     )}
                 </div>
 
@@ -70,13 +70,13 @@ function ComparisonPage() {
                     <div className="text-center text-gray-600 py-16">Müqayisə siyahısı boşdur</div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="min-w-[800px] w-full border-separate border-spacing-y-4" style={{ width: 'max-content' }}>
+                        <table className="min-w-[800px] w-full border-separate border-spacing-y-2" style={{ width: 'max-content' }}>
                             <thead>
-                                <tr className="bg-gray-50">
-                                    <th className="w-64 text-left px-6 py-4 font-medium text-gray-700">Məhsul Müqayisəsi</th>
+                                <tr className="bg-gray-50 border-b border-[#E8EAED]">
+                                    <th className="w-64 text-left px-6 py-4 font-medium text-gray-700"></th>
                                     {items.map((x) => (
                                         <th key={`remove-${x.id}`} className="w-48 px-6 py-4 text-gray-600 font-normal">
-                                            <button onClick={() => removeItem(x.id)} className="inline-flex items-center gap-2 text-sm text-red-600 hover:underline">
+                                            <button onClick={() => removeItem(x.id)} className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
                                                 <span aria-hidden>×</span>
                                                 <span>Sil</span>
                                             </button>
@@ -84,7 +84,7 @@ function ComparisonPage() {
                                     ))}
                                 </tr>
                                 <tr>
-                                    <th className="px-6 py-6 bg-gray-50" />
+                                    <th className="px-6 py-6 bg-gray-50 font-medium text-xl" >Məhsul Müqayisəsi</th>
                                     {items.map((x) => (
                                         <th key={`image-${x.id}`} className="w-48 px-6 py-6 border-y border-gray-200">
                                             <div className="mx-auto h-28 w-20 relative">
@@ -101,29 +101,29 @@ function ComparisonPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr className="border-t">
-                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium">Brend</td>
+                                <tr className="border-t border-[#E8EAED]">
+                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">Brend</td>
                                     {items.map((x) => (
                                         <td key={`brand-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.brand}</td>
                                     ))}
                                 </tr>
 
-                                <tr className="border-t">
-                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium">Məhsul</td>
+                                <tr className="border-t border-[#E8EAED]">
+                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">Məhsul</td>
                                     {items.map((x) => (
                                         <td key={`name-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.name}</td>
                                     ))}
                                 </tr>
 
-                                <tr className="border-t">
-                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium">Qiymət</td>
+                                <tr className="border-t border-[#E8EAED]">
+                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">Qiymət</td>
                                     {items.map((x) => (
                                         <td key={`price-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.price}</td>
                                     ))}
                                 </tr>
 
-                                <tr className="border-t">
-                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium">Stok vəziyyəti</td>
+                                <tr className="border-t border-[#E8EAED]">
+                                    <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">Stok vəziyyəti</td>
                                     {items.map((x) => (
                                         <td key={`stock-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">
                                             {x.product.inStock ? (

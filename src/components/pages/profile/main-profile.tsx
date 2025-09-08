@@ -56,8 +56,8 @@ function MainProfile({ user }: { user: User }) {
                     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
                 }}
             >
-                <div>
-                    <h1 className="text-lg font-medium text-gray-900">Hesab Məlumatları</h1>
+                <div className='mb-8'>
+                    <h1 className="text-xl font-medium text-gray-900">Hesab Məlumatları</h1>
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 flex flex-col h-full">
@@ -120,8 +120,8 @@ function MainProfile({ user }: { user: User }) {
                     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
                 }}
             >
-                <div>
-                    <h1 className="text-lg font-medium text-gray-900">Şifrə Yenilənmə</h1>
+                <div className='mb-8'>
+                    <h1 className="text-xl font-medium text-gray-900">Şifrə Yenilənmə</h1>
                 </div>
                 <PasswordForm />
             </div>

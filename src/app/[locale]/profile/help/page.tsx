@@ -67,7 +67,7 @@ export default function FAQSection() {
                     border: "1px solid #F2F4F8",
                     background: "#FFF",
                     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
-                }} className="text-2xl font-semibold mb-8 text-gray-900 p-4">Yardım</h1>
+                }} className="text-xl font-medium mb-8 text-gray-900 p-4">Yardım</h1>
 
             {/* Tab Navigation */}
             <div
@@ -95,7 +95,7 @@ export default function FAQSection() {
                         <TabsContent key={tab.id} value={tab.id}>
                             <Accordion type="single" collapsible className="space-y-4">
                                 {faqData[tab.id as keyof typeof faqData].map((faq, index) => (
-                                    <AccordionItem key={index} value={`item-${index}`} className="border border-gray-200 rounded-lg px-6 py-2">
+                                    <AccordionItem key={index} value={`item-${index}`} className="border-b border-[#F2F4F8] rounded-none px-6 py-2">
                                         <AccordionTrigger className="text-left text-gray-900 hover:no-underline py-4">
                                             {faq.question}
                                         </AccordionTrigger>

@@ -250,8 +250,8 @@ function ProductCard({ product }: ProductCardProps) {
                                 <div className="flex items-center gap-2">
                                     <h3 className="font-medium text-primary">{product.name}</h3>
                                     <div className="flex items-center gap-1">
-                                        <Star className="w-4 h-4 fill-orange-400 text-orange-400" />
-                                        <span className="text-sm text-orange-400 font-medium">{product.rating}</span>
+                                        <Star className="w-4 h-4 fill-[#FF9500] text-[#FF9500]" />
+                                        <span className="text-sm text-[#FF9500] font-medium">{product.rating}</span>
                                     </div>
                                 </div>
                                 <p className="text-sm text-[#77777B] mt-1">{product.brand}</p>

@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Heart, Scale, Share2, Star, Info, Plus, Minus, ArrowRight } from "lucide-react"
+import { Heart, Scale, Share2, Star, Plus, Minus } from "lucide-react"
 import Image from "next/image"
 import Container from "@/components/shared/container"
 import Link from "next/link"
-import ProductCard from "@/components/pages/home/product-card"
 import { Product } from "@/types"
 import { toast } from "sonner"
+import ProductInfoTabs from "@/components/pages/products/product-info-tabs"
+import RelatedProducts from "@/components/pages/products/related-products"
 
 const products: Product[] = Array.from({ length: 4 }).map((_, index) => ({
   id: index + 1,
@@ -115,7 +115,7 @@ export default function ProductPage() {
       {/* Breadcrumb */}
       <Container>
         <div className="text-sm text-gray-600 mb-6">
-          <span>Ana səhifə</span>
+          <Link href="/">Ana səhifə</Link>
           <span className="mx-2">/</span>
           <span>YSL Libre</span>
         </div>
@@ -136,13 +136,13 @@ export default function ProductPage() {
 
                   {/* Action Icons */}
                   <div className="absolute top-4 right-4 flex flex-col gap-3">
-                    <button 
+                    <button
                       onClick={handleToggleFavorite}
                       className="p-2 bg-white border border-none rounded-full hover:bg-gray-50 transition-colors"
                     >
                       <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
                     </button>
-                    <button 
+                    <button
                       onClick={handleAddToComparison}
                       className="p-2 bg-white border border-none rounded-full hover:bg-gray-50 transition-colors"
                     >
@@ -157,21 +157,23 @@ export default function ProductPage() {
             </div>
 
             {/* Product Details Section */}
-            <div className="space-y-6 w-full lg:w-[calc(55%-16px)]">
+            <div className="space-y-14 w-full lg:w-[calc(55%-16px)]">
               {/* Product Code */}
-              <div className="text-sm text-gray-500">Məhsul kodu: 979797979</div>
+              <div className="space-y-6">
+                <div className="text-sm text-gray-500">Məhsul kodu: 979797979</div>
 
-              {/* Product Title and Rating */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">YSL LIBRE</h1>
-                  <p className="text-lg text-gray-600">Yves Saint Laurent</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm text-gray-500 mb-1">Stokda var</div>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-[#FF9500] text-[#FF9500]" />
-                    <span className="text-sm font-medium text-[#FF9500]">4.5</span>
+                {/* Product Title and Rating */}
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">YSL LIBRE</h1>
+                    <p className="text-lg text-gray-600">Yves Saint Laurent</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-gray-500 mb-1">Stokda var</div>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 fill-[#FF9500] text-[#FF9500]" />
+                      <span className="text-sm font-medium text-[#FF9500]">4.5</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -197,7 +199,9 @@ export default function ProductPage() {
                 <div className="flex justify-between">
                   <div className="text-sm text-gray-500">200 ml (1.50 ₼ / ml)</div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Info className="w-4 h-4" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 9H12.01M11 12H12V16H13M12 3C19.2 3 21 4.8 21 12C21 19.2 19.2 21 12 21C4.8 21 3 19.2 3 12C3 4.8 4.8 3 12 3Z" stroke="#77777B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
                     <span>Minimum sifariş məbləği 400 AZN təşkil edir.</span>
                   </div>
                 </div>
@@ -223,72 +227,10 @@ export default function ProductPage() {
           </div>
 
           {/* Product Information Tabs */}
-          <div className="mt-12 lg:w-[calc(45%-16px)]">
-            <Tabs defaultValue="details" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-transparent border-b border-gray-200 rounded-none h-auto p-0">
-                <TabsTrigger
-                  value="details"
-                  className="border-b-2 border-transparent data-[state=active]:border-b-black data-[state=active]:bg-transparent bg-transparent rounded-none pb-4 data-[state=active]:shadow-none"
-                >
-                  Ətrafli məlumat
-                </TabsTrigger>
-                <TabsTrigger
-                  value="reviews"
-                  className="border-b-2 border-transparent data-[state=active]:border-b-black data-[state=active]:bg-transparent bg-transparent rounded-none pb-4 data-[state=active]:shadow-none"
-                >
-                  Rəylər
-                </TabsTrigger>
-                <TabsTrigger
-                  value="conditions"
-                  className="border-b-2 border-transparent data-[state=active]:border-b-black data-[state=active]:bg-transparent bg-transparent rounded-none pb-4 data-[state=active]:shadow-none"
-                >
-                  Sifariş şərtləri
-                </TabsTrigger>
-              </TabsList>
+          <ProductInfoTabs />
 
-              <TabsContent value="details" className="mt-8">
-                <div className="grid grid-cols-1 gap-8">
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-900">Məhsulun növü</span>
-                      <span className="text-gray-600">Qadın ətri</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-900">Qoxu tipləri</span>
-                      <span className="text-gray-600">Yaşaman, vanil, müşk</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-900">Məhsulun növü</span>
-                      <span className="text-gray-600">Qadın ətri</span>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="reviews" className="mt-8">
-                <div className="text-center py-12 text-gray-500">Hələ ki rəy yoxdur</div>
-              </TabsContent>
-
-              <TabsContent value="conditions" className="mt-8">
-                <div className="prose max-w-none">
-                  <p className="text-gray-600">Sifariş şərtləri və çatdırılma məlumatları burada göstəriləcək.</p>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-          <div className="mt-[100px]">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[32px] font-semibold text-gray-900">Sizin üçün seçdiklərimiz</h2>
-              <Link href="/products" className="group cursor-pointer">
-                <Button className="bg-transparent cursor-pointer border-none shadow-none hover:bg-transparent text-primary text-sm font-medium">Daha çox <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></Button>
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-9">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
+          {/* Related Products */}
+          <RelatedProducts products={products} />
         </div>
       </Container>
     </div>

@@ -80,7 +80,7 @@ export default function FavoritesPage() {
         <section className="w-full py-9">
             <Container>
                 <div className="flex flex-col gap-4 mb-6">
-                    <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground">Favorilərim</h1>
+                    <h1 className="text-[28px] md:text-[32px] font-medium text-foreground">Favorilərim</h1>
 
                     <div className="flex flex-col md:flex-row justify-between gap-3 w-full md:w-auto items-center">
                         <div className="flex gap-3">

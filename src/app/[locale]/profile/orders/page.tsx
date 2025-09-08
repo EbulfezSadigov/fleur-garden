@@ -137,7 +137,7 @@ function OrderCard({ order }: { order: Order }) {
             </div>
 
             <div className="flex items-center justify-between gap-4 border-t border-[#F2F4F8] px-6 py-5">
-                <div className="flex items-center gap-4">
+                <div className="flex gap-4">
                     <div className="h-20 w-16 overflow-hidden rounded-md bg-muted">
                         <Image
                             src={item.imageSrc}
@@ -187,7 +187,7 @@ export default function OrdersList() {
                     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
                 }}
             >
-                <h1 className="text-2xl font-semibold">Sifarişlər</h1>
+                <h1 className="text-xl font-medium">Sifarişlər</h1>
                 <Select value={timeFilter} onValueChange={setTimeFilter}>
                     <SelectTrigger className="w-40">
                         <SelectValue placeholder="Zaman aralığı" />

@@ -1,0 +1,26 @@
+import React from 'react'
+import ProductCard from '../home/product-card'
+import { Button } from '@/components/ui/button'
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
+import { Product } from '@/types'
+
+function RelatedProducts({ products }: { products: Product[] }) {
+    return (
+        <div className="mt-[100px]">
+            <div className="flex items-center justify-between">
+                <h2 className="text-[32px] font-semibold text-gray-900">Sizin üçün seçdiklərimiz</h2>
+                <Link href="/products" className="group cursor-pointer">
+                    <Button className="bg-transparent cursor-pointer border-none shadow-none hover:bg-transparent text-primary text-sm font-medium">Daha çox <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></Button>
+                </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-9">
+                {products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
+            </div>
+        </div>
+    )
+}
+
+export default RelatedProducts

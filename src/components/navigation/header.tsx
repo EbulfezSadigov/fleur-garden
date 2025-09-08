@@ -23,7 +23,7 @@ export async function Header() {
   await Promise.all([queryClient.prefetchQuery(getUserQuery(token))]);
   const userData = queryClient.getQueryData(getUserQuery(token).queryKey);
   const user = userData?.data;
-  console.log(user);
+
   return (
     <div>
       <header className="w-full bg-white border-b fixed z-50 top-0 left-0 right-0">
@@ -32,7 +32,7 @@ export async function Header() {
             <div className="flex items-center py-3 justify-between text-sm border-b border-gray-200">
               <nav className="flex items-center space-x-6 font-medium">
                 {navigationItems.map((item) => (
-                  <Link key={item.label} href={item.href} className="text-gray-600 hover:text-gray-900">
+                  <Link key={item.label} href={item.href} className="text-[#77777B] hover:text-gray-900">
                     {t(item.label)}
                   </Link>
                 ))}

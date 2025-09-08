@@ -13,7 +13,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="col-span-3 lg:pl-8 h-full mt-5 lg:mt-0">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-5 p-4 border border-[#F2F4F8]"
+      <h1 className="text-xl font-medium text-gray-900 mb-5 p-4 border border-[#F2F4F8]"
         style={{
           borderRadius: "8px",
           border: "1px solid #F2F4F8",

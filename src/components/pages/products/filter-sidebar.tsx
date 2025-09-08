@@ -1,9 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import {ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils"
 
 interface FilterSectionProps {
   title: string
@@ -22,7 +24,7 @@ function FilterSection({ title, children, defaultOpen = true }: FilterSectionPro
         className="w-full flex items-center justify-between text-sm font-medium text-primary"
       >
         <span>{title}</span>
-        <span className="text-gray-400">{isOpen ? <ChevronDownIcon/> : <ChevronUpIcon/>}</span>
+        <span className="text-gray-400">{isOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}</span>
       </button>
       {isOpen && <div className="mt-4 space-y-3">{children}</div>}
     </div>
@@ -45,18 +47,18 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
           <span className="text-sm text-[#77777B]">—</span>
           <Input placeholder="Max" className="h-9" />
         </div>
-        <PriceSlider min={0} max={5600} step={10} />
+        <PriceRangeSlider min={0} max={5600} step={10} />
       </FilterSection>
 
       <FilterSection title="Məhsul" defaultOpen>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox /> Endirimli məhsullar
+          <Checkbox className="border-primary" /> Endirimli məhsullar
         </label>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox /> Ən yeni
+          <Checkbox className="border-primary" /> Ən yeni
         </label>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox /> Ən çox satılanlar
+          <Checkbox className="border-primary" /> Ən çox satılanlar
         </label>
       </FilterSection>
 
@@ -74,7 +76,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
             "Burberry",
           ].map((brand) => (
             <label key={brand} className="flex items-center gap-2 text-sm text-primary">
-              <Checkbox /> {brand}
+              <Checkbox className="border-primary" /> {brand}
             </label>
           ))}
         </div>
@@ -87,7 +89,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
           { id: "unisex", label: "Unisex" },
         ].map((g) => (
           <label key={g.id} className="flex items-center gap-2 text-sm text-primary">
-            <Checkbox /> {g.label}
+            <Checkbox className="border-primary" /> {g.label}
           </label>
         ))}
       </FilterSection>
@@ -97,76 +99,61 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
 
 export default FilterSidebar
 
-interface PriceSliderProps {
-  min: number
-  max: number
-  step?: number
+interface PriceRangeSliderProps {
+  min?: number;
+  max?: number;
+  step?: number;
+  defaultValue?: [number, number];
+  onValueChange?: (value: [number, number]) => void;
+  className?: string;
+  currency?: string;
 }
 
-function PriceSlider({ min, max, step = 1 }: PriceSliderProps) {
-  const [minValue, setMinValue] = useState<number>(min)
-  const [maxValue, setMaxValue] = useState<number>(max)
+function PriceRangeSlider({
+  min = 0,
+  max = 5600,
+  step = 10,
+  defaultValue = [0, 5600],
+  onValueChange,
+  className,
+  currency = "AZN",
+}: PriceRangeSliderProps) {
+  const [value, setValue] = useState<[number, number]>(defaultValue);
 
-  const minPercent = useMemo(() => ((minValue - min) / (max - min)) * 100, [minValue, min, max])
-  const maxPercent = useMemo(() => ((maxValue - min) / (max - min)) * 100, [maxValue, min, max])
+  const handleValueChange = (newValue: number[]) => {
+    const rangeValue: [number, number] = [newValue[0], newValue[1]];
+    setValue(rangeValue);
+    onValueChange?.(rangeValue);
+  };
 
-  function handleMinChange(value: number) {
-    if (value <= maxValue) setMinValue(value)
-  }
-
-  function handleMaxChange(value: number) {
-    if (value >= minValue) setMaxValue(value)
-  }
+  const formatPrice = (price: number): string => {
+    return `${price.toLocaleString()} ${currency}`;
+  };
 
   return (
-    <div className="mt-4">
-      <div className="flex items-center justify-between text-sm text-primary mb-2">
-        <span>{min}</span>
-        <span>{max}AZN</span>
+    <div className={cn("w-full space-y-4", className)}>
+      {/* Price Display */}
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-medium text-gray-700">
+          {formatPrice(value[0])}
+        </div>
+        <div className="text-sm font-medium text-gray-700">
+          {formatPrice(value[1])}
+        </div>
       </div>
 
-      <div className="relative h-6 select-none">
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[6px] bg-[#F2F4F8] rounded-full" />
-
-        <div
-          className="absolute top-1/2 -translate-y-1/2 h-[6px] bg-primary rounded-full"
-          style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
-        />
-
-        <input
-          type="range"
+      {/* Slider */}
+      <div className="px-2">
+        <Slider
+          value={value}
+          onValueChange={handleValueChange}
           min={min}
           max={max}
           step={step}
-          value={minValue}
-          onChange={(e) => handleMinChange(Number(e.target.value))}
-          className="absolute inset-0 appearance-none bg-transparent pointer-events-auto"
+          className="w-full"
+          minStepsBetweenThumbs={1}
         />
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={maxValue}
-          onChange={(e) => handleMaxChange(Number(e.target.value))}
-          className="absolute inset-0 appearance-none bg-transparent pointer-events-auto"
-        />
-
-        <style jsx>{`
-          input[type='range']::-webkit-slider-thumb { 
-            -webkit-appearance: none; appearance: none; width: 20px; height: 20px; 
-            background: white; border: 3px solid #1F2937; border-radius: 50%; cursor: pointer;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-          }
-          input[type='range']::-moz-range-thumb { 
-            width: 20px; height: 20px; background: white; border: 3px solid #1F2937; border-radius: 50%; cursor: pointer;
-          }
-          input[type='range'] { 
-            pointer-events: none; /* allow dragging only on thumbs */
-          }
-        `}</style>
       </div>
     </div>
-  )
+  );
 }
-
