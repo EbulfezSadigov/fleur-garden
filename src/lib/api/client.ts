@@ -46,7 +46,6 @@ const setupInterceptors = (): void => {
     (config: InternalAxiosRequestConfig) => {
       // Add auth token if available
       const token = getAuthToken()
-      console.log(token)
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`
       }

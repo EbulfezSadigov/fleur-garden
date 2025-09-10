@@ -1,6 +1,5 @@
-import { Search, ShoppingCart } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import UserPopover from "../shared/user-popover"
 import LanguageSelector from "../shared/language-selector"
 import { navigationItems } from "@/utils/static"
@@ -14,16 +13,20 @@ import { getServerQueryClient } from "@/providers/server"
 import { getUserQuery } from "@/services/auth/queries"
 import { cookies } from "next/headers"
 import { User } from "@/types"
+import { getCategoriesQuery } from "@/services/products/queries"
+import { SearchBox } from "./SearchBox"
 
 export async function Header() {
   const t = await getTranslations("navigation")
   const token = (await cookies()).get("access_token")?.value as string;
   const queryClient = getServerQueryClient();
 
-  await Promise.all([queryClient.prefetchQuery(getUserQuery(token))]);
+  await Promise.all([queryClient.prefetchQuery(getUserQuery(token)), queryClient.prefetchQuery(getCategoriesQuery())]);
   const userData = queryClient.getQueryData(getUserQuery(token).queryKey);
   const user = userData?.data;
-
+  
+  const categoriesData = queryClient.getQueryData(getCategoriesQuery().queryKey);
+  const categories = categoriesData?.data;
   return (
     <div>
       <header className="w-full bg-white border-b fixed z-50 top-0 left-0 right-0">
@@ -58,24 +61,12 @@ export async function Header() {
               </Link>
 
               <div className="hidden md:block">
-                <CatalogSheet />
+                <CatalogSheet categories={categories || []} />
               </div>
             </div>
 
             <div className="hidden md:flex flex-1 max-w-[500px] mx-8">
-              <div className="relative w-full">
-                <Input
-                  type="text"
-                  placeholder="Search"
-                  className="w-full pl-4 pr-12 h-12 py-4 border border-gray-300 rounded-[16px] focus:outline-none focus:ring-2 focus:ring-gray-200"
-                />
-                <Button
-                  size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-8 h-8 p-0 hover:bg-gray-800"
-                >
-                  <Search className="w-4 h-4" />
-                </Button>
-              </div>
+              <SearchBox />
             </div>
 
             <div className="flex items-center space-x-2 md:space-x-4">

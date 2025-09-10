@@ -39,13 +39,34 @@ function ProductCard({ product }: ProductCardProps) {
         try {
             const storageKey = 'cart'
             const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
-            const cart: Array<{ id: number; qty: number; product: typeof product }> = raw ? JSON.parse(raw) : []
+            // Normalize to the cart schema consumed by cart pages
+            type CartItem = {
+                id: string
+                title: string
+                brand: string
+                volume: string
+                price: number
+                qty: number
+                selected: boolean
+                image: string
+            }
+            const cart: CartItem[] = raw ? JSON.parse(raw) : []
 
-            const existingIndex = cart.findIndex(item => item.id === product.id)
+            const id = String(product.id)
+            const existingIndex = cart.findIndex(item => item.id === id)
             if (existingIndex >= 0) {
                 cart[existingIndex].qty += 1
             } else {
-                cart.push({ id: product.id, qty: 1, product })
+                cart.push({
+                    id,
+                    title: product.name,
+                    brand: product.brand_name ?? '',
+                    volume: '50 ML',
+                    price: product.price,
+                    qty: 1,
+                    selected: true,
+                    image: product.image || ''
+                })
             }
 
             window.localStorage.setItem(storageKey, JSON.stringify(cart))
@@ -62,11 +83,11 @@ function ProductCard({ product }: ProductCardProps) {
         try {
             const storageKey = 'comparison'
             const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
-            const comparison: Array<{ id: number; product: typeof product }> = raw ? JSON.parse(raw) : []
+            const comparison: Array<{ id: number; product: typeof product, image: string }> = raw ? JSON.parse(raw) : []
 
             const existingIndex = comparison.findIndex(item => item.id === product.id)
             if (existingIndex === -1) {
-                comparison.push({ id: product.id, product })
+                comparison.push({ id: product.id, product, image: product.image })
                 window.localStorage.setItem(storageKey, JSON.stringify(comparison))
                 setIsComparisonOpen(true)
                 toast.success(t("add_to_compare_dialog"))
@@ -88,7 +109,7 @@ function ProductCard({ product }: ProductCardProps) {
         try {
             const storageKey = 'favorites'
             const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
-            const favorites: Array<{ id: number; product: typeof product }> = raw ? JSON.parse(raw) : []
+            const favorites: Array<{ id: number; product: typeof product, image: string }> = raw ? JSON.parse(raw) : []
 
             const existingIndex = favorites.findIndex(item => item.id === product.id)
 
@@ -99,7 +120,7 @@ function ProductCard({ product }: ProductCardProps) {
                 toast.success(t("remove_from_wishlist_dialog"))
             } else {
                 // Add to favorites
-                favorites.push({ id: product.id, product })
+                favorites.push({ id: product.id, product, image: product.image })
                 setIsFavorite(true)
                 toast.success(t("add_to_wishlist_dialog"))
             }
@@ -115,14 +136,14 @@ function ProductCard({ product }: ProductCardProps) {
     }
 
     return (
-        <div onClick={() => router.push(`/products/${product.id}`)} key={product.id} className="bg-white relative group border border-[#F2F4F8] rounded-[12px] p-4"
+        <div onClick={() => router.push(`/products/${product.slug}`)} key={product.id} className="bg-white relative group border border-[#F2F4F8] rounded-[12px] p-4"
             style={{
                 boxShadow: "0px 8px 12px 0px #00000008",
             }}
         >
             <div className="flex flex-col items-center justify-end z-10 absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Button variant="ghost" size="sm" className="p-2" onClick={handleToggleFavorite}>
-                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-black text-black' : 'text-gray-600'}`} />
                 </Button>
                 <Button variant="ghost" size="sm" className="p-2" onClick={handleAddToComparison}>
                     <Scale className="w-5 h-5 text-gray-600" />
@@ -145,18 +166,18 @@ function ProductCard({ product }: ProductCardProps) {
                     <h3 className="font-medium text-primary">{product.name}</h3>
                     <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 fill-orange-400 text-orange-400" />
-                        <span className="text-sm text-orange-400 font-medium">{product.rating}</span>
+                        <span className="text-sm text-orange-400 font-medium">{product.star}</span>
                     </div>
 
                 </div>
-                <p className="text-sm text-[#77777B]">{product.brand}</p>
+                <p className="text-sm text-[#77777B]">{product.brand_name}</p>
 
-                {product.inStock && <p className="text-[10px] text-primary bg-[#F2F4F8] rounded-[4px] px-2 py-1 w-fit mt-3">{t("in_stock")}</p>}
+                {product.stock > 0 && <p className="text-[10px] text-primary bg-[#F2F4F8] rounded-[4px] px-2 py-1 w-fit mt-3">{t("in_stock")}</p>}
 
                 <div className="h-[1px] bg-[#F2F4F8] w-full" />
 
                 <div className="flex items-center justify-between pt-2">
-                    <span className="text-lg font-semibold text-primary">{product.price}</span>
+                    <span className="text-lg font-semibold text-primary">{product.price} AZN</span>
                     <button onClick={handleAddToCart} className="bg-primary text-white px-4 py-2 rounded-md text-xs font-medium hover:bg-gray-800 transition-colors flex items-center gap-2">
                         {t("add_to_cart")}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,10 +212,10 @@ function ProductCard({ product }: ProductCardProps) {
                             </div>
                             <div>
                                 <p className="text-sm font-medium text-primary">{product.name}</p>
-                                <p className="text-xs text-[#77777B] mt-1">{product.brand}</p>
+                                <p className="text-xs text-[#77777B] mt-1">{product.brand_name}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-semibold text-primary">(x1) {product.price}</p>
+                                <p className="text-sm font-semibold text-primary">(x1) {product.price} AZN</p>
                                 <p className="text-[10px] text-muted-foreground">200 ml (1.50 a/ml)</p>
                             </div>
                         </div>
@@ -249,13 +270,13 @@ function ProductCard({ product }: ProductCardProps) {
                                     <h3 className="font-medium text-primary">{product.name}</h3>
                                     <div className="flex items-center gap-1">
                                         <Star className="w-4 h-4 fill-[#FF9500] text-[#FF9500]" />
-                                        <span className="text-sm text-[#FF9500] font-medium">{product.rating}</span>
+                                        <span className="text-sm text-[#FF9500] font-medium">{product.star}</span>
                                     </div>
                                 </div>
-                                <p className="text-sm text-[#77777B] mt-1">{product.brand}</p>
+                                <p className="text-sm text-[#77777B] mt-1">{product.brand_name}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-semibold text-primary">{product.price}</p>
+                                <p className="text-sm font-semibold text-primary">{product.price} AZN</p>
                                 <p className="text-xs text-[#77777B]">200 ml (1.50 ₼ / ml)</p>
                             </div>
                         </div>

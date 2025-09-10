@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Star } from 'lucide-react'
 import { ReviewsCarousel } from './reviews-carousel'
 import { useTranslations } from 'next-intl'
+import { Product } from '@/types'
 
-function ProductInfoTabs() {
+function ProductInfoTabs({ product }: { product: Product }) {
     const t = useTranslations("product_page")
     return (
         <div className="mt-12">
@@ -37,15 +38,15 @@ function ProductInfoTabs() {
                         <div className="space-y-4">
                             <div className="flex justify-between">
                                 <span className="font-medium text-gray-900">{t("product_type")}</span>
-                                <span className="text-gray-600">Qadın ətri</span>
+                                <span className="text-gray-600">{product.category_name}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="font-medium text-gray-900">{t("fragrance_types")}</span>
-                                <span className="text-gray-600">Yaşaman, vanil, müşk</span>
+                                <span className="text-gray-600">Cicek</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="font-medium text-gray-900">{t("product_type")}</span>
-                                <span className="text-gray-600">Qadın ətri</span>
+                                <span className="font-medium text-gray-900">{t("brand")}</span>
+                                <span className="text-gray-600">{product.brand_name}</span>
                             </div>
                         </div>
                     </div>

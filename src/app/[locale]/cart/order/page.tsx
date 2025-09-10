@@ -18,6 +18,7 @@ interface CheckoutItem {
     volume: string
     price: number
     qty: number
+    image: string
 }
 
 function formatCurrency(amount: number) {
@@ -25,10 +26,7 @@ function formatCurrency(amount: number) {
 }
 
 function Order() {
-    const [items] = React.useState<CheckoutItem[]>([
-        { id: '1', title: 'YSL Libre', brand: 'Yves Saint Laurent', volume: '50 ML', price: 155.3, qty: 1 },
-        { id: '2', title: 'YSL Libre', brand: 'Yves Saint Laurent', volume: '50 ML', price: 155.3, qty: 1 },
-    ])
+    const [items, setItems] = React.useState<CheckoutItem[]>([])
 
     const [payment, setPayment] = React.useState<'card' | 'cod'>('card')
     const [fullName, setFullName] = React.useState('')
@@ -39,8 +37,78 @@ function Order() {
 
     const t = useTranslations("order")
 
+    // LocalStorage keys
+    const STORAGE_KEYS = React.useMemo(() => ({
+        items: 'cart',
+        form: 'order.form',
+    }), [])
+
+    function safeParseJSON<T>(value: string | null, fallback: T): T {
+        if (!value) return fallback
+        try {
+            return JSON.parse(value) as T
+        } catch {
+            return fallback
+        }
+    }
+
+    // Load from localStorage on mount
+    React.useEffect(() => {
+        try {
+            const savedItems = safeParseJSON<CheckoutItem[]>(
+                typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEYS.items) : null,
+                []
+            )
+            if (Array.isArray(savedItems) && savedItems.length) setItems(savedItems)
+
+            const savedForm = safeParseJSON<{
+                fullName?: string
+                phone?: string
+                city?: string
+                address?: string
+                note?: string
+                payment?: 'card' | 'cod'
+            }>(typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEYS.form) : null, {})
+
+            if (savedForm.fullName) setFullName(savedForm.fullName)
+            if (savedForm.phone) setPhone(savedForm.phone)
+            if (savedForm.city) setCity(savedForm.city)
+            if (savedForm.address) setAddress(savedForm.address)
+            if (savedForm.note) setNote(savedForm.note)
+            if (savedForm.payment) setPayment(savedForm.payment)
+        } catch {
+            // ignore storage errors
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    // Persist items
+    React.useEffect(() => {
+        try {
+            if (typeof window !== 'undefined') {
+                window.localStorage.setItem(STORAGE_KEYS.items, JSON.stringify(items))
+            }
+        } catch {
+            // ignore storage errors
+        }
+    }, [items, STORAGE_KEYS])
+
+    // Persist form
+    React.useEffect(() => {
+        try {
+            if (typeof window !== 'undefined') {
+                window.localStorage.setItem(
+                    STORAGE_KEYS.form,
+                    JSON.stringify({ fullName, phone, city, address, note, payment })
+                )
+            }
+        } catch {
+            // ignore storage errors
+        }
+    }, [fullName, phone, city, address, note, payment, STORAGE_KEYS])
+
     const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0)
-    const discount = 10.6
+    const discount = 2
     const total = subtotal - discount
 
     return (
@@ -48,7 +116,7 @@ function Order() {
             <Breadcrumb className="mb-6 md:mb-8">
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="#">{t("home")}</BreadcrumbLink>
+                        <BreadcrumbLink href="/">{t("home")}</BreadcrumbLink>
                     </BreadcrumbItem>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <g clipPath="url(#clip0_355_8453)">
@@ -61,7 +129,7 @@ function Order() {
                         </defs>
                     </svg>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="#">{t("cart")}</BreadcrumbLink>
+                        <BreadcrumbLink href="/cart">{t("cart")}</BreadcrumbLink>
                     </BreadcrumbItem>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <g clipPath="url(#clip0_355_8453)">
@@ -149,7 +217,7 @@ function Order() {
                         <div className="space-y-4">
                             {items.map((i) => (
                                 <div key={i.id} className="flex items-start gap-3">
-                                    <Image src="/images/product.jpg" alt={i.title} width={64} height={64} className="rounded-md object-cover" />
+                                    <Image src={i.image} alt={i.title} width={64} height={64} className="rounded-md object-cover" />
                                     <div className="flex-1">
                                         <div className="font-medium">{i.title}</div>
                                         <div className="text-muted-foreground text-sm">{i.brand} • {i.volume}</div>

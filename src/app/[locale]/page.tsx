@@ -9,6 +9,7 @@ import { getSlidersQuery, getBannersQuery, getPartnersQuery } from "@/services/h
 import { getServerLocale } from "@/lib/utils";
 import { getServerQueryClient } from "@/providers/server";
 import { getBlogsQuery } from "@/services/blogs/queries";
+import { getProductsQuery } from "@/services/products/queries";
 
 export default async function Home() {
   const locale = await getServerLocale();
@@ -18,22 +19,24 @@ export default async function Home() {
     queryClient.prefetchQuery(getSlidersQuery()), 
     queryClient.prefetchQuery(getBannersQuery(locale)),
     queryClient.prefetchQuery(getPartnersQuery(locale)),
-    queryClient.prefetchQuery(getBlogsQuery(locale))
-
+    queryClient.prefetchQuery(getBlogsQuery(locale)),
+    queryClient.prefetchQuery(getProductsQuery(locale,2))
   ]);
   const data = queryClient.getQueryData(getSlidersQuery().queryKey);
   const banners = queryClient.getQueryData(getBannersQuery(locale).queryKey);
   const partnersData = queryClient.getQueryData(getPartnersQuery(locale).queryKey);
   const blogPostsData = queryClient.getQueryData(getBlogsQuery(locale).queryKey);
+  const productsData = queryClient.getQueryData(getProductsQuery(locale,2).queryKey);
   const sliders = data?.data;
   const banner = banners?.data;
   const partners = partnersData?.data;
   const blogPosts = blogPostsData?.data;
+  const products = productsData?.data;
   return (
     <div>
       <ProductCarousel sliders={sliders || []} />
       <BrandCarousel partners={partners || []} />
-      <ProductGrid />
+      <ProductGrid products={products || []} />
       {banner ? <HeroBanner banner={banner} /> : null}  
       <BlogSection blogPosts={blogPosts || []} />
       <CarouselWithReviews />

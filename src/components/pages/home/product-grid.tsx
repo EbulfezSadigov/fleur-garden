@@ -2,93 +2,9 @@ import Container from "@/components/shared/container"
 import ProductCard from "./product-card"
 import { Link } from "@/i18n/navigation"
 import { getTranslations } from "next-intl/server"
+import { Product } from "@/types"
 
-interface Product {
-    id: number
-    name: string
-    brand: string
-    price: string
-    rating: number
-    inStock: boolean
-    image: string
-}
-
-const products: Product[] = [
-    {
-        id: 1,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-    {
-        id: 2,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-    {
-        id: 3,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-    {
-        id: 4,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-    {
-        id: 5,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-    {
-        id: 6,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-    {
-        id: 7,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-    {
-        id: 8,
-        name: "YSL LIBRE",
-        brand: "Yves Saint Laurent",
-        price: "347 AZN",
-        rating: 4.5,
-        inStock: true,
-        image: "/images/product.jpg",
-    },
-]
-
-export default async function ProductGrid() {
+export default async function ProductGrid({ products }: { products: Product[] }) {
     const t = await getTranslations("product_grid")
     return (
         <Container className="py-[72px]">

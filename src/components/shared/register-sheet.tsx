@@ -43,7 +43,6 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
   })
 
   async function onSubmit(values: RegisterFormValues) {
-    console.log(values)
     try {
       const res = await registerAction(values.name, values.email, values.password)
       if (res?.status === "success") {

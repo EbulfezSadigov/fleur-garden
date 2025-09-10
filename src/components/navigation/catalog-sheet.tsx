@@ -4,81 +4,10 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, ChevronRight} from "lucide-react"
 import { useTranslations } from "next-intl"
+import { Category } from "@/types"
+import { Link } from "@/i18n/navigation"
 
-interface Category {
-  id: string
-  name: string
-  subcategories: string[]
-}
-
-const categories: Category[] = [
-  {
-    id: "women",
-    name: "Qadın Parfumları",
-    subcategories: [
-      "Çiçək Notaları",
-      "Meyvəli Notalar", 
-      "Şərq/Oriental Notalar",
-      "Odunsu Notalar",
-      "Təravətli (Fresh)",
-      "Ən çox satılanlar"
-    ]
-  },
-  {
-    id: "men",
-    name: "Kişi Parfumları",
-    subcategories: [
-      "Odunsu Notalar",
-      "Təravətli (Fresh)",
-      "Şərq/Oriental Notalar",
-      "Meyvəli Notalar",
-      "Ən çox satılanlar"
-    ]
-  },
-  {
-    id: "unisex",
-    name: "Unisex Parfumları",
-    subcategories: [
-      "Çiçək Notaları",
-      "Odunsu Notalar",
-      "Təravətli (Fresh)",
-      "Meyvəli Notalar",
-      "Ən çox satılanlar"
-    ]
-  },
-  {
-    id: "mini",
-    name: "Mini & Travel Ölçülər",
-    subcategories: [
-      "Qadın Parfumları",
-      "Kişi Parfumları",
-      "Unisex Parfumları",
-      "Ən çox satılanlar"
-    ]
-  },
-  {
-    id: "luxury",
-    name: "Lüks Brendlər",
-    subcategories: [
-      "Qadın Lüks Parfumları",
-      "Kişi Lüks Parfumları",
-      "Unisex Lüks Parfumları",
-      "Ən çox satılanlar"
-    ]
-  },
-  {
-    id: "discounted",
-    name: "Endirimli Məhsullar",
-    subcategories: [
-      "Qadın Endirimli",
-      "Kişi Endirimli",
-      "Unisex Endirimli",
-      "Ən çox satılanlar"
-    ]
-  }
-]
-
-export function CatalogSheet() {
+export function CatalogSheet({ categories }: { categories: Category[] }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(categories[0])
@@ -214,13 +143,14 @@ export function CatalogSheet() {
                     
                     {/* Subcategories list */}
                     <div className="space-y-2">
-                      {selectedCategory.subcategories.map((subCategory, index) => (
-                        <div
+                      {selectedCategory.category.map((subCategory, index) => (
+                        <Link
                           key={index}
+                          href={`/products/${subCategory.slug}`}
                           className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                         >
-                          <span className="text-gray-700">{subCategory}</span>
-                        </div>
+                          <span className="text-gray-700">{subCategory.name}</span>
+                        </Link>
                       ))}
                     </div>
                   </>

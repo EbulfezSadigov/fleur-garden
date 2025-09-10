@@ -23,7 +23,6 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log("Form submitted:", formData)
-    // Handle form submission here
   }
 
   const handleInputChange = (field: string, value: string) => {

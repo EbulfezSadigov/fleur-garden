@@ -3,29 +3,22 @@ import ProductCard from "@/components/pages/home/product-card"
 import FilterSidebar from "@/components/pages/products/filter-sidebar"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { getTranslations } from "next-intl/server"
-
-interface Product {
-    id: number
-    name: string
-    brand: string
-    price: string
-    rating: number
-    inStock: boolean
-    image: string
-}
-
-const products: Product[] = Array.from({ length: 12 }).map((_, index) => ({
-    id: index + 1,
-    name: "YSL LIBRE",
-    brand: "Yves Saint Laurent",
-    price: "347 AZN",
-    rating: 4.5,
-    inStock: true,
-    image: "/images/product.jpg",
-}))
+import { getServerLocale } from "@/lib/utils"
+import { getServerQueryClient } from "@/providers/server"
+import { getBrandsQuery, getProductsQuery } from "@/services/products/queries"
 
 export default async function ProductsPage() {
     const t = await getTranslations("product_grid")
+    const locale = await getServerLocale();
+    const queryClient = getServerQueryClient();
+  
+    await Promise.all([queryClient.prefetchQuery(getProductsQuery(locale)), queryClient.prefetchQuery(getBrandsQuery())]);
+    const productsData = queryClient.getQueryData(getProductsQuery(locale).queryKey);
+    const products = productsData?.data;
+
+    const brandsData = queryClient.getQueryData(getBrandsQuery().queryKey);
+    const brands = brandsData?.data;
+
     return (
         <section className="w-full py-9">
             <Container>
@@ -53,13 +46,13 @@ export default async function ProductsPage() {
                 </Breadcrumb>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 items-start gap-6">
-                    <FilterSidebar />
+                    <FilterSidebar brands={brands || []} />
 
                     <div className="space-y-6 md:col-span-3">
                         <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground mb-2">Qadın parfümləri</h1>
-                        <p className="text-sm text-[#77777B] mb-6">72 {t("products_found")}</p>
+                        <p className="text-sm text-[#77777B] mb-6">{products?.length} {t("products_found")}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {products.map((product) => (
+                            {products?.map((product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                         </div>

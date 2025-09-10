@@ -20,6 +20,7 @@ interface CartItemData {
     price: number
     qty: number
     selected: boolean
+    image: string
 }
 
 interface LocalStorageCartItem {
@@ -51,7 +52,8 @@ function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): Ca
             ? parseFloat(item.product.price.replace(/[^\d.-]/g, '')) 
             : item.product.price,
         qty: item.qty,
-        selected: true
+        selected: true,
+        image: item.product.image || ""
     }))
 }
 
@@ -80,7 +82,7 @@ function CartItem({ item, onChange }: { item: CartItemData; onChange: (next: Car
                 <div className="flex items-center gap-4 md:gap-6 flex-1">
                     <div className="shrink-0">
                         <Image
-                            src="/images/product.jpg"
+                            src={item.image || ""}
                             alt={item.title}
                             width={88}
                             height={88}
@@ -197,7 +199,7 @@ function Cart() {
             <Breadcrumb className="mb-6 md:mb-8">
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="#">{t("home")}</BreadcrumbLink>
+                        <BreadcrumbLink href="/">{t("home")}</BreadcrumbLink>
                     </BreadcrumbItem>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <g clipPath="url(#clip0_355_8453)">
@@ -255,8 +257,8 @@ function Cart() {
                             <div className="text-lg md:text-xl font-semibold mb-3">{t("promo_code")}</div>
                             <p className="text-muted-foreground text-sm mb-3">{t("promo_code_description")}</p>
                             <div className="flex gap-2">
-                                <Input placeholder="FLEUR20" value={promo} onChange={(e) => setPromo(e.target.value)} />
-                                <Button variant="outline" onClick={applyPromo}>{t("apply")}</Button>
+                                <Input disabled={items.length === 0 || !total} placeholder="FLEUR20" value={promo} onChange={(e) => setPromo(e.target.value)} />
+                                <Button disabled={items.length === 0 || !total} variant="outline" onClick={applyPromo}>{t("apply")}</Button>
                             </div>
                             {promoMessage && (
                                 <div className={promoApplied ? 'text-emerald-600 text-sm mt-2' : 'text-red-500 text-sm mt-2'}>
@@ -283,8 +285,8 @@ function Cart() {
                             <span>{formatCurrency(total)}</span>
                         </div>
 
-                        <Link href="/cart/order">
-                            <Button className="w-full h-11">{t("complete_order")}</Button>
+                        <Link href={items.length === 0 ? "/cart" : "/cart/order"}>
+                            <Button disabled={items.length === 0 || !total} className="w-full h-11">{t("complete_order")}</Button>
                         </Link>
                     </div>
                 </div>

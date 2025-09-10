@@ -7,6 +7,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
+import { Brand } from "@/types"
 
 interface FilterSectionProps {
   title: string
@@ -34,9 +35,10 @@ function FilterSection({ title, children, defaultOpen = true }: FilterSectionPro
 
 export interface FilterSidebarProps {
   className?: string
+  brands: Brand[]
 }
 
-export function FilterSidebar({ className }: FilterSidebarProps) {
+export function FilterSidebar({ className, brands }: FilterSidebarProps) {
   const t = useTranslations("product_grid")
   return (
     <aside
@@ -67,18 +69,9 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
       <FilterSection title="Brend" defaultOpen>
         <Input placeholder="Axtarın" className="h-9" />
         <div className="max-h-40 overflow-auto pr-1 space-y-2 mt-2">
-          {[
-            "Dior",
-            "Chanel",
-            "Versace",
-            "YSL Libre",
-            "Dolce & Gabbana",
-            "Gucci",
-            "Tom Ford",
-            "Burberry",
-          ].map((brand) => (
-            <label key={brand} className="flex items-center gap-2 text-sm text-primary">
-              <Checkbox className="border-primary" /> {brand}
+          {brands.map((brand) => (
+            <label key={brand.id} className="flex items-center gap-2 text-sm text-primary">
+              <Checkbox className="border-primary" /> {brand.name}
             </label>
           ))}
         </div>

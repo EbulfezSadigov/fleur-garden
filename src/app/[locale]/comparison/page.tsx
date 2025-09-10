@@ -93,7 +93,7 @@ function ComparisonPage() {
                                             <div className="mx-auto h-28 w-20 relative">
                                                 <Image
                                                     src={x.product.image}
-                                                    alt={x.product.brand}
+                                                    alt={x.product.brand_name}
                                                     fill
                                                     sizes="80px"
                                                     className="object-contain"
@@ -107,7 +107,7 @@ function ComparisonPage() {
                                 <tr className="border-t border-[#E8EAED]">
                                     <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">{t("brand")}</td>
                                     {items.map((x) => (
-                                        <td key={`brand-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.brand}</td>
+                                        <td key={`brand-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.brand_name}</td>
                                     ))}
                                 </tr>
 
@@ -121,7 +121,7 @@ function ComparisonPage() {
                                 <tr className="border-t border-[#E8EAED]">
                                     <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">{t("price")}</td>
                                     {items.map((x) => (
-                                        <td key={`price-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.price}</td>
+                                        <td key={`price-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.price} AZN</td>
                                     ))}
                                 </tr>
 
@@ -129,7 +129,7 @@ function ComparisonPage() {
                                     <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">{t("stock_status")}</td>
                                     {items.map((x) => (
                                         <td key={`stock-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">
-                                            {x.product.inStock ? (
+                                            {x.product.stock > 0 ? (
                                                 <span className="inline-flex items-center gap-2 text-green-600">
                                                     <span className="text-lg" aria-hidden>✓</span>
                                                     <span>{t("in_stock")}</span>

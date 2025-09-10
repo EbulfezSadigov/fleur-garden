@@ -16,16 +16,7 @@ import { Link } from "@/i18n/navigation"
 import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTranslations } from "next-intl"
-
-interface Product {
-    id: number
-    name: string
-    brand: string
-    price: string
-    rating: number
-    inStock: boolean
-    image: string
-}
+import { Product } from "@/types"
 
 export default function FavoritesPage() {
     const [favorites, setFavorites] = React.useState<Product[]>([])
