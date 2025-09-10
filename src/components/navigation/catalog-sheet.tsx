@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, ChevronRight} from "lucide-react"
 import { useTranslations } from "next-intl"
+import { usePathname, useSearchParams } from "next/navigation"
 import { Category } from "@/types"
 import { Link } from "@/i18n/navigation"
 
@@ -13,6 +14,8 @@ export function CatalogSheet({ categories }: { categories: Category[] }) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(categories[0])
   const [closeTimeoutId, setCloseTimeoutId] = useState<NodeJS.Timeout | null>(null)
   const t = useTranslations("navigation")
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const handleCategoryClick = (category: Category) => {
     setSelectedCategory(category)
@@ -78,6 +81,12 @@ export function CatalogSheet({ categories }: { categories: Category[] }) {
       }
     }
   }, [closeTimeoutId])
+
+  useEffect(() => {
+    if (!isOpen) return
+    handleClose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, searchParams])
 
   return (
     <>
@@ -146,7 +155,8 @@ export function CatalogSheet({ categories }: { categories: Category[] }) {
                       {selectedCategory.category.map((subCategory, index) => (
                         <Link
                           key={index}
-                          href={`/products/${subCategory.slug}`}
+                          href={`/products?category_id=${subCategory.id}`}
+                          onClick={handleClose}
                           className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                         >
                           <span className="text-gray-700">{subCategory.name}</span>

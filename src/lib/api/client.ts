@@ -97,6 +97,7 @@ export const get = async <T>(url: string, config?: AxiosRequestConfig): Promise<
 
 export const post = async <T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> => {
   const response = await client.post<T>(url, data, config)
+  console.log(response)
   return response.data
 }
 

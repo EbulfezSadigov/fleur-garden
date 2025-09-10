@@ -20,18 +20,20 @@ export default async function Home() {
     queryClient.prefetchQuery(getBannersQuery(locale)),
     queryClient.prefetchQuery(getPartnersQuery(locale)),
     queryClient.prefetchQuery(getBlogsQuery(locale)),
-    queryClient.prefetchQuery(getProductsQuery(locale,2))
+    queryClient.prefetchQuery(getProductsQuery(locale))
   ]);
   const data = queryClient.getQueryData(getSlidersQuery().queryKey);
   const banners = queryClient.getQueryData(getBannersQuery(locale).queryKey);
   const partnersData = queryClient.getQueryData(getPartnersQuery(locale).queryKey);
   const blogPostsData = queryClient.getQueryData(getBlogsQuery(locale).queryKey);
-  const productsData = queryClient.getQueryData(getProductsQuery(locale,2).queryKey);
+  const productsData = queryClient.getQueryData(getProductsQuery(locale).queryKey);
   const sliders = data?.data;
   const banner = banners?.data;
   const partners = partnersData?.data;
   const blogPosts = blogPostsData?.data;
   const products = productsData?.data;
+
+  console.log(products)
   return (
     <div>
       <ProductCarousel sliders={sliders || []} />

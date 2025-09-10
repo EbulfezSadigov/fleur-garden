@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getBrands, getCategories, getProduct, getProductReviews, getProducts, getRelatedProducts, searchProducts } from "./api";
+import { filterProducts, getBrands, getCategories, getProduct, getProductReviews, getProducts, getRelatedProducts, searchProducts } from "./api";
+import { FilterProductsPayload } from "@/types";
 
 const getProductsQuery = (locale: string, number?: number) => {
     return queryOptions({
@@ -50,6 +51,13 @@ const getCategoriesQuery = () => {
     });
 };
 
+const filterProductsQuery = (data: FilterProductsPayload) => {
+    return queryOptions({
+        queryKey: ["filter-products", data],
+        queryFn: () => filterProducts(data),
+    });
+};
+
 export {
     getProductsQuery,
     getSearchProductsQuery,
@@ -58,4 +66,5 @@ export {
     getProductReviewsQuery,
     getBrandsQuery,
     getCategoriesQuery,
+    filterProductsQuery,
 };

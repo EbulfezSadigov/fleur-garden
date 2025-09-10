@@ -105,3 +105,11 @@ export interface Category {
         slug: string
     }[]
 }
+
+export interface FilterProductsPayload {
+    brand_id: number
+    category_id: number
+    min_price: number
+    max_price: number
+    stock: number
+}

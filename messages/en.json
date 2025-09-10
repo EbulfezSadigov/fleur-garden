@@ -23,11 +23,11 @@
     "cta": "Subscribe"
   },
   "product_grid": {
-    "title": "Best Sellers",
+    "title": "Latest Products",
     "all": "All",
-    "discount": "Discount",
+    "discount": "Discounted Products",
     "new": "New",
-    "on_sale": "On Sale",
+    "on_sale": "On Sale Products",
     "more": "More",
     "products_found": "products found",
     "home": "Home",

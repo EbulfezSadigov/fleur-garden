@@ -17,7 +17,6 @@ export default async function ProductGrid({ products }: { products: Product[] })
                         <span>{t("all")}</span>
                     </button>
                     <button className="text-gray-500 hover:text-primary transition-colors">{t("discount")}</button>
-                    <button className="text-gray-500 hover:text-primary transition-colors">{t("new")}</button>
                     <button className="text-gray-500 hover:text-primary transition-colors">{t("on_sale")}</button>
                 </nav>
             </div>

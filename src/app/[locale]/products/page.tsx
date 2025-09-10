@@ -5,19 +5,22 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbP
 import { getTranslations } from "next-intl/server"
 import { getServerLocale } from "@/lib/utils"
 import { getServerQueryClient } from "@/providers/server"
-import { getBrandsQuery, getProductsQuery } from "@/services/products/queries"
+import { getCategoriesQuery, getBrandsQuery, getProductsQuery } from "@/services/products/queries"
 
 export default async function ProductsPage() {
     const t = await getTranslations("product_grid")
     const locale = await getServerLocale();
     const queryClient = getServerQueryClient();
   
-    await Promise.all([queryClient.prefetchQuery(getProductsQuery(locale)), queryClient.prefetchQuery(getBrandsQuery())]);
+    await Promise.all([queryClient.prefetchQuery(getProductsQuery(locale)), queryClient.prefetchQuery(getBrandsQuery()), queryClient.prefetchQuery(getCategoriesQuery())]);
     const productsData = queryClient.getQueryData(getProductsQuery(locale).queryKey);
     const products = productsData?.data;
 
     const brandsData = queryClient.getQueryData(getBrandsQuery().queryKey);
     const brands = brandsData?.data;
+
+    const categoriesData = queryClient.getQueryData(getCategoriesQuery().queryKey);
+    const categories = categoriesData?.data;
 
     return (
         <section className="w-full py-9">
@@ -46,7 +49,7 @@ export default async function ProductsPage() {
                 </Breadcrumb>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 items-start gap-6">
-                    <FilterSidebar brands={brands || []} />
+                    <FilterSidebar brands={brands || []} categories={categories || []} />
 
                     <div className="space-y-6 md:col-span-3">
                         <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground mb-2">Qadın parfümləri</h1>
