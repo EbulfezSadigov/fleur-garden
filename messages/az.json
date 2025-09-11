@@ -39,7 +39,8 @@
     "type": "Qoxu tipi",
     "woman": "Qadın",
     "man": "Kişi",
-    "unisex": "Unisex"
+    "unisex": "Unisex",
+    "no_products": "Məhsul tapılmadı"
   },
   "product_card": {
     "add_to_cart": "Səbətə at",

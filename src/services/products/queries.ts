@@ -4,7 +4,7 @@ import { FilterProductsPayload } from "@/types";
 
 const getProductsQuery = (locale: string, number?: number) => {
     return queryOptions({
-        queryKey: ["products"],
+        queryKey: ["products", locale, number ?? "all"],
         queryFn: () => getProducts(locale, number),
     });
 };

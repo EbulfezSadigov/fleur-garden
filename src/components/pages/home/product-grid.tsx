@@ -1,39 +1,84 @@
+"use client"
+
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useTranslations } from "next-intl"
 import Container from "@/components/shared/container"
 import ProductCard from "./product-card"
 import { Link } from "@/i18n/navigation"
-import { getTranslations } from "next-intl/server"
 import { Product } from "@/types"
+import { getProductsQuery } from "@/services/products/queries"
 
-export default async function ProductGrid({ products }: { products: Product[] }) {
-    const t = await getTranslations("product_grid")
+interface ProductGridProps {
+    locale: string
+    products: Product[]
+}
+
+export default function ProductGrid({ locale, products }: ProductGridProps) {
+    const t = useTranslations("product_grid")
+    const [selectedNumber, setSelectedNumber] = useState<number | undefined>(undefined)
+
+    const { data, isLoading, isError } = useQuery(getProductsQuery(locale, selectedNumber))
+
+    const resultProducts = data?.data ?? products
+
+    const heading = selectedNumber === undefined ? t("title") : selectedNumber === 2 ? t("discount") : t("on_sale")
+
     return (
         <Container className="py-[72px]">
             {/* Header */}
             <div className="flex flex-col md:flex-row items-center justify-between mb-8">
-                <h1 className="text-4xl font-medium text-primary">{t("title")}</h1>
+                <h1 className="text-4xl font-medium text-primary">{heading}</h1>
                 <nav className="flex items-center gap-6">
-                    <button className="text-primary font-medium relative flex items-center gap-2">
-                        <div className="w-2 h-2 bg-primary rounded-full" />
-                        <span>{t("all")}</span>
+                    <button
+                        className={`relative flex items-center gap-2 font-medium ${selectedNumber === undefined ? "text-primary" : "text-gray-500 hover:text-primary transition-colors"}`}
+                        onClick={() => setSelectedNumber(undefined)}
+                    >
+                        {selectedNumber === undefined ? <div className={`w-2 h-2 rounded-full bg-primary`} /> : null}
+                        <span>{t("title")}</span>
                     </button>
-                    <button className="text-gray-500 hover:text-primary transition-colors">{t("discount")}</button>
-                    <button className="text-gray-500 hover:text-primary transition-colors">{t("on_sale")}</button>
+                    <button
+                        className={`${selectedNumber === 2 ? "text-primary" : "text-gray-500 hover:text-primary transition-colors"} flex items-center gap-2`}
+                        onClick={() => setSelectedNumber(2)}
+                    >
+                        {selectedNumber === 2 ? <div className={`w-2 h-2 rounded-full bg-primary`} /> : null}
+                        {t("discount")}
+                    </button>
+                    <button
+                        className={`flex items-center gap-2 ${selectedNumber === 3 ? "text-primary" : "text-gray-500 hover:text-primary transition-colors"}`}
+                        onClick={() => setSelectedNumber(3)}
+                    >
+                        {selectedNumber === 3 ? <div className={`w-2 h-2 rounded-full bg-primary`} /> : null}
+                        {t("on_sale")}
+                    </button>
                 </nav>
             </div>
 
+            {/* States */}
+            {isError ? (
+                <div className="text-sm text-red-500 mb-4">{t("error")}</div>
+            ) : null}
+
             {/* Product Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-                {products.map((product) => (
+                {resultProducts.length > 0 ? (isLoading && !data ? products : resultProducts).map((product) => (
                     <ProductCard key={product.id} product={product} />
-                ))}
+                )
+                ) : (
+                    <div className="text-gray-500 bg-gray-100 rounded-md p-4 w-full col-span-4 text-center text-2xl font-medium">
+                        {t("no_products")}
+                    </div>
+                )}
             </div>
 
             {/* Load More Button */}
-            <div className="flex justify-center">
-                <Link href="/products" className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
-                    {t("more")}
-                </Link>
-            </div>
+            {resultProducts.length > 0 && (
+                <div className="flex justify-center">
+                    <Link href="/products" className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
+                        {t("more")}
+                    </Link>
+                </div>
+            )}
         </Container>
     )
 }

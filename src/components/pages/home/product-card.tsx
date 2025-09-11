@@ -150,7 +150,7 @@ function ProductCard({ product }: ProductCardProps) {
                 </Button>
             </div>
             {/* Product Image */}
-            <div className="aspect-[3/4] mb-4 rounded-lg overflow-hidden">
+            <div className="aspect-[2/2] mb-4 rounded-lg overflow-hidden">
                 <Image
                     width={100}
                     height={100}
@@ -177,7 +177,10 @@ function ProductCard({ product }: ProductCardProps) {
                 <div className="h-[1px] bg-[#F2F4F8] w-full" />
 
                 <div className="flex items-center justify-between pt-2">
-                    <span className="text-lg font-semibold text-primary">{product.price} AZN</span>
+                    <div className='flex items-center gap-2'>
+                        <span className={`font-semibold text-primary ${product.discount ? 'text-[#77777B]' : 'text-primary'}`}>{product.discount ? product.discount : product.price} AZN</span>
+                        {product.discount && <span className={`line-through ${product.discount ? 'text-[#77777B] text-sm' : 'text-primary text-lg font-semibold'}`}>{product.price} AZN</span>}
+                    </div>
                     <button onClick={handleAddToCart} className="bg-primary text-white px-4 py-2 rounded-md text-xs font-medium hover:bg-gray-800 transition-colors flex items-center gap-2">
                         {t("add_to_cart")}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

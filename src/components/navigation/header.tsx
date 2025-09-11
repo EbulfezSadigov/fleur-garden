@@ -8,25 +8,33 @@ import { CatalogSheet } from "./catalog-sheet"
 import { MobileMenu } from "./mobile-menu"
 import Container from "../shared/container"
 import FavComp from "./favcomp"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 import { getServerQueryClient } from "@/providers/server"
 import { getUserQuery } from "@/services/auth/queries"
 import { cookies } from "next/headers"
 import { User } from "@/types"
-import { getCategoriesQuery } from "@/services/products/queries"
+import { getCategoriesQuery, getProductsQuery } from "@/services/products/queries"
 import { SearchBox } from "./SearchBox"
 
 export async function Header() {
   const t = await getTranslations("navigation")
+  const locale = await getLocale()
   const token = (await cookies()).get("access_token")?.value as string;
   const queryClient = getServerQueryClient();
 
-  await Promise.all([queryClient.prefetchQuery(getUserQuery(token)), queryClient.prefetchQuery(getCategoriesQuery())]);
+  await Promise.all([
+    queryClient.prefetchQuery(getUserQuery(token)),
+    queryClient.prefetchQuery(getCategoriesQuery()),
+    queryClient.prefetchQuery(getProductsQuery(locale)),
+  ]);
   const userData = queryClient.getQueryData(getUserQuery(token).queryKey);
   const user = userData?.data;
   
   const categoriesData = queryClient.getQueryData(getCategoriesQuery().queryKey);
   const categories = categoriesData?.data;
+  const latestProductsData = queryClient.getQueryData(getProductsQuery(locale).queryKey);
+  const latestProducts = latestProductsData?.data;
+  
   return (
     <div>
       <header className="w-full bg-white border-b fixed z-50 top-0 left-0 right-0">
@@ -66,7 +74,8 @@ export async function Header() {
             </div>
 
             <div className="hidden md:flex flex-1 max-w-[500px] mx-8">
-              <SearchBox />
+              <SearchBox latestProducts={latestProducts}
+              />
             </div>
 
             <div className="flex items-center space-x-2 md:space-x-4">

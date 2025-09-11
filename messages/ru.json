@@ -39,7 +39,8 @@
     "type": "Тип",
     "woman": "Женский",
     "man": "Мужской",
-    "unisex": "Унисекс"
+    "unisex": "Унисекс",
+    "no_products": "Товаров не найдено"
   },
   "product_card": {
     "add_to_cart": "В корзину",

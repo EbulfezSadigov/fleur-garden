@@ -49,7 +49,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { sea
                     {search && (
                         <p className="text-sm text-[#77777B] mb-6">{products?.length ?? 0} nəticə</p>
                     )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {products?.map((product: Product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}

@@ -17,12 +17,18 @@ import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTranslations } from "next-intl"
 import { Product } from "@/types"
+import { useQuery } from "@tanstack/react-query"
+import { getBrandsQuery, getCategoriesQuery } from "@/services/products/queries"
 
 export default function FavoritesPage() {
     const [favorites, setFavorites] = React.useState<Product[]>([])
     const [isLoading, setIsLoading] = React.useState(true)
 
     const t = useTranslations("favorites")
+
+    const categories = useQuery(getCategoriesQuery()) 
+    const brands = useQuery(getBrandsQuery())
+    
 
     // Load favorites from localStorage
     React.useEffect(() => {
@@ -84,10 +90,9 @@ export default function FavoritesPage() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">{t("all_categories")}</SelectItem>
-                                    <SelectItem value="perfume">{t("perfume")}</SelectItem>
-                                    <SelectItem value="cosmetics">{t("cosmetics")}</SelectItem>
-                                    <SelectItem value="skincare">{t("skin_care")}</SelectItem>
-                                    <SelectItem value="haircare">{t("hair_care")}</SelectItem>
+                                    {categories.data?.data.map((category) => (
+                                        <SelectItem key={category.id} value={category.slug}>{category.name}</SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
 
@@ -97,11 +102,9 @@ export default function FavoritesPage() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">{t("all_brands")}</SelectItem>
-                                    <SelectItem value="ysl">Yves Saint Laurent</SelectItem>
-                                    <SelectItem value="chanel">Chanel</SelectItem>
-                                    <SelectItem value="dior">Dior</SelectItem>
-                                    <SelectItem value="gucci">Gucci</SelectItem>
-                                    <SelectItem value="tom-ford">Tom Ford</SelectItem>
+                                    {brands.data?.data.map((brand) => (
+                                        <SelectItem key={brand.id} value={brand.slug}>{brand.name}</SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
 
