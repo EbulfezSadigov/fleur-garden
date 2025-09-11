@@ -6,7 +6,7 @@ import RelatedProducts from "@/components/pages/products/related-products"
 import { getTranslations } from "next-intl/server"
 import { getServerLocale } from "@/lib/utils"
 import { getServerQueryClient } from "@/providers/server"
-import { getProductQuery, getRelatedProductsQuery } from "@/services/products/queries"
+import { getProductQuery, getProductReviewsQuery, getRelatedProductsQuery } from "@/services/products/queries"
 import ProductContainer from "@/components/pages/products/product-container"
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -17,8 +17,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   // Prefetch product first to obtain category_slug
   await queryClient.prefetchQuery(getProductQuery(locale, slug));
+  await queryClient.prefetchQuery(getProductReviewsQuery(locale, slug));
   const productData = queryClient.getQueryData(getProductQuery(locale, slug).queryKey);
+  const productReviewsData = queryClient.getQueryData(getProductReviewsQuery(locale, slug).queryKey);
   const product = productData?.data;
+  const productReviews = productReviewsData?.data;
 
   const categorySlug = product?.category_slug;
   if (categorySlug) {
@@ -44,7 +47,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <ProductContainer product={product!} />
 
           {/* Product Information Tabs */}
-          <ProductInfoTabs product={product!} />
+          <ProductInfoTabs product={product!} reviews={productReviews || []} />
 
           {/* Related Products */}
           {relatedProducts ? <RelatedProducts products={relatedProducts.slice(0, 4)} /> : null}

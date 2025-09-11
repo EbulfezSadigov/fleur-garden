@@ -21,7 +21,7 @@ export default async function PartnersPage() {
         {/* Header Section */}
         <div className="mb-16">
           <h1 className="text-[32px] font-semibold text-gray-900 mb-8">{t("partners")}</h1>
-          <p className="text-gray-600 leading-relaxed text-base">
+          <p className="text-[#77777B] leading-relaxed text-base">
             Biz uzun illerdir etir sanayesində etibar və keyfiyyət prinsipləri ilə fəaliyyət göstəririk. Tarafdaşlarımız
             seçilən brendlərdən ibarət olub, hər biri öz sahəsində peşəkarlığı və yenilikçiliyi ilə tanınır. Birlikdə
             çalışdığımız markalar bizə güvənərək məhsullarımızın geniş kütləyə çatmasına dəstək olurlar. Onların dəstəyi

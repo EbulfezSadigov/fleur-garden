@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
@@ -11,6 +11,7 @@ import { Brand, Category, FilterProductsPayload, Product } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { filterProductsQuery } from "@/services/products/queries"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useCallback } from "react"
 
 interface FilterSectionProps {
   title: string
@@ -49,56 +50,109 @@ export function FilterSidebar({ className, brands, categories, onFiltered }: Fil
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [brandId, setBrandId] = useState<number | null>(0)
-  const [categoryId, setCategoryId] = useState<number | null>(0)
+  
+  const [brandId, setBrandId] = useState<number>(0)
+  const [categoryId, setCategoryId] = useState<number>(0)
   const [minPrice, setMinPrice] = useState<number>(0)
   const [maxPrice, setMaxPrice] = useState<number>(5600)
+  const [typeId, setTypeId] = useState<number>(0)
+  const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
-  // initialize state from URL on mount and when searchParams change externally
+  // Sync state from URL on mount and whenever URL params change, without racing local updates
+  const prevUrlKeyRef = useRef<string | null>(null)
   useEffect(() => {
     const spBrand = Number(searchParams.get("brand_id") || 0)
     const spCategory = Number(searchParams.get("category_id") || 0)
     const spMin = Number(searchParams.get("min_price") || 0)
     const spMax = Number(searchParams.get("max_price") || 5600)
-    setBrandId(Number.isNaN(spBrand) ? 0 : spBrand)
-    setCategoryId(Number.isNaN(spCategory) ? 0 : spCategory)
-    setMinPrice(Number.isNaN(spMin) ? 0 : spMin)
-    setMaxPrice(Number.isNaN(spMax) ? 5600 : spMax)
-  }, [searchParams])
+    const spType = Number(searchParams.get("type") || 0)
+
+    const nextBrand = Number.isNaN(spBrand) ? 0 : spBrand
+    const nextCategory = Number.isNaN(spCategory) ? 0 : spCategory
+    const nextMin = Number.isNaN(spMin) ? 0 : spMin
+    const nextMax = Number.isNaN(spMax) ? 5600 : spMax
+    const nextType = Number.isNaN(spType) ? 0 : spType
+
+    const nextKey = `${nextBrand}|${nextCategory}|${nextMin}|${nextMax}|${nextType}`
+
+    if (!isInitialized) {
+      setBrandId(nextBrand)
+      setCategoryId(nextCategory)
+      setMinPrice(nextMin)
+      setMaxPrice(nextMax)
+      setTypeId(nextType)
+      prevUrlKeyRef.current = nextKey
+      setIsInitialized(true)
+      return
+    }
+
+    if (prevUrlKeyRef.current !== nextKey) {
+      setBrandId(nextBrand)
+      setCategoryId(nextCategory)
+      setMinPrice(nextMin)
+      setMaxPrice(nextMax)
+      setTypeId(nextType)
+      prevUrlKeyRef.current = nextKey
+    }
+  }, [searchParams, isInitialized])
+
+  // Update URL when filters change (but not on initialization)
+  const updateURL = useCallback((
+    newBrandId: number,
+    newCategoryId: number,
+    newMinPrice: number,
+    newMaxPrice: number,
+    newTypeId: number
+  ) => {
+    if (!isInitialized) return
+
+    const params = new URLSearchParams()
+    
+    if (newBrandId > 0) params.set("brand_id", String(newBrandId))
+    if (newCategoryId > 0) params.set("category_id", String(newCategoryId))
+    if (newMinPrice > 0) params.set("min_price", String(newMinPrice))
+    if (newMaxPrice < 5600) params.set("max_price", String(newMaxPrice))
+    if (newTypeId > 0) params.set("type", String(newTypeId))
+    
+    const queryString = params.toString()
+    const newUrl = queryString ? `${pathname}?${queryString}` : pathname
+    
+    router.replace(newUrl, { scroll: false })
+  }, [pathname, router, isInitialized])
+
+  // Update URL when filter values change
+  useEffect(() => {
+    updateURL(brandId, categoryId, minPrice, maxPrice, typeId)
+  }, [brandId, categoryId, minPrice, maxPrice, typeId, updateURL])
 
   const filters: FilterProductsPayload = useMemo(() => ({
-    brand_id: brandId ?? 0,
-    category_id: categoryId ?? 0,
+    brand_id: brandId,
+    category_id: categoryId,
     min_price: minPrice,
     max_price: maxPrice,
     stock: 0,
-  }), [brandId, categoryId, minPrice, maxPrice])
+    type: typeId,
+  }), [brandId, categoryId, minPrice, maxPrice, typeId])
+
+  const isAnyFilterActive = useMemo(() => {
+    return brandId > 0 || categoryId > 0 || minPrice > 0 || maxPrice < 5600 || typeId > 0
+  }, [brandId, categoryId, minPrice, maxPrice, typeId])
 
   const { data, isFetching } = useQuery({
     ...filterProductsQuery(filters),
-    enabled: true,
+    enabled: isAnyFilterActive && isInitialized,
   })
 
   useEffect(() => {
+    if (!isInitialized) return
+    
+    if (!isAnyFilterActive) {
+      onFiltered?.([])
+      return
+    }
     const products = data?.data ?? []
-    if (products) onFiltered?.(products)
-  }, [data, onFiltered])
-
-  // push current filters into the URL query string
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (brandId && brandId > 0) params.set("brand_id", String(brandId))
-    else params.delete("brand_id")
-    if (categoryId && categoryId > 0) params.set("category_id", String(categoryId))
-    else params.delete("category_id")
-    if (minPrice && minPrice > 0) params.set("min_price", String(minPrice))
-    else params.delete("min_price")
-    if (maxPrice && maxPrice < 5600) params.set("max_price", String(maxPrice))
-    else params.delete("max_price")
-    const qs = params.toString()
-    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
-  }, [brandId, categoryId, minPrice, maxPrice, pathname, router, searchParams])
-
+    onFiltered?.(products)
+  }, [data, isAnyFilterActive, onFiltered, isInitialized])
 
   return (
     <aside
@@ -143,13 +197,28 @@ export function FilterSidebar({ className, brands, categories, onFiltered }: Fil
 
       <FilterSection title={t("product")} defaultOpen>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox className="border-primary" /> {t("discounted_products")}
+          <Checkbox
+            className="border-primary"
+            checked={typeId === 1}
+            onCheckedChange={() => setTypeId(typeId === 1 ? 0 : 1)}
+          />
+          {t("title")}
         </label>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox className="border-primary" /> {t("new_products")}
+          <Checkbox
+            className="border-primary"
+            checked={typeId === 2}
+            onCheckedChange={() => setTypeId(typeId === 2 ? 0 : 2)}
+          />
+          {t("discount")}
         </label>
         <label className="flex items-center gap-2 text-sm text-primary">
-          <Checkbox className="border-primary" /> {t("best_sellers")}
+          <Checkbox
+            className="border-primary"
+            checked={typeId === 3}
+            onCheckedChange={() => setTypeId(typeId === 3 ? 0 : 3)}
+          />
+          {t("on_sale")}
         </label>
       </FilterSection>
 
@@ -237,6 +306,12 @@ function PriceRangeSlider({
   currency = "AZN",
 }: PriceRangeSliderProps) {
   const [value, setValue] = useState<[number, number]>(defaultValue);
+
+  useEffect(() => {
+    if (defaultValue && (defaultValue[0] !== value[0] || defaultValue[1] !== value[1])) {
+      setValue([defaultValue[0], defaultValue[1]])
+    }
+  }, [defaultValue, value])
 
   const handleValueChange = (newValue: number[]) => {
     const rangeValue: [number, number] = [newValue[0], newValue[1]];

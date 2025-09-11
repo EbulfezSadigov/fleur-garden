@@ -1,5 +1,5 @@
 import { get, post } from "@/lib/api";
-import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review } from "@/types";
+import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review, CreateReviewPayload } from "@/types";
 
 const getProducts = async (locale: string, number?: number) => {
   const endpoint = number ? `products/${number}` : "products";
@@ -30,7 +30,7 @@ const getProductReviews = async (locale: string, slug: string) => {
   return reviews;
 };
 
-const addComment = async (data: Review) => {
+const addComment = async (data: CreateReviewPayload) => {
   const response = await post<ApiResponse<Review>>(`comment`, {
     data,
   });
@@ -56,17 +56,20 @@ const searchProducts = async (search: string) => {
 
 const filterProducts = async (data: FilterProductsPayload) => {
   const formData = new FormData();
-  formData.append("brand_id", String(data.brand_id));
-  formData.append("category_id", String(data.category_id));
-  formData.append("min_price", String(data.min_price));
-  formData.append("max_price", String(data.max_price));
-  formData.append("stock", String(data.stock));
+  
+  // Only append non-zero values to reduce payload
+  if (data.brand_id > 0) formData.append("brand_id", String(data.brand_id));
+  if (data.category_id > 0) formData.append("category_id", String(data.category_id));
+  if (data.min_price > 0) formData.append("min_price", String(data.min_price));
+  if (data.max_price < 5600) formData.append("max_price", String(data.max_price));
+  if (data.stock > 0) formData.append("stock", String(data.stock));
+  if (data.type > 0) formData.append("type", String(data.type));
 
   const products = await post<ApiResponse<Product[]>>(`filter`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return products;
-};  
+};
 
 export {
   getProducts,

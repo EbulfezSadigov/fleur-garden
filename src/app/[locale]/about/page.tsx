@@ -43,7 +43,7 @@ export default async function AboutPage() {
               <Image src={advantage.image || ""} alt={advantage.title} width={32} height={36} />
             </div>
             <h3 className="text-2xl font-semibold text-foreground">{advantage.title}</h3>
-            <p className="text-muted-foreground">
+            <p className="text-[#77777B]">
               {advantage.description}
             </p>
           </div>

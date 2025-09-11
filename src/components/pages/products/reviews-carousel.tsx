@@ -11,62 +11,9 @@ import {
 import Container from "@/components/shared/container";
 import Autoplay from "embla-carousel-autoplay";
 import { Star } from "lucide-react";
-import Image from "next/image";
+import { Review } from "@/types";
 
-interface Review {
-    name: string;
-    date: string;
-    comment: string;
-    rating: number;
-    image: string;
-}
-
-const reviews: Review[] = [
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 4,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 5,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 3,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 4,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 3,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 4,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-];
-
-export function ReviewsCarousel() {
+export function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
     return (
         <div className="px-4 md:px-0 pb-[72px]">
             <Carousel
@@ -79,7 +26,7 @@ export function ReviewsCarousel() {
                 className="mt-4">
                 <Container className="md:!px-0">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-medium">12 Rəy</h2>
+                        <h2 className="text-2xl font-medium">{reviews.length} Rəy</h2>
                         <div className="flex items-center space-x-2">
                             <CarouselPrevious className="border w-12 h-12 rounded-full p-1 static translate-y-0" />
                             <CarouselNext className="border w-12 h-12 rounded-full p-1 static translate-y-0" />
@@ -87,29 +34,22 @@ export function ReviewsCarousel() {
                     </div>
                 </Container>
                 <CarouselContent>
-                    {reviews.map((review, index) => (
+                    {reviews.length > 0 ? reviews.map((review, index) => (
                         <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                             <ReviewCard review={review} />
                         </CarouselItem>
-                    ))}
+                    )) : <CarouselItem className="basis-full">
+                        <div className="flex items-center justify-center h-full">
+                            <p className="text-muted-foreground">No reviews found</p>
+                        </div>
+                    </CarouselItem>}
                 </CarouselContent>
             </Carousel>
         </div>
     );
 }
 
-
-interface ReviewCardProps {
-    review: {
-        name: string;
-        date: string;
-        comment: string;
-        rating: number;
-        image: string;
-    };
-}
-
-function ReviewCard({ review }: ReviewCardProps) {
+function ReviewCard({ review }: { review: Review }) {
     const renderStars = (rating: number) => {
         const stars = [];
         for (let i = 0; i < 5; i++) {
@@ -127,17 +67,14 @@ function ReviewCard({ review }: ReviewCardProps) {
     return (
         <div className="bg-card rounded-[12px] p-4 border border-[#F2F4F8] mt-12">
             <div className="flex space-x-4">
-                <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                <p className="w-10 h-10 bg-black rounded-full flex text-white items-center justify-center" >{review.user_id.name.charAt(0)}</p>
                 <div>
-                    <h4 className="font-semibold text-foreground">{review.name}</h4>
+                    <h4 className="font-semibold text-foreground">{review.user_id.name} {review.user_id.surname}</h4>
                     <p className="text-xs text-muted-foreground">{review.date}</p>
                 </div>
-                <div className="ml-auto flex items-center gap-1">{renderStars(review.rating)}</div>
+                <div className="ml-auto flex items-center gap-1">{renderStars(review.star)}</div>
             </div>
-            <div className="bg-[#F2F4F8] w-fit py-3 px-3 rounded-[8px] my-4">
-                <Image src="/images/product.jpg" alt={review.name} width={110} height={110} className="w-10 h-10 rounded-full" />
-            </div>
-            <p className="text-sm mt-2 text-muted-foreground">{review.comment}</p>
+            <p className="text-sm mt-2 text-muted-foreground">{review.description}</p>
         </div>
     );
 }

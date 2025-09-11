@@ -25,7 +25,7 @@ export async function BlogSection({ blogPosts }: { blogPosts: Blog[] }) {
                 {/* Blog Posts Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {blogPosts.map((post) => (
-                        <div key={post.slug} className="overflow-hidden border border-[#F2F4F8] p-4 rounded-[12px] shadow-none bg-transparent">
+                        <Link href={`/blogs/${post.slug}`} key={post.slug} className="overflow-hidden border border-[#F2F4F8] p-4 rounded-[12px] shadow-none bg-transparent">
                             <div className="space-y-4">
                                 {/* Image */}
                                 <div className="aspect-[4/3] overflow-hidden rounded-[12px]">
@@ -45,7 +45,7 @@ export async function BlogSection({ blogPosts }: { blogPosts: Blog[] }) {
                                     <p dangerouslySetInnerHTML={{ __html: post.description }} className="text-sm text-[#77777B] leading-relaxed line-clamp-3" />
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </Container>

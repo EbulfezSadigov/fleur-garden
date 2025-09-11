@@ -82,11 +82,22 @@ export interface UpdateUserPayload {
 
 export interface Review {
     id: number
-    name: string
+    user_id: {
+        name: string
+        surname: string
+    }
     date: string
-    comment: string
-    rating: number
+    description: string
+    star: number
     image: string
+    product_id: number
+}
+
+// Payload for creating a new review
+export interface CreateReviewPayload {
+    product_id: number
+    star: number
+    description: string
 }
 
 export interface Brand {
@@ -112,4 +123,5 @@ export interface FilterProductsPayload {
     min_price: number
     max_price: number
     stock: number
+    type: number
 }

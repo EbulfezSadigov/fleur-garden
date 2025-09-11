@@ -61,7 +61,7 @@ export async function Header() {
           <div className="flex items-center justify-between h-[84px]">
             <div className="flex items-center gap-2 md:gap-8">
               <div className="md:hidden">
-                <MobileMenu user={user as User} />
+                <MobileMenu user={user as User} categories={categories || []} />
               </div>
 
               <Link href="/" className="flex items-center">

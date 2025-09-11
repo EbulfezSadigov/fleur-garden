@@ -12,9 +12,9 @@ import { useSearchParams } from "next/navigation"
 import { routing } from "@/i18n/routing"
 import { Link } from "@/i18n/navigation"
 import UserPopover from "../shared/user-popover"
-import { User } from "@/types"
+import { Category, User } from "@/types"
 
-export function MobileMenu({ user }: { user: User }) {
+export function MobileMenu({ user, categories }: { user: User, categories: Category[] }) {
   const t = useTranslations("navigation")
   const router = useRouter()
   const pathname = usePathname()
@@ -24,81 +24,6 @@ export function MobileMenu({ user }: { user: User }) {
   // State for managing subcategory view
   const [currentView, setCurrentView] = useState<'main' | 'subcategory'>('main')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-
-  const catalogItems = [
-    { 
-      label: "Qadın Parfumları", 
-      href: "#",
-      subcategories: [
-        "Təravətli (Fresh)",
-        "Çiçəkli (Floral)",
-        "Meyvəli (Fruity)",
-        "Ağaclı (Woody)",
-        "Orient (Oriental)",
-        "Müasir (Modern)"
-      ]
-    },
-    { 
-      label: "Kişi Parfumları", 
-      href: "#",
-      subcategories: [
-        "Təravətli (Fresh)",
-        "Ağaclı (Woody)",
-        "Orient (Oriental)",
-        "Spors (Sport)",
-        "Klassik (Classic)",
-        "Müasir (Modern)"
-      ]
-    },
-    { 
-      label: "Unisex Parfumları", 
-      href: "#",
-      subcategories: [
-        "Təravətli (Fresh)",
-        "Çiçəkli (Floral)",
-        "Ağaclı (Woody)",
-        "Orient (Oriental)",
-        "Meyvəli (Fruity)",
-        "Müasir (Modern)"
-      ]
-    },
-    { 
-      label: "Mini & Travel Ölçülər", 
-      href: "#",
-      subcategories: [
-        "Qadın Mini",
-        "Kişi Mini",
-        "Unisex Mini",
-        "Travel Set",
-        "Sample Set",
-        "Gift Set"
-      ]
-    },
-    { 
-      label: "Lüks Brendlər", 
-      href: "#",
-      subcategories: [
-        "Chanel",
-        "Dior",
-        "Tom Ford",
-        "Yves Saint Laurent",
-        "Giorgio Armani",
-        "Versace"
-      ]
-    },
-    { 
-      label: "Endirimli Məhsullar", 
-      href: "#",
-      subcategories: [
-        "50% Endirim",
-        "30% Endirim",
-        "20% Endirim",
-        "Kombo Təkliflər",
-        "Sezonlu Endirimlər",
-        "Son Günlər"
-      ]
-    },
-  ]
 
   const locales = routing.locales
 
@@ -117,10 +42,10 @@ export function MobileMenu({ user }: { user: User }) {
     setSelectedCategory(null)
   }
 
-  function handleSubcategoryClick(subcategory: string) {
-    // Handle subcategory navigation here
-    console.log(`Selected subcategory: ${subcategory} from ${selectedCategory}`)
-    // You can add navigation logic here
+  function handleSubcategoryClick(id: number) {
+    router.push({ pathname: "/products", query: { category_id: String(id) } }, { locale: activeLocale })
+    setCurrentView('subcategory')
+    setIsOpen(false)
   }
 
   return (
@@ -203,13 +128,13 @@ export function MobileMenu({ user }: { user: User }) {
               <>
                 <h3 className="text-lg font-semibold mb-4">Kataloq</h3>
                 <div className="space-y-3">
-                  {catalogItems.map((item, index) => (
+                  {categories.map((item, index) => (
                     <button 
                       key={index}
-                      onClick={() => handleCategoryClick(item.label)}
+                      onClick={() => handleCategoryClick(item.name)}
                       className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                     >
-                      <span className="font-medium">{item.label}</span>
+                      <span className="font-medium">{item.name}</span>
                       <ChevronRight className="w-5 h-5 text-gray-400" />
                     </button>
                   ))}
@@ -232,13 +157,13 @@ export function MobileMenu({ user }: { user: User }) {
                 
                 {/* Subcategory List */}
                 <div className="space-y-2">
-                  {selectedCategory && catalogItems.find(item => item.label === selectedCategory)?.subcategories.map((subcategory, index) => (
+                    {selectedCategory && categories.find(item => item.name === selectedCategory)?.category.map((subcategory, index) => (
                     <button
                       key={index}
-                      onClick={() => handleSubcategoryClick(subcategory)}
+                      onClick={() => handleSubcategoryClick(subcategory.id)}
                       className="w-full text-left p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <span className="text-gray-700">{subcategory}</span>
+                      <span className="text-gray-700">{subcategory.name}</span>
                     </button>
                   ))}
                 </div>

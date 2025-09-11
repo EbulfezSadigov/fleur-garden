@@ -1,20 +1,18 @@
 import Container from "@/components/shared/container"
-import ProductCard from "@/components/pages/home/product-card"
-import FilterSidebar from "@/components/pages/products/filter-sidebar"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { getTranslations } from "next-intl/server"
-import { getServerLocale } from "@/lib/utils"
 import { getServerQueryClient } from "@/providers/server"
-import { getCategoriesQuery, getBrandsQuery, getProductsQuery } from "@/services/products/queries"
+import { getCategoriesQuery, getBrandsQuery } from "@/services/products/queries"
+import ProductsClient from "../../../components/pages/products/products-client"
 
 export default async function ProductsPage() {
     const t = await getTranslations("product_grid")
-    const locale = await getServerLocale();
     const queryClient = getServerQueryClient();
-  
-    await Promise.all([queryClient.prefetchQuery(getProductsQuery(locale)), queryClient.prefetchQuery(getBrandsQuery()), queryClient.prefetchQuery(getCategoriesQuery())]);
-    const productsData = queryClient.getQueryData(getProductsQuery(locale).queryKey);
-    const products = productsData?.data;
+
+    await Promise.all([
+        queryClient.prefetchQuery(getBrandsQuery()),
+        queryClient.prefetchQuery(getCategoriesQuery()),
+    ]);
 
     const brandsData = queryClient.getQueryData(getBrandsQuery().queryKey);
     const brands = brandsData?.data;
@@ -43,30 +41,12 @@ export default async function ProductsPage() {
                             </defs>
                         </svg>
                         <BreadcrumbItem>
-                            <BreadcrumbPage className="text-foreground font-medium">Qadın parfümləri</BreadcrumbPage>
+                            <BreadcrumbPage className="text-foreground font-medium">{t("products")}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 items-start gap-6">
-                    <FilterSidebar brands={brands || []} categories={categories || []} />
-
-                    <div className="space-y-6 md:col-span-3">
-                        <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground mb-2">Qadın parfümləri</h1>
-                        <p className="text-sm text-[#77777B] mb-6">{products?.length} {t("products_found")}</p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {products?.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
-
-                        <div className="flex justify-center pt-2">
-                            <button className="px-8 py-2 border border-black rounded-md text-primary text-sm bg-transparent">
-                                {t("more")}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <ProductsClient brands={brands || []} categories={categories || []} />
             </Container>
         </section>
     )

@@ -31,6 +31,7 @@
     "more": "Daha çox",
     "products_found": "məhsul tapıldı",
     "home": "Ana Səhifə",
+    "products": "Məhsullar",
     "price": "Qiymət",
     "product": "Məhsul",
     "discounted_products": "Endirimli məhsullar",
@@ -136,7 +137,8 @@
     "share_your_thoughts": "Fikirlərinizi bizimlə paylaş",
     "order_conditions_and_delivery_information": "Sifariş şərtləri və çatdırılma məlumatları burada göstəriləcək.",
     "our_selection_for_you": "Sizin üçün seçdiklərimiz",
-    "more": "Daha çox"
+    "more": "Daha çox",
+    "share": "Paylaş"
   },
   "favorites": {
     "favorites": "Sevimli məhsullar",

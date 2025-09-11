@@ -31,6 +31,7 @@
     "more": "Больше",
     "products_found": "товаров найдено",
     "home": "Главная",
+    "products": "Продукты",
     "price": "Цена",
     "product": "Продукт",
     "discounted_products": "Скидки",
@@ -56,7 +57,8 @@
     "already_in_compare": "Товар уже в сравнении",
     "cross_basket": "Перейти в корзину",
     "in_cart": "В корзине",
-    "initial_price": "Начальная цена"
+    "initial_price": "Начальная цена",
+    "share": "Поделиться"
   },
   "blogs":{
     "title": "Блоги",
