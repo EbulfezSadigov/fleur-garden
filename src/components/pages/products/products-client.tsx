@@ -21,7 +21,7 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
 
     const brandId = Number(searchParams.get("brand_id") || 0)
     const categoryId = Number(searchParams.get("category_id") || 0)
-
+    const typeId = Number(searchParams.get("type") || 0)
     const categoryName = useMemo(() => {
         if (!categoryId || categoryId <= 0) return ""
 
@@ -58,8 +58,8 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
         if (brandName && categoryName) return `${brandName} — ${categoryName}`
         if (categoryName) return categoryName
         if (brandName) return brandName
-        return t("title")
-    }, [brandName, categoryName, t])
+        if (typeId) return typeId === 1 ? t("title") : typeId === 2 ? t("discount") : t("on_sale")
+    }, [brandName, categoryName, typeId, t])
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-4 items-start gap-6">
@@ -74,14 +74,14 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
                     ))}
                 </div>
 
-                <div className="flex justify-center pt-2">
-                    <button className="px-8 py-2 border border-black rounded-md text-primary text-sm bg-transparent">
-                        {t("more")}
-                    </button>
-                </div>
+                {productsCount > 0 && (
+                    <div className="flex justify-center pt-2">
+                        <button className="px-8 py-2 border border-black rounded-md text-primary text-sm bg-transparent">
+                            {t("more")}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     )
 }
-
-

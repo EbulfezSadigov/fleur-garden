@@ -12,61 +12,9 @@ import { ReviewCard } from "@/components/pages/home/review-card";
 import Container from "@/components/shared/container";
 import Autoplay from "embla-carousel-autoplay";
 import { useTranslations } from "next-intl";
+import { Review } from "@/types";
 
-interface Review {
-    name: string;
-    date: string;
-    comment: string;
-    rating: number;
-    image: string;
-}
-
-const reviews: Review[] = [
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 4,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 5,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 3,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 4,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 3,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-    {
-        name: "Sarah Aliyeva",
-        date: "20.08.2025",
-        comment: "Orijinal məhsul göndərildi, keyfiyyətdən çox razı qaldım.",
-        rating: 4,
-        image: "https://tryeasel.dev/placeholder.svg?width=40&height=40",
-    },
-];
-
-export function CarouselWithReviews() {
+export function CarouselWithReviews({ comments }: { comments: Review[] }) {
     const t = useTranslations("reviews")
     return (
         <div className="px-4 md:px-0 pb-[72px]">
@@ -88,7 +36,7 @@ export function CarouselWithReviews() {
                     </div>
                 </Container>
                 <CarouselContent>
-                    {reviews.map((review, index) => (
+                    {comments.map((review, index) => (
                         <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
                             <ReviewCard review={review} />
                         </CarouselItem>

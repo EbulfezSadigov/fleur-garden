@@ -17,7 +17,7 @@ export default async function Footer() {
   const socials = socialsData?.data;
 
   return (
-    <footer className="bg-black text-white py-12">
+    <footer className="bg-[#20201E] text-white py-12">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Section */}

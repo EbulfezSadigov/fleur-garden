@@ -86,10 +86,11 @@ export interface Review {
         name: string
         surname: string
     }
-    date: string
+    created_at: string
     description: string
     star: number
     image: string
+    product_slug: string
     product_id: number
 }
 

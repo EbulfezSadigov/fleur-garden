@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, ChevronRight} from "lucide-react"
+import { Menu, ChevronRight, X} from "lucide-react"
 import { useTranslations } from "next-intl"
 import { usePathname, useSearchParams } from "next/navigation"
 import { Category } from "@/types"
@@ -95,7 +95,7 @@ export function CatalogSheet({ categories }: { categories: Category[] }) {
         className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 border border-[#F2F4F8] rounded-[8px]"
         onClick={handleToggle}
       >
-        <Menu className="w-5 h-5" />
+        {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         <span>{t("catalog")}</span>
       </Button>
       

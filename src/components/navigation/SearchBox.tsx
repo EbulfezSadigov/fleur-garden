@@ -125,7 +125,7 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
               <p className="text-base font-semibold">Son Axtarışlar</p>
               <button onClick={clearRecent} className="text-sm text-muted-foreground hover:text-foreground">Təmizlə</button>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 h-[200px] overflow-y-auto">
               {recentSearches.length === 0 ? (
                 <p className="text-sm text-muted-foreground">Hələ axtarış yoxdur</p>
               ) : (

@@ -65,7 +65,7 @@ export function NewsletterSubscribeForm({ placeholder, emailLabel, cta }: Newsle
                   type="email"
                   placeholder={placeholder}
                   aria-label={emailLabel}
-                  className="h-12 rounded-lg"
+                  className="h-12 rounded-lg border-[#8E8E93]"
                   {...field}
                 />
               </FormControl>
@@ -73,7 +73,7 @@ export function NewsletterSubscribeForm({ placeholder, emailLabel, cta }: Newsle
             </FormItem>
           )}
         />
-        <Button type="submit" className="h-12 rounded-lg px-6 md:px-8" disabled={isPending}>
+        <Button type="submit" className="h-12 rounded-lg px-6 md:px-8 bg-[#20201E] text-white" disabled={isPending}>
           {isPending ? "..." : cta}
         </Button>
       </form>

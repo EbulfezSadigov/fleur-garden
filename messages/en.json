@@ -41,7 +41,8 @@
     "woman": "Woman",
     "man": "Man",
     "unisex": "Unisex", 
-    "no_products": "No products found"
+    "no_products": "No products found",
+    "loading": "Loading..."
   },
   "product_card": {
     "add_to_cart": "Add to cart",

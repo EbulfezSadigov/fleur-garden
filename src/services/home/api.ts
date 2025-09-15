@@ -1,5 +1,5 @@
 import { get, post } from "@/lib/api";
-import { ApiResponse } from "@/types";
+import { ApiResponse, Review } from "@/types";
 import { Slider, Banner, Partner, Contact, Social } from "@/types/home";
 
 const getSliders = async () => {
@@ -37,4 +37,9 @@ const subscribe = async (email: string) => {
     return response;
 };
 
-export { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, subscribe };
+const getAllComments = async () => {
+    const response = await get<ApiResponse<Review[]>>(`all-comments`);
+    return response;
+};
+
+export { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, subscribe, getAllComments };

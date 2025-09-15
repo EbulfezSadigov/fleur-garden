@@ -74,7 +74,7 @@ export default function ProductGrid({ locale, products }: ProductGridProps) {
             {/* Load More Button */}
             {resultProducts.length > 0 && (
                 <div className="flex justify-center">
-                    <Link href="/products" className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
+                    <Link href={`/products?type=${selectedNumber===undefined ? 1 : selectedNumber}`} className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
                         {t("more")}
                     </Link>
                 </div>

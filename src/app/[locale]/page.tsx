@@ -5,7 +5,7 @@ import ProductGrid from "@/components/pages/home/product-grid";
 import { BlogSection } from "@/components/pages/home/blog-section";
 import { NewsletterSubscribe } from "@/components/pages/home/newsletter-subscribe";
 import HeroBanner from "@/components/pages/home/hero-banner";
-import { getSlidersQuery, getBannersQuery, getPartnersQuery } from "@/services/home/queries";
+import { getSlidersQuery, getBannersQuery, getPartnersQuery, getAllCommentsQuery } from "@/services/home/queries";
 import { getServerLocale } from "@/lib/utils";
 import { getServerQueryClient } from "@/providers/server";
 import { getBlogsQuery } from "@/services/blogs/queries";
@@ -21,7 +21,8 @@ export default async function Home() {
     queryClient.prefetchQuery(getBannersQuery(locale)),
     queryClient.prefetchQuery(getPartnersQuery(locale)),
     queryClient.prefetchQuery(getBlogsQuery(locale)),
-    queryClient.prefetchQuery(getProductsQuery(locale))
+    queryClient.prefetchQuery(getProductsQuery(locale)),
+    queryClient.prefetchQuery(getAllCommentsQuery())
   ]);
 
   const data = queryClient.getQueryData(getSlidersQuery().queryKey);
@@ -29,12 +30,16 @@ export default async function Home() {
   const partnersData = queryClient.getQueryData(getPartnersQuery(locale).queryKey);
   const blogPostsData = queryClient.getQueryData(getBlogsQuery(locale).queryKey);
   const productsData = queryClient.getQueryData(getProductsQuery(locale).queryKey);
+  const commentsData = queryClient.getQueryData(getAllCommentsQuery().queryKey);
 
+  const comments = commentsData?.data || [];
   const sliders = data?.data;
   const banner = banners?.data;
   const partners = partnersData?.data;
   const blogPosts = blogPostsData?.data;
   const products = productsData?.data;
+
+  const manyComments = [...comments, ...comments, ...comments, ...comments, ...comments];
 
   return (
     <Fragment>
@@ -43,7 +48,7 @@ export default async function Home() {
       <ProductGrid locale={locale} products={products || []} />
       {banner ? <HeroBanner banner={banner} /> : null}  
       <BlogSection blogPosts={blogPosts || []} />
-      <CarouselWithReviews />
+      <CarouselWithReviews comments={manyComments || []} />
       <NewsletterSubscribe />
     </Fragment>
   );

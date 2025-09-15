@@ -41,7 +41,8 @@
     "woman": "Женский",
     "man": "Мужской",
     "unisex": "Унисекс",
-    "no_products": "Товаров не найдено"
+    "no_products": "Товаров не найдено",
+    "loading": "Загрузка..."
   },
   "product_card": {
     "add_to_cart": "В корзину",

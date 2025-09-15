@@ -41,7 +41,8 @@
     "woman": "Qadın",
     "man": "Kişi",
     "unisex": "Unisex",
-    "no_products": "Məhsul tapılmadı"
+    "no_products": "Məhsul tapılmadı",
+    "loading": "Yüklənir..."
   },
   "product_card": {
     "add_to_cart": "Səbətə at",

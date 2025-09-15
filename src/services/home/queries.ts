@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getSliders, getBanners, getPartners, getPartner, getContact, getSocials } from "./api";
+import { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, getAllComments } from "./api";
 
 const getSlidersQuery = () => {
     return queryOptions({
@@ -43,4 +43,11 @@ const getSocialsQuery = () => {
     });
 }
 
-export { getSlidersQuery, getBannersQuery, getPartnersQuery, getPartnerQuery, getContactQuery, getSocialsQuery };
+const getAllCommentsQuery = () => {
+    return queryOptions({
+        queryKey: ["all-comments"],
+        queryFn: () => getAllComments(),
+    });
+}
+
+export { getSlidersQuery, getBannersQuery, getPartnersQuery, getPartnerQuery, getContactQuery, getSocialsQuery, getAllCommentsQuery };
