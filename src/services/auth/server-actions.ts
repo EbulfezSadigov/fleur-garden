@@ -25,12 +25,10 @@ export async function loginAction(email: string, password: string): Promise<Auth
 
   const token = data?.data?.token
   if (token) {
-    // Set access token cookie for client to pick up via js-cookie
     (await cookies()).set(TOKEN_COOKIE_NAME, token, {
       secure: true,
       sameSite: 'lax',
       path: '/',
-      // 7 days expiry by default
       maxAge: 60 * 60 * 24 * 7,
     })
   }

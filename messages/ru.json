@@ -42,7 +42,8 @@
     "man": "Мужской",
     "unisex": "Унисекс",
     "no_products": "Товаров не найдено",
-    "loading": "Загрузка..."
+    "loading": "Загрузка...",
+    "no_products_found": "Товаров не найдено"
   },
   "product_card": {
     "add_to_cart": "В корзину",

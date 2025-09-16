@@ -10,11 +10,16 @@ import { Phone, Mail, MapPin } from "lucide-react"
 import Container from "@/components/shared/container"
 import PhoneInput from "react-phone-input-2"
 import { useTranslations } from "next-intl"
+import { useMutation } from "@tanstack/react-query"
+import { postContactMutation } from "@/services/home/mutations"
+import { Contact } from "@/types/home"
+import { toast } from "sonner"
 
 export default function ContactPage() {
   const t = useTranslations("contact")
+  const { mutate: postContact } = useMutation(postContactMutation)
   const [formData, setFormData] = useState({
-    name: "",
+    full_name: "",
     email: "",
     phone: "",
     message: "",
@@ -22,7 +27,20 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+    postContact(formData as Contact, {
+      onSuccess: () => {
+        toast.success("Contact form submitted successfully")
+        setFormData({
+          full_name: "",
+          email: "",
+          phone: "",
+          message: "",
+        })
+      },
+      onError: () => {
+        toast.error("Failed to submit contact form")
+      },
+    })
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -78,12 +96,12 @@ export default function ContactPage() {
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:py-12 py-4 px-4 md:px-[115px]"
-        style={{
-          boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
-          borderRadius: "12px",
-          border: "1px solid #F2F4F8",
-          background: "#FFF",
-        }}
+          style={{
+            boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
+            borderRadius: "12px",
+            border: "1px solid #F2F4F8",
+            background: "#FFF",
+          }}
         >
           {/* Contact Form */}
           <div>
@@ -95,8 +113,8 @@ export default function ContactPage() {
                 <Input
                   type="text"
                   placeholder={t("name_placeholder")}
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  value={formData.full_name}
+                  onChange={(e) => handleInputChange("full_name", e.target.value)}
                   className="w-full"
                 />
               </div>

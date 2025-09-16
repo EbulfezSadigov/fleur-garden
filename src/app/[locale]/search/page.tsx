@@ -45,7 +45,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { sea
                 </Breadcrumb>
 
                 <div className="space-y-6">
-                    <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground mb-2">{search ? `“${search}”` : ""} {t("products_found")}</h1>
+                    <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground mb-2">{search ? `“${search}”` : ""} {products?.length && products?.length > 0 ? t("products_found") : t("no_products_found")}</h1>
                     {search && (
                         <p className="text-sm text-[#77777B] mb-6">{products?.length ?? 0} nəticə</p>
                     )}

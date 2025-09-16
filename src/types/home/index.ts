@@ -28,6 +28,8 @@ export interface Contact {
     phone: string;
     email: string;
     logo: string;
+    full_name: string;
+    message: string;
 }
 
 export interface Social {

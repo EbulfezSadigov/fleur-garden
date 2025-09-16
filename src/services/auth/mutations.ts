@@ -8,7 +8,6 @@ import { useRouter } from "@/i18n/navigation";
 const LoginMutation = (email: string, password: string) => {
     return useMutation<AuthLoginResponse, unknown, void>({
         mutationFn: async () => {
-            // Call server action to set cookie and return response
             const result = await loginAction(email, password)
             return result
         },

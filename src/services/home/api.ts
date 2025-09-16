@@ -33,7 +33,7 @@ const getSocials = async () => {
 };
 
 const subscribe = async (email: string) => {
-    const response = await post<ApiResponse<void>>(`subscribe`, { email });
+    const response = await post<void>(`subscribe`, { email });
     return response;
 };
 
@@ -42,4 +42,9 @@ const getAllComments = async () => {
     return response;
 };
 
-export { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, subscribe, getAllComments };
+const postContact = async (data: Contact) => {
+    const response = await post<void>(`contactform`, data);
+    return response;
+};
+
+export { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, subscribe, getAllComments, postContact };
