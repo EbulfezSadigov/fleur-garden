@@ -49,8 +49,8 @@ function ProfileSidebar() {
                                 <button
                                     className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors`}
                                 >
-                                    <item.icon className="w-5 h-5" />
-                                    <span className="text-sm">{item.label}</span>
+                                    <item.icon className="w-5 h-5 text-gray-600 hover:text-gray-900" />
+                                    <span className="text-sm text-gray-600 hover:text-gray-900">{t(item.label)}</span>
                                 </button>
                             </DialogTrigger>
                             <DialogContent className="max-w-[383px] p-8">

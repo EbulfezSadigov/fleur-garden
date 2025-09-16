@@ -275,5 +275,35 @@
     "orders": "Orders & Payment",
     "delivery": "Delivery & Return",
     "products": "Products & Quality"
+  },
+  "forgot_password": {
+    "forgot_password": "Forgot password?",
+    "success": "Password reset successful",
+    "error": "Password reset failed",
+    "description": "A verification code will be sent to this number.",
+    "email": "Email",
+    "email_placeholder": "Enter your email",
+    "loading": "Loading...",
+    "send_code": "Send code",
+    "otp_description": "A verification code will be sent to your email. Please enter the code.",
+    "otp_code_placeholder": "Enter the 6-digit code",
+    "otp_code_error": "Enter the 6-digit code",
+    "didnt_get_code": "Didn't get the code?",
+    "resend": "Resend",
+    "verify": "Verify"
+  },
+  "password_reset": {
+    "title": "Reset password",
+    "new_password": "New password",
+    "confirm_password": "Password confirmation",
+    "confirm_placeholder": "Enter your password confirmation",
+    "save": "Save",
+    "loading": "Loading...",
+    "password_reset": "Reset password",
+    "success": "Password reset successful",
+    "error": "Password reset failed",
+    "description": "Reset password",
+    "password": "Password",
+    "password_placeholder": "Enter your password"
   }
 }

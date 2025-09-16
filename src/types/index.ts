@@ -45,6 +45,11 @@ export interface AuthRegisterResponse {
     }
 }
 
+export interface AuthForgotPasswordResponse {
+    remark: string
+    status: string
+}
+
 export interface Product {
     id: number,
     name: string,

@@ -26,11 +26,11 @@ export function BlogCard({ post }: BlogCardProps) {
         <Image src={post.thumb_image || post.image || "/placeholder.svg"} alt={post.title} fill className="object-cover rounded-lg" />
       </div>
       <div className="p-0 space-y-2">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs text-[#77777B]">
           <span>{post.read_min}</span>
         </div>
-        <h3 className="text-xl font-semibold text-foreground line-clamp-2">{post.title}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{description}</p>
+        <h3 className="text-xl font-semibold text-primary line-clamp-2">{post.title}</h3>
+        <p className="text-sm text-[#77777B] leading-relaxed line-clamp-2">{description}</p>
       </div>
     </Link>
   )

@@ -12,5 +12,5 @@ export const sidebarItems = [
   { icon: Package, label: "orders", href: "/profile/orders" },
   { icon: Bell, label: "notifications", href: "/profile/notifications"  },
   { icon: HelpCircle, label: "help", href: "/profile/help" },
-  { icon: LogOut, label: "logout", href: "/profile/help" },
+  { icon: LogOut, label: "logout" },
 ]

@@ -48,7 +48,6 @@ export default function FavoritesPage() {
         }
     }, [])
 
-    // Listen for storage changes to update favorites when they're modified in other tabs
     React.useEffect(() => {
         const handleStorageChange = () => {
             if (typeof window !== 'undefined') {
@@ -67,7 +66,6 @@ export default function FavoritesPage() {
             }
         }
 
-        // Listen for both storage events (other tabs) and custom events (same tab)
         window.addEventListener('storage', handleStorageChange)
         window.addEventListener('favoritesChanged', handleStorageChange)
 
@@ -76,6 +74,7 @@ export default function FavoritesPage() {
             window.removeEventListener('favoritesChanged', handleStorageChange)
         }
     }, [])
+    
     return (
         <section className="w-full py-9">
             <Container>
@@ -113,11 +112,11 @@ export default function FavoritesPage() {
                             </label>
                         </div>
 
-                        <div className="relative">
+                        <div className="relative w-full md:w-[381px]">
                             <Input
                                 type="text"
                                 placeholder={t("search")}
-                                className="pl-4 w-[381px] pr-12 h-12 py-4 border border-gray-300 rounded-[16px] focus:outline-none focus:ring-2 focus:ring-gray-200"
+                                className="pl-4 w-full md:w-[381px] pr-12 h-12 py-4 border border-gray-300 rounded-[16px] focus:outline-none focus:ring-2 focus:ring-gray-200"
                             />
                             <Button
                                 size="sm"
@@ -137,7 +136,7 @@ export default function FavoritesPage() {
                         </div>
                     </div>
                 ) : favorites.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 md:gap-6 gap-4">
                         {favorites.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}

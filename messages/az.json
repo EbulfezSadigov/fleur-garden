@@ -232,7 +232,7 @@
     "profile_and_help": "Hesabım & Yardım",
     "are_you_sure_you_want_to_logout": "Hesabdan çıxmaq istədiyinizə əminsiniz?",
     "cancel": "Ləğv et",
-    "logout": "Sil",
+    "logout": "Hesabdan çıxış",
     "profile_information": "Hesab məlumatları",
     "orders": "Sifarişlər",
     "notifications": "Bildirişlər",
@@ -275,5 +275,35 @@
     "orders": "Sifarış və Ödəniş",
     "delivery": "Çatdırılma və Qaytarma",
     "products": "Məhsullar və Keyfiyyət"
+  },
+  "forgot_password": {
+    "forgot_password": "Şifrəmi unutdum",
+    "success": "Şifrə sıfırlama uğurludur",
+    "error": "Şifrə sıfırlama uğursuz oldu",
+    "description": "Şifrə bərpası üçün təsdiq kodu bu nömrəyə göndəriləcək.",
+    "email": "Email",
+    "email_placeholder": "Email adresinizi daxil edin",
+    "loading": "Yüklənir...",
+    "send_code": "Kodu göndər",
+    "otp_description": "Sizin mailinizə təsdiq kodu göndərilmişdir. Zəhmət olmasa həmin kodu daxil edin.",
+    "otp_code_placeholder": "6 rəqəmli kodu daxil edin",
+    "otp_code_error": "6 rəqəmli kodu daxil edin",
+    "didnt_get_code": "Kodu almadınız?",
+    "resend": "Yenidən göndər",
+    "verify": "Təsdiq et"
+  },
+  "password_reset": {
+    "title": "Şifrəni sıfırla",
+    "password_reset": "Şifrəni sıfırla",
+    "new_password": "Yeni şifrə",
+    "confirm_password": "Şifrənin təkrarı",
+    "confirm_placeholder": "Şifrənizi təkrar edin",
+    "save": "Yadda saxla",
+    "loading": "Gözləyin...",
+    "success": "Şifrə sıfırlama uğurludur",
+    "error": "Şifrə sıfırlama uğursuz oldu",
+    "description": "Şifrəni sıfırla",
+    "password": "Şifrə",
+    "password_placeholder": "Şifrənizi daxil edin"
   }
 }

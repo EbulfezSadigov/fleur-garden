@@ -70,7 +70,7 @@ function ReviewCard({ review }: { review: Review }) {
                 <p className="w-10 h-10 bg-black rounded-full flex text-white items-center justify-center" >{review.user_id.name.charAt(0)}</p>
                 <div>
                     <h4 className="font-semibold text-foreground">{review.user_id.name} {review.user_id.surname}</h4>
-                    <p className="text-xs text-muted-foreground">{review.date}</p>
+                    <p className="text-xs text-muted-foreground">{review.created_at}</p>
                 </div>
                 <div className="ml-auto flex items-center gap-1">{renderStars(review.star)}</div>
             </div>

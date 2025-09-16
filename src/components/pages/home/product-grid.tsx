@@ -25,11 +25,11 @@ export default function ProductGrid({ locale, products }: ProductGridProps) {
     const heading = selectedNumber === undefined ? t("title") : selectedNumber === 2 ? t("discount") : t("on_sale")
 
     return (
-        <Container className="py-[72px]">
+        <Container className="py-8 md:py-[72px]">
             {/* Header */}
             <div className="flex flex-col md:flex-row items-center justify-between mb-8">
                 <h1 className="text-4xl font-medium text-primary">{heading}</h1>
-                <nav className="flex items-center gap-6">
+                <nav className="flex items-center gap-6 w-full md:w-auto min-w-0 overflow-x-auto whitespace-nowrap md:mt-0 mt-4">
                     <button
                         className={`relative flex items-center gap-2 font-medium ${selectedNumber === undefined ? "text-primary" : "text-gray-500 hover:text-primary transition-colors"}`}
                         onClick={() => setSelectedNumber(undefined)}
@@ -60,7 +60,7 @@ export default function ProductGrid({ locale, products }: ProductGridProps) {
             ) : null}
 
             {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 md:gap-8 gap-4 mb-8">
                 {resultProducts.length > 0 ? (isLoading && !data ? products : resultProducts).map((product) => (
                     <ProductCard key={product.id} product={product} />
                 )
@@ -74,7 +74,7 @@ export default function ProductGrid({ locale, products }: ProductGridProps) {
             {/* Load More Button */}
             {resultProducts.length > 0 && (
                 <div className="flex justify-center">
-                    <Link href={`/products?type=${selectedNumber===undefined ? 1 : selectedNumber}`} className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
+                    <Link href={`/products?type=${selectedNumber === undefined ? 1 : selectedNumber}`} className="border border-black text-sm text-primary px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition-colors">
                         {t("more")}
                     </Link>
                 </div>

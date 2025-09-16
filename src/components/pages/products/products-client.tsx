@@ -68,7 +68,7 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
             <div className="space-y-6 md:col-span-3">
                 <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground mb-2">{dynamicTitle}</h1>
                 <p className="text-sm text-[#77777B] mb-6">{productsCount} {t("products_found")}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 md:gap-6 gap-4">
                     {products?.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}

@@ -48,7 +48,7 @@ function ProductCard({ product }: ProductCardProps) {
 
                 <div className="h-[1px] bg-[#F2F4F8] w-full" />
 
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between pt-2">
                     <div className='flex items-center gap-2'>
                         <span className={`font-semibold text-primary ${product.discount ? 'text-[#77777B]' : 'text-primary'}`}>{product.discount ? product.discount : product.price} AZN</span>
                         {product.discount && <span className={`line-through ${product.discount ? 'text-[#77777B] text-sm' : 'text-primary text-lg font-semibold'}`}>{product.price} AZN</span>}

@@ -275,5 +275,35 @@
     "orders": "Заказы & Оплата",
     "delivery": "Доставка & Возврат",
     "products": "Продукты & Качество"
+  },
+  "forgot_password": {
+    "forgot_password": "Забыли пароль?",
+    "success": "Пароль успешно сброшен",
+    "error": "Ошибка при сбросе пароля",
+    "description": "Код подтверждения будет отправлен на этот номер.",
+    "email": "Email",
+    "email_placeholder": "Введите ваш email",
+    "loading": "Загрузка...",
+    "send_code": "Отправить код",
+    "otp_description": "Код подтверждения будет отправлен на ваш email. Пожалуйста, введите код.",
+    "otp_code_placeholder": "Введите 6-значный код",
+    "otp_code_error": "Введите 6-значный код",
+    "didnt_get_code": "Не получили код?",
+    "resend": "Отправить снова",
+    "verify": "Подтвердить"
+  },
+  "password_reset": {
+    "title": "Сбросить пароль",
+    "new_password": "Новый пароль",
+    "confirm_password": "Подтверждение пароля",
+    "confirm_placeholder": "Введите ваше подтверждение пароля",
+    "save": "Сохранить",
+    "loading": "Загрузка...",
+    "password_reset": "Сбросить пароль",
+    "success": "Пароль успешно сброшен",
+    "error": "Ошибка при сбросе пароля",
+    "description": "Сбросить пароль",
+    "password": "Пароль",
+    "password_placeholder": "Введите ваш пароль"
   }
 }
