@@ -7,9 +7,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
-import { Brand, Category, FilterProductsPayload, Product } from "@/types"
-import { useQuery } from "@tanstack/react-query"
-import { filterProductsQuery } from "@/services/products/queries"
+import { Brand, Category, FilterProductsPayload } from "@/types"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback } from "react"
 
@@ -40,17 +38,17 @@ function FilterSection({ title, children, defaultOpen = true }: FilterSectionPro
 export interface FilterSidebarProps {
   className?: string
   brands: Brand[]
-  onFiltered?: (products: Product[]) => void
   categories: Category[]
+  isFetching?: boolean
 }
 
-export function FilterSidebar({ className, brands, categories, onFiltered }: FilterSidebarProps) {
+export function FilterSidebar({ className, brands, categories, isFetching }: FilterSidebarProps) {
   const t = useTranslations("product_grid")
   const tf = useTranslations("favorites")
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  
+
   const [brandId, setBrandId] = useState<number>(0)
   const [categoryId, setCategoryId] = useState<number>(0)
   const [minPrice, setMinPrice] = useState<number>(0)
@@ -107,16 +105,16 @@ export function FilterSidebar({ className, brands, categories, onFiltered }: Fil
     if (!isInitialized) return
 
     const params = new URLSearchParams()
-    
+
     if (newBrandId > 0) params.set("brand_id", String(newBrandId))
     if (newCategoryId > 0) params.set("category_id", String(newCategoryId))
     if (newMinPrice > 0) params.set("min_price", String(newMinPrice))
     if (newMaxPrice < 5600) params.set("max_price", String(newMaxPrice))
     if (newTypeId > 0) params.set("type", String(newTypeId))
-    
+
     const queryString = params.toString()
     const newUrl = queryString ? `${pathname}?${queryString}` : pathname
-    
+
     router.replace(newUrl, { scroll: false })
   }, [pathname, router, isInitialized])
 
@@ -134,25 +132,7 @@ export function FilterSidebar({ className, brands, categories, onFiltered }: Fil
     type: typeId,
   }), [brandId, categoryId, minPrice, maxPrice, typeId])
 
-  const isAnyFilterActive = useMemo(() => {
-    return brandId > 0 || categoryId > 0 || minPrice > 0 || maxPrice < 5600 || typeId > 0
-  }, [brandId, categoryId, minPrice, maxPrice, typeId])
-
-  const { data, isFetching } = useQuery({
-    ...filterProductsQuery(filters),
-    enabled: isAnyFilterActive && isInitialized,
-  })
-
-  useEffect(() => {
-    if (!isInitialized) return
-    
-    if (!isAnyFilterActive) {
-      onFiltered?.([])
-      return
-    }
-    const products = data?.data ?? []
-    onFiltered?.(products)
-  }, [data, isAnyFilterActive, onFiltered, isInitialized])
+  useMemo(() => filters, [filters])
 
   return (
     <aside

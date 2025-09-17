@@ -30,9 +30,11 @@ export default async function RootLayout({
 }>) {
   const { locale } = await params;
   const messages = (await getMessages()) as Record<string, string>;
+
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
   return (
     <html lang={locale}>
       <body className={`${inter.variable}`}>

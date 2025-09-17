@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Search, ShoppingCart, Heart, Scale, X, ChevronRight, Menu, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,9 +21,9 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
   const activeLocale = useLocale()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
-  // State for managing subcategory view
   const [currentView, setCurrentView] = useState<'main' | 'subcategory'>('main')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const locales = routing.locales
 
@@ -47,6 +47,13 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
     setCurrentView('subcategory')
     setIsOpen(false)
   }
+
+  // Close the sheet on route changes
+  useEffect(function handleRouteChangeClose() {
+    setIsOpen(false)
+    setCurrentView('main')
+    setSelectedCategory(null)
+  }, [pathname, activeLocale])
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -85,11 +92,20 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
             <Input
               type="text"
               placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-3 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
             <Button
               size="sm"
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full p-2"
+              onClick={() => {
+                const value = searchQuery.trim()
+                if (!value) return
+                router.push({ pathname: "/search", query: { search: value } }, { locale: activeLocale })
+                setIsOpen(false)
+                setSearchQuery("")
+              }}
             >
               <Search className="w-4 h-4" />
             </Button>
@@ -104,9 +120,8 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
               <button
                 key={locale}
                 onClick={() => handleLanguageSelect(locale)}
-                className={`px-4 py-2 rounded text-sm font-medium ${
-                  activeLocale === locale ? "bg-black text-white" : "bg-gray-100 text-gray-700"
-                }`}
+                className={`px-4 py-2 rounded text-sm font-medium ${activeLocale === locale ? "bg-black text-white" : "bg-gray-100 text-gray-700"
+                  }`}
               >
                 {locale.toUpperCase()}
               </button>
@@ -116,7 +131,12 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
           {/* Menu Items */}
           <div className="space-y-4 mb-8">
             {navigationItems.map((item, index) => (
-              <Link key={index} href={item.href} className="block text-gray-700 text-lg py-2">
+              <Link
+                key={index}
+                href={item.href}
+                className="block text-gray-700 text-lg py-2"
+                onClick={() => setIsOpen(false)}
+              >
                 {t(item.label)}
               </Link>
             ))}
@@ -129,7 +149,7 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
                 <h3 className="text-lg font-semibold mb-4">Kataloq</h3>
                 <div className="space-y-3">
                   {categories.map((item, index) => (
-                    <button 
+                    <button
                       key={index}
                       onClick={() => handleCategoryClick(item.name)}
                       className="w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
@@ -144,9 +164,9 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
               <>
                 {/* Subcategory Header with Back Button */}
                 <div className="flex items-center gap-3 mb-4">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleBackToMain}
                     className="p-2"
                   >
@@ -154,10 +174,10 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
                   </Button>
                   <h3 className="text-lg font-semibold">{selectedCategory}</h3>
                 </div>
-                
+
                 {/* Subcategory List */}
                 <div className="space-y-2">
-                    {selectedCategory && categories.find(item => item.name === selectedCategory)?.category.map((subcategory, index) => (
+                  {selectedCategory && categories.find(item => item.name === selectedCategory)?.category.map((subcategory, index) => (
                     <button
                       key={index}
                       onClick={() => handleSubcategoryClick(subcategory.id)}

@@ -1,11 +1,14 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import ProductCard from "@/components/pages/home/product-card"
 import FilterSidebar from "@/components/pages/products/filter-sidebar"
 import { useTranslations } from "next-intl"
-import { Brand, Category, Product } from "@/types"
+import { Brand, Category, FilterProductsPayload, Product } from "@/types"
 import { useSearchParams } from "next/navigation"
+import { useInfiniteQuery } from "@tanstack/react-query"
+import { filterProductsInfiniteQuery } from "@/services/products/queries"
+import { Loader2 } from "lucide-react"
 
 interface ProductsClientProps {
     brands: Brand[]
@@ -14,14 +17,40 @@ interface ProductsClientProps {
 
 export default function ProductsClient({ brands, categories }: ProductsClientProps) {
     const t = useTranslations("product_grid")
-    const [products, setProducts] = useState<Product[]>([])
     const searchParams = useSearchParams()
+    const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+    const brand_id = Number(searchParams.get("brand_id") || 0)
+    const category_id = Number(searchParams.get("category_id") || 0)
+    const min_price = Number(searchParams.get("min_price") || 0)
+    const max_price = Number(searchParams.get("max_price") || 5600)
+    const type = Number(searchParams.get("type") || 0)
+
+    const filters: FilterProductsPayload = {
+        brand_id,
+        category_id,
+        min_price,
+        max_price,
+        stock: 0,
+        type,
+    }
+
+    const isAnyFilterActive = brand_id > 0 || category_id > 0 || min_price > 0 || max_price < 5600 || type > 0
+
+    const query = useInfiniteQuery({
+        ...filterProductsInfiniteQuery(filters),
+        enabled: isAnyFilterActive,
+    })
+
+    const products: Product[] = useMemo(() => {
+        return query.data?.pages.flatMap(p => p.data) ?? []
+    }, [query.data])
 
     const productsCount = products?.length ?? 0
 
-    const brandId = Number(searchParams.get("brand_id") || 0)
-    const categoryId = Number(searchParams.get("category_id") || 0)
-    const typeId = Number(searchParams.get("type") || 0)
+    const brandId = brand_id
+    const categoryId = category_id
+    const typeId = type
     const categoryName = useMemo(() => {
         if (!categoryId || categoryId <= 0) return ""
 
@@ -61,9 +90,24 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
         if (typeId) return typeId === 1 ? t("title") : typeId === 2 ? t("discount") : t("on_sale")
     }, [brandName, categoryName, typeId, t])
 
+    const { hasNextPage, isFetchingNextPage, fetchNextPage } = query
+
+    useEffect(() => {
+        if (!sentinelRef.current) return
+        const el = sentinelRef.current
+        const observer = new IntersectionObserver((entries) => {
+            const first = entries[0]
+            if (first.isIntersecting && hasNextPage && !isFetchingNextPage) {
+                fetchNextPage()
+            }
+        }, { rootMargin: "200px" })
+        observer.observe(el)
+        return () => observer.unobserve(el)
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-4 items-start gap-6">
-            <FilterSidebar brands={brands} categories={categories} onFiltered={setProducts} />
+            <FilterSidebar brands={brands} categories={categories} isFetching={query.isFetching || query.isFetchingNextPage} />
 
             <div className="space-y-6 md:col-span-3">
                 <h1 className="text-[28px] md:text-[32px] font-semibold text-foreground mb-2">{dynamicTitle}</h1>
@@ -73,13 +117,12 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
-
-                {productsCount > 0 && (
-                    <div className="flex justify-center pt-2">
-                        <button className="px-8 py-2 border border-black rounded-md text-primary text-sm bg-transparent">
-                            {t("more")}
-                        </button>
-                    </div>
+                <div ref={sentinelRef} />
+                {query.isFetchingNextPage && (
+                    <div className="flex justify-center pt-2 text-sm text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin" /></div>
+                )}
+                {!query.hasNextPage && productsCount > 0 && (
+                    <div className="flex justify-center pt-2 text-sm text-muted-foreground">{t("no_more")}</div>
                 )}
             </div>
         </div>

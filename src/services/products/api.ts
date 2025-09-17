@@ -54,9 +54,9 @@ const searchProducts = async (search: string) => {
   return products;
 };
 
-const filterProducts = async (data: FilterProductsPayload) => {
+const filterProducts = async (data: FilterProductsPayload, page?: number) => {
   const formData = new FormData();
-  
+
   // Only append non-zero values to reduce payload
   if (data.brand_id > 0) formData.append("brand_id", String(data.brand_id));
   if (data.category_id > 0) formData.append("category_id", String(data.category_id));
@@ -66,6 +66,7 @@ const filterProducts = async (data: FilterProductsPayload) => {
   if (data.type > 0) formData.append("type", String(data.type));
 
   const products = await post<ApiResponse<Product[]>>(`filter`, formData, {
+    params: page ? { page } : undefined,
     headers: { "Content-Type": "multipart/form-data" },
   });
   return products;

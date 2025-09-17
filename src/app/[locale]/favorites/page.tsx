@@ -23,12 +23,17 @@ import { getBrandsQuery, getCategoriesQuery } from "@/services/products/queries"
 export default function FavoritesPage() {
     const [favorites, setFavorites] = React.useState<Product[]>([])
     const [isLoading, setIsLoading] = React.useState(true)
+    const [selectedCategory, setSelectedCategory] = React.useState<string>("all")
+    const [selectedBrand, setSelectedBrand] = React.useState<string>("all")
+    const [inStockOnly, setInStockOnly] = React.useState<boolean>(false)
+    const [searchQuery, setSearchQuery] = React.useState<string>("")
+    const [filteredFavorites, setFilteredFavorites] = React.useState<Product[]>([])
 
     const t = useTranslations("favorites")
 
-    const categories = useQuery(getCategoriesQuery()) 
+    const categories = useQuery(getCategoriesQuery())
     const brands = useQuery(getBrandsQuery())
-    
+
 
     // Load favorites from localStorage
     React.useEffect(() => {
@@ -47,6 +52,22 @@ export default function FavoritesPage() {
             }
         }
     }, [])
+
+    // Derive filtered favorites whenever filters or source favorites change
+    React.useEffect(() => {
+        const normalizedSearch = searchQuery.trim().toLowerCase()
+        const next = favorites.filter((product) => {
+            const matchCategory = selectedCategory === "all" || product.category_slug === selectedCategory
+            const matchBrand = selectedBrand === "all" || product.brand_slug === selectedBrand
+            const matchStock = !inStockOnly || product.stock > 0
+            const matchSearch =
+                normalizedSearch === "" ||
+                product.name.toLowerCase().includes(normalizedSearch) ||
+                product.code.toLowerCase().includes(normalizedSearch)
+            return matchCategory && matchBrand && matchStock && matchSearch
+        })
+        setFilteredFavorites(next)
+    }, [favorites, selectedCategory, selectedBrand, inStockOnly, searchQuery])
 
     React.useEffect(() => {
         const handleStorageChange = () => {
@@ -74,7 +95,7 @@ export default function FavoritesPage() {
             window.removeEventListener('favoritesChanged', handleStorageChange)
         }
     }, [])
-    
+
     return (
         <section className="w-full py-9">
             <Container>
@@ -83,7 +104,7 @@ export default function FavoritesPage() {
 
                     <div className="flex flex-col md:flex-row justify-between gap-3 w-full md:w-auto items-center">
                         <div className="flex gap-3">
-                            <Select>
+                            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                                 <SelectTrigger className="h-10 rounded-[8px] border-[#D3D4D6]">
                                     <SelectValue placeholder={t("category")} />
                                 </SelectTrigger>
@@ -95,7 +116,7 @@ export default function FavoritesPage() {
                                 </SelectContent>
                             </Select>
 
-                            <Select>
+                            <Select value={selectedBrand} onValueChange={setSelectedBrand}>
                                 <SelectTrigger className="h-10 rounded-[8px] border-[#D3D4D6] text-black">
                                     <SelectValue className="text-black" placeholder={t("brand")} />
                                 </SelectTrigger>
@@ -108,7 +129,7 @@ export default function FavoritesPage() {
                             </Select>
 
                             <label className="h-9 text-sm flex items-center gap-2 text-primary border border-[#D3D4D6] rounded-[8px] p-2">
-                                <Checkbox /> {t("in_stock")}
+                                <Checkbox checked={inStockOnly} onCheckedChange={(checked) => setInStockOnly(Boolean(checked))} /> {t("in_stock")}
                             </label>
                         </div>
 
@@ -117,10 +138,13 @@ export default function FavoritesPage() {
                                 type="text"
                                 placeholder={t("search")}
                                 className="pl-4 w-full md:w-[381px] pr-12 h-12 py-4 border border-gray-300 rounded-[16px] focus:outline-none focus:ring-2 focus:ring-gray-200"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                             <Button
                                 size="sm"
                                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white rounded-full w-8 h-8 p-0 hover:bg-gray-800"
+                                type="button"
                             >
                                 <Search className="w-4 h-4" />
                             </Button>
@@ -135,9 +159,9 @@ export default function FavoritesPage() {
                             <p className="text-gray-600">{t("loading")}</p>
                         </div>
                     </div>
-                ) : favorites.length > 0 ? (
+                ) : filteredFavorites.length > 0 ? (
                     <div className="grid grid-cols-2 lg:grid-cols-4 md:gap-6 gap-4">
-                        {favorites.map((product) => (
+                        {filteredFavorites.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>

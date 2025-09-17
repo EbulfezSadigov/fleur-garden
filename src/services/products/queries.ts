@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { filterProducts, getBrands, getCategories, getProduct, getProductReviews, getProducts, getRelatedProducts, searchProducts } from "./api";
+import { infiniteQueryOptions } from "@tanstack/react-query";
 import { FilterProductsPayload } from "@/types";
 
 const getProductsQuery = (locale: string, number?: number) => {
@@ -58,6 +59,25 @@ const filterProductsQuery = (data: FilterProductsPayload) => {
     });
 };
 
+const filterProductsInfiniteQuery = (data: FilterProductsPayload) => {
+    return infiniteQueryOptions({
+        queryKey: ["filter-products-infinite", data],
+        initialPageParam: 1,
+        queryFn: ({ pageParam }) => filterProducts(data, pageParam as number),
+        getNextPageParam: (lastPage) => {
+            const nextUrl = lastPage?.links?.next
+            if (!nextUrl) return undefined
+            try {
+                const url = new URL(nextUrl)
+                const nextPage = url.searchParams.get("page")
+                return nextPage ? Number(nextPage) : undefined
+            } catch {
+                return undefined
+            }
+        },
+    })
+}
+
 export {
     getProductsQuery,
     getSearchProductsQuery,
@@ -67,4 +87,5 @@ export {
     getBrandsQuery,
     getCategoriesQuery,
     filterProductsQuery,
+    filterProductsInfiniteQuery,
 };

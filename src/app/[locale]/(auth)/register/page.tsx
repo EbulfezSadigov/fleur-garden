@@ -70,7 +70,7 @@ function RegisterSheet() {
     }
 
     return (
-        <section className="w-full h-full flex items-center justify-center py-12 md:py-0 px-4 md:px-0 md:min-h-screen">
+        <section className="w-full pt-20 md:pt-0 h-full flex items-center justify-center pb-12 md:pb-12 px-4 md:px-0">
             <div className={`border border-[#D3D3D7] rounded-[20px] py-12 px-4 md:px-[90px] w-full max-w-[580px] bg-white flex flex-col transform transition-transform duration-300 ease-out
                 `}>
                 <div className="text-center mb-8">

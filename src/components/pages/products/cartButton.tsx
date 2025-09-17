@@ -48,6 +48,10 @@ function CartButton({ product }: { product: Product }) {
             }
 
             window.localStorage.setItem(storageKey, JSON.stringify(cart))
+            // Notify listeners (e.g., header cart indicator)
+            try {
+                window.dispatchEvent(new Event('cart:updated'))
+            } catch { }
             setIsOpen(true)
         } catch (error) {
             console.error('Failed to write cart to localStorage', error)

@@ -22,7 +22,7 @@ function UserPopover({ user }: { user: User }) {
                 <>
                     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" size="sm" className="border-[#F2F4F8] py-4 font-medium text-[#20201E] rounded-full md:rounded-[8px] hover:bg-[#20201E] hover:text-white">
+                            <Button variant="outline" size="sm" className="md:border-[#F2F4F8] border-none md:border !p-0 px-0 md:!px-2 md:py-4 font-medium text-[#20201E] rounded-full md:rounded-[8px] hover:bg-[#20201E] hover:text-white">
                                 <CircleUserRound className="w-4 h-4 md:mr-2" />
                                 <span className="hidden md:block">{t("login")}</span>
                             </Button>

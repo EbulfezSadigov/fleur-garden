@@ -43,7 +43,8 @@
     "unisex": "Унисекс",
     "no_products": "Товаров не найдено",
     "loading": "Загрузка...",
-    "no_products_found": "Товаров не найдено"
+    "no_products_found": "Товаров не найдено",
+    "no_more": "Нет больше товаров"
   },
   "product_card": {
     "add_to_cart": "В корзину",
