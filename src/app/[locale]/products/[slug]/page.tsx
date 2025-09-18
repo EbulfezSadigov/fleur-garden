@@ -15,7 +15,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const locale = await getServerLocale();
   const queryClient = getServerQueryClient();
 
-  // Prefetch product first to obtain category_slug
   await queryClient.prefetchQuery(getProductQuery(locale, slug));
   await queryClient.prefetchQuery(getProductReviewsQuery(locale, slug));
   const productData = queryClient.getQueryData(getProductQuery(locale, slug).queryKey);

@@ -64,7 +64,11 @@ export interface Product {
     category_slug: string,
     brand_name: string,
     brand_slug: string,
-    star: number
+    star: number,
+    attributes: {
+        key: string
+        value: string
+    }[]
 }
 
 export interface ProductCardProps {

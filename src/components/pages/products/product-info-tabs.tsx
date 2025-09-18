@@ -42,18 +42,12 @@ function ProductInfoTabs({ product, reviews }: { product: Product, reviews: Revi
                 <TabsContent value="details" className="mt-8 lg:w-[calc(45%-16px)]">
                     <div className="grid grid-cols-1 gap-8">
                         <div className="space-y-4">
-                            <div className="flex justify-between">
-                                <span className="font-medium text-gray-900">{t("product_type")}</span>
-                                <span className="text-gray-600">{product.category_name}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="font-medium text-gray-900">{t("fragrance_types")}</span>
-                                <span className="text-gray-600">Cicek</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="font-medium text-gray-900">{t("brand")}</span>
-                                <span className="text-gray-600">{product.brand_name}</span>
-                            </div>
+                            {product.attributes.map((attribute) => (
+                                <div className="flex justify-between" key={attribute.key}>
+                                    <span className="font-medium text-gray-900">{attribute.key}</span>
+                                    <span className="text-gray-600">{attribute.value}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </TabsContent>
