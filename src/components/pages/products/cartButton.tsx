@@ -40,7 +40,7 @@ function CartButton({ product }: { product: Product }) {
                     title: product.name,
                     brand: product.brand_name ?? '',
                     volume: '50 ML',
-                    price: product.price,
+                    price: product.price ?? 0,
                     qty: 1,
                     selected: true,
                     image: product.image || ''

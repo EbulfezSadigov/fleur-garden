@@ -56,7 +56,7 @@ export interface Product {
     discount: number | null,
     slug: string,
     code: string,
-    price: number,
+    price: number | null,
     stock: number,
     image: string,
     thumb_image: string,
@@ -67,7 +67,11 @@ export interface Product {
     star: number,
     attributes: {
         key: string
-        value: string
+        value: string | null
+    }[]
+    price_by_size?: {
+        price: number
+        size: number
     }[]
 }
 
@@ -120,7 +124,7 @@ export interface Category {
     id: number
     name: string
     slug: string
-    category:{
+    category: {
         id: number
         name: string
         slug: string

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Heart, Scale, Star, Plus, Minus } from "lucide-react"
@@ -9,14 +9,36 @@ import ShareDialog from "@/components/shared/share-dialog"
 import { useTranslations } from "next-intl"
 import { Product } from "@/types"
 import { toast } from "sonner"
+import { Input } from "@/components/ui/input"
 
 function ProductContainer({ product }: { product: Product }) {
     const [quantity, setQuantity] = useState(1)
-    const [selectedSize, setSelectedSize] = useState("50 ML")
+    const hasUnifiedPrice = product.price !== null && product.price !== undefined
+    const [selectedSize, setSelectedSize] = useState<string>("")
+    const [customSize, setCustomSize] = useState<string>("")
     const [isFavorite, setIsFavorite] = useState(false)
     const [isInComparison, setIsInComparison] = useState(false)
 
     const t = useTranslations("product_page")
+
+    // Prepare size options from API shape when price is null
+    const sizeOptions = useMemo(() => {
+        if (hasUnifiedPrice) return [] as Array<{ label: string; value: string; price: number }>
+        const entries = Array.isArray(product.price_by_size) ? product.price_by_size : []
+        return entries
+            .filter(item => typeof item.size === 'number' && typeof item.price === 'number')
+            .map(item => ({
+                label: `${item.size} ML`,
+                value: String(item.size),
+                price: item.price,
+            }))
+    }, [product.price_by_size, hasUnifiedPrice])
+
+    const selectedSizePrice = useMemo(() => {
+        if (hasUnifiedPrice) return product.price ?? 0
+        const found = sizeOptions.find(opt => opt.value === selectedSize)
+        return found?.price ?? 0
+    }, [hasUnifiedPrice, product.price, sizeOptions, selectedSize])
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -30,6 +52,13 @@ function ProductContainer({ product }: { product: Product }) {
             setIsInComparison(isInComparisonList)
         }
     }, [product.id])
+
+    // Initialize default selected size from API when price is null
+    useEffect(() => {
+        if (!hasUnifiedPrice && sizeOptions.length > 0 && !selectedSize) {
+            setSelectedSize(sizeOptions[0].value)
+        }
+    }, [hasUnifiedPrice, sizeOptions, selectedSize])
 
     const incrementQuantity = () => setQuantity((prev) => prev + 1)
     const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1))
@@ -83,6 +112,53 @@ function ProductContainer({ product }: { product: Product }) {
             }
         } catch (error) {
             console.error('Failed to write comparison to localStorage', error)
+            toast.error('Xəta baş verdi')
+        }
+    }
+
+    const handleAddToCart = () => {
+        try {
+            const chosenSize = hasUnifiedPrice ? Number(customSize) || null : Number(selectedSize)
+            if (hasUnifiedPrice && (chosenSize === null || chosenSize <= 0)) {
+                toast.error(t('please_enter_valid_volume') || 'Zəhmət olmasa həcmi daxil edin')
+                return
+            }
+
+            const unitPrice = selectedSizePrice
+            const cartItem = {
+                id: product.id,
+                product,
+                name: product.name,
+                image: product.thumb_image || product.image,
+                quantity,
+                size: chosenSize, // ML
+                price: unitPrice, // unit price for this size
+                subtotal: unitPrice * quantity,
+            }
+
+            // Persist to localStorage and merge by (id, size)
+            const storageKey = 'cart'
+            const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
+            const cart: Array<typeof cartItem> = raw ? JSON.parse(raw) : []
+
+            const existingIndex = cart.findIndex(item => item.id === product.id && (item.size ?? null) === (chosenSize ?? null))
+            if (existingIndex >= 0) {
+                const existing = cart[existingIndex]
+                const newQuantity = existing.quantity + quantity
+                cart[existingIndex] = {
+                    ...existing,
+                    quantity: newQuantity,
+                    subtotal: existing.price * newQuantity,
+                }
+            } else {
+                cart.push(cartItem)
+            }
+
+            window.localStorage.setItem(storageKey, JSON.stringify(cart))
+            window.dispatchEvent(new CustomEvent('cartChanged'))
+            toast.success(t('added_to_cart') || 'Səbətə əlavə olundu')
+        } catch (error) {
+            console.error('Failed to add to cart', error)
             toast.error('Xəta baş verdi')
         }
     }
@@ -142,26 +218,43 @@ function ProductContainer({ product }: { product: Product }) {
                     </div>
                 </div>
 
-                {/* Size Selector */}
+                {/* Volume: Select when price-by-size, Number input when single price */}
                 <div className="flex items-center gap-2">
                     <label className="text-sm font-medium text-gray-700">{t("product_volume")}:</label>
-                    <Select value={selectedSize} onValueChange={setSelectedSize}>
-                        <SelectTrigger className="w-32">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="30 ML">30 ML</SelectItem>
-                            <SelectItem value="50 ML">50 ML</SelectItem>
-                            <SelectItem value="90 ML">90 ML</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    {hasUnifiedPrice ? (
+                        <Input
+                            type="number"
+                            min={1}
+                            inputMode="numeric"
+                            value={customSize}
+                            onChange={(e) => setCustomSize(e.target.value)}
+                            className="w-32"
+                            placeholder="ML"
+                        />
+                    ) : (
+                        <Select value={selectedSize} onValueChange={setSelectedSize}>
+                            <SelectTrigger className="w-32">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {sizeOptions.map(opt => (
+                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
                 </div>
 
                 {/* Price */}
                 <div className="space-y-2">
-                    <div className="text-3xl font-bold text-gray-900">{product.price} AZN</div>
+                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice} AZN</div>
                     <div className="flex justify-between">
-                        <div className="text-sm text-gray-500">200 ml (1.50 ₼ / ml)</div>
+                        <div className="flex items-center gap-2">
+                            <div className="text-sm text-gray-500">
+                                {!hasUnifiedPrice && selectedSize ? `${selectedSize} ml` : customSize ? `${customSize} ml` : ''} {" "}
+                            </div>
+                            {customSize && <span>({product?.price ? product?.price * Number(customSize) : 0} AZN)</span>}
+                        </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 9H12.01M11 12H12V16H13M12 3C19.2 3 21 4.8 21 12C21 19.2 19.2 21 12 21C4.8 21 3 19.2 3 12C3 4.8 4.8 3 12 3Z" stroke="#77777B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -183,7 +276,7 @@ function ProductContainer({ product }: { product: Product }) {
                         </button>
                     </div>
 
-                    <Button className="flex-1 bg-black hover:bg-gray-800 text-white py-3 px-8 rounded-[10px] font-medium">
+                    <Button onClick={handleAddToCart} className="flex-1 bg-black hover:bg-gray-800 text-white py-3 px-8 rounded-[10px] font-medium">
                         {t("add_to_cart")}
                     </Button>
                 </div>

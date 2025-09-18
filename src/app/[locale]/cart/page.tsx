@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
+import { Product } from '@/types'
 
 interface CartItemData {
     id: string
@@ -37,6 +38,18 @@ interface LocalStorageCartItem {
     }
 }
 
+// Newer cart format used by product page add-to-cart
+interface CartStorageItemV2 {
+    id: number
+    product?: Product
+    name: string
+    image: string
+    quantity: number
+    size: number | null
+    price: number
+    subtotal: number
+}
+
 function formatCurrency(amount: number | string) {
     const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/[^\d.-]/g, '')) : amount
     return `${numAmount.toFixed(2)} AZN`
@@ -48,12 +61,25 @@ function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): Ca
         title: item.product.name,
         brand: item.product.brand,
         volume: '50 ML', // Default volume since it's not in the product data
-        price: typeof item.product.price === 'string' 
-            ? parseFloat(item.product.price.replace(/[^\d.-]/g, '')) 
+        price: typeof item.product.price === 'string'
+            ? parseFloat(item.product.price.replace(/[^\d.-]/g, ''))
             : item.product.price,
         qty: item.qty,
         selected: true,
         image: item.product.image || ""
+    }))
+}
+
+function transformV2Data(v2: CartStorageItemV2[]): CartItemData[] {
+    return v2.map(item => ({
+        id: `${item.id}-${item.size ?? 'na'}`,
+        title: item.name,
+        brand: item.product?.brand_name ?? '',
+        volume: item.size ? `${item.size} ML` : '',
+        price: item.price,
+        qty: item.quantity,
+        selected: true,
+        image: item.image || "",
     }))
 }
 
@@ -125,41 +151,100 @@ function CartItem({ item, onChange }: { item: CartItemData; onChange: (next: Car
 function Cart() {
     const [items, setItems] = React.useState<CartItemData[]>([])
     const [isInitialized, setIsInitialized] = React.useState(false)
+    const [usingV2, setUsingV2] = React.useState(false)
+    const originalV2ByKey = React.useRef<Record<string, CartStorageItemV2>>({})
 
     const t = useTranslations("cart")
 
-    // Load cart data from localStorage on component mount
+    // Load cart data from localStorage on component mount and on cartChanged
     React.useEffect(() => {
-        try {
-            const savedCart = localStorage.getItem('cart')
-            if (savedCart) {
-                const parsedCart = JSON.parse(savedCart)
-                // Check if it's the new format (CartItemData[]) or old format (LocalStorageCartItem[])
-                if (parsedCart.length > 0 && parsedCart[0].product) {
-                    // Old format from product card - transform it
-                    setItems(transformLocalStorageData(parsedCart))
+        function load() {
+            try {
+                const savedCart = localStorage.getItem('cart')
+                if (savedCart) {
+                    const parsedCart = JSON.parse(savedCart)
+                    if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+                        // Detect V2
+                        if (parsedCart[0] && typeof parsedCart[0].subtotal === 'number' && 'quantity' in parsedCart[0]) {
+                            const v2 = parsedCart as CartStorageItemV2[]
+                            setUsingV2(true)
+                            // Keep originals for accurate save-back
+                            originalV2ByKey.current = v2.reduce((acc, it) => {
+                                const key = `${it.id}-${it.size ?? 'na'}`
+                                acc[key] = it
+                                return acc
+                            }, {} as Record<string, CartStorageItemV2>)
+                            setItems(transformV2Data(v2))
+                        } else if (parsedCart[0].product) {
+                            // Very old format from product card - transform it
+                            setUsingV2(false)
+                            setItems(transformLocalStorageData(parsedCart))
+                        } else {
+                            // Already in CartItemData[] format
+                            setUsingV2(false)
+                            setItems(parsedCart)
+                        }
+                    } else {
+                        setItems([])
+                    }
                 } else {
-                    // New format - use as is
-                    setItems(parsedCart)
+                    setItems([])
                 }
+            } catch (error) {
+                console.error('Error loading cart from localStorage:', error)
+            } finally {
+                setIsInitialized(true)
             }
-        } catch (error) {
-            console.error('Error loading cart from localStorage:', error)
-        } finally {
-            setIsInitialized(true)
         }
+        load()
+        const handler = () => load()
+        window.addEventListener('cartChanged', handler)
+        return () => window.removeEventListener('cartChanged', handler)
     }, [])
 
     // Save cart data to localStorage whenever items change (but not on initial load)
     React.useEffect(() => {
         if (isInitialized) {
             try {
-                localStorage.setItem('cart', JSON.stringify(items))
+                if (usingV2) {
+                    // Map back into V2 storage format preserving product info where possible
+                    const v2: CartStorageItemV2[] = items.map(it => {
+                        const [rawId, rawSize] = it.id.split('-')
+                        const idNum = Number(rawId)
+                        const sizeNum = rawSize === 'na' ? null : Number(rawSize)
+                        const key = `${idNum}-${sizeNum ?? 'na'}`
+                        const original = originalV2ByKey.current[key]
+                        const price = it.price
+                        const quantity = it.qty
+                        const base: CartStorageItemV2 = original ? {
+                            ...original,
+                            name: it.title,
+                            image: it.image,
+                            price,
+                            quantity,
+                            size: sizeNum,
+                            subtotal: price * quantity,
+                        } : {
+                            id: idNum,
+                            product: undefined,
+                            name: it.title,
+                            image: it.image,
+                            price,
+                            quantity,
+                            size: sizeNum,
+                            subtotal: price * quantity,
+                        }
+                        return base
+                    })
+                    localStorage.setItem('cart', JSON.stringify(v2))
+                } else {
+                    localStorage.setItem('cart', JSON.stringify(items))
+                }
             } catch (error) {
                 console.error('Error saving cart to localStorage:', error)
             }
         }
-    }, [items, isInitialized])
+    }, [items, isInitialized, usingV2])
 
     const allSelected = items.length > 0 && items.every((p) => p.selected)
     const [promo, setPromo] = React.useState<string>('')
