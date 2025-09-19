@@ -42,7 +42,7 @@ export async function BlogSection({ blogPosts }: { blogPosts: Blog[] }) {
                                 <div className="space-y-2">
                                     <p className="text-xs text-[#77777B] font-medium">{post.read_min}</p>
                                     <h3 className="text-lg font-medium text-primary">{post.title}</h3>
-                                    <p dangerouslySetInnerHTML={{ __html: post.description }} className="text-sm text-[#77777B] leading-relaxed line-clamp-2" />
+                                    <p dangerouslySetInnerHTML={{ __html: post.description }} className="text-sm [&>span]:!text-[#77777B] leading-relaxed line-clamp-2" />
                                 </div>
                             </div>
                         </Link>

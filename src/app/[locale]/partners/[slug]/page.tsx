@@ -30,7 +30,7 @@ export default async function Partner({ params }: { params: Promise<{ slug: stri
 
         {/* Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-          <div className="text-[#77777B] leading-7 text-base space-y-4">
+          <div className="text-[#77777B] leading-7 text-base space-y-4 [&_span]:!text-[#77777B]">
             <p dangerouslySetInnerHTML={{ __html: partner?.description || "" }} />
           </div>
 

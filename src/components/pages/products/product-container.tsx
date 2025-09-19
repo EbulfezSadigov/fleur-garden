@@ -118,44 +118,65 @@ function ProductContainer({ product }: { product: Product }) {
 
     const handleAddToCart = () => {
         try {
-            const chosenSize = hasUnifiedPrice ? Number(customSize) || null : Number(selectedSize)
-            if (hasUnifiedPrice && (chosenSize === null || chosenSize <= 0)) {
-                toast.error(t('please_enter_valid_volume') || 'Zəhmət olmasa həcmi daxil edin')
-                return
+            // Use the SAME schema as the quick `CartButton` so the cart page renders consistently
+            type CartItem = {
+                id: string
+                title: string
+                brand: string
+                volume: string
+                price: number
+                qty: number
+                selected: boolean
+                image: string
             }
 
-            const unitPrice = selectedSizePrice
-            const cartItem = {
-                id: product.id,
-                product,
-                name: product.name,
-                image: product.thumb_image || product.image,
-                quantity,
-                size: chosenSize, // ML
-                price: unitPrice, // unit price for this size
-                subtotal: unitPrice * quantity,
-            }
-
-            // Persist to localStorage and merge by (id, size)
             const storageKey = 'cart'
             const raw = typeof window !== 'undefined' ? window.localStorage.getItem(storageKey) : null
-            const cart: Array<typeof cartItem> = raw ? JSON.parse(raw) : []
+            const cart: CartItem[] = raw ? JSON.parse(raw) : []
 
-            const existingIndex = cart.findIndex(item => item.id === product.id && (item.size ?? null) === (chosenSize ?? null))
-            if (existingIndex >= 0) {
-                const existing = cart[existingIndex]
-                const newQuantity = existing.quantity + quantity
-                cart[existingIndex] = {
-                    ...existing,
-                    quantity: newQuantity,
-                    subtotal: existing.price * newQuantity,
+            const id = String(product.id)
+
+            // Resolve volume label and price according to pricing mode
+            let volumeLabel = ''
+            let priceValue = 0
+
+            if (hasUnifiedPrice) {
+                const v = Number(customSize)
+                if (!v || Number.isNaN(v) || v <= 0) {
+                    toast.error(t('please_enter_valid_volume') || 'Zəhmət olmasa həcmi daxil edin')
+                    return
                 }
+                volumeLabel = `${v} ML`
+                priceValue = (product.price ?? 0) * v
             } else {
-                cart.push(cartItem)
+                const v = Number(selectedSize)
+                volumeLabel = v ? `${v} ML` : ''
+                priceValue = selectedSizePrice
+            }
+
+            const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeLabel)
+            if (existingIndex >= 0) {
+                // Same product and same volume → increment qty only
+                cart[existingIndex].qty += quantity
+                cart[existingIndex].price = priceValue
+            } else {
+                cart.push({
+                    id,
+                    title: product.name,
+                    brand: product.brand_name ?? '',
+                    volume: volumeLabel,
+                    price: priceValue,
+                    qty: quantity,
+                    selected: true,
+                    image: product.image || ''
+                })
             }
 
             window.localStorage.setItem(storageKey, JSON.stringify(cart))
-            window.dispatchEvent(new CustomEvent('cartChanged'))
+            try {
+                window.dispatchEvent(new Event('cart:updated'))
+                window.dispatchEvent(new CustomEvent('cartChanged'))
+            } catch { }
             toast.success(t('added_to_cart') || 'Səbətə əlavə olundu')
         } catch (error) {
             console.error('Failed to add to cart', error)

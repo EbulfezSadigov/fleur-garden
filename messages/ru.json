@@ -141,7 +141,10 @@
     "share_your_thoughts": "Поделиться своими мыслями",
     "order_conditions_and_delivery_information": "Условия заказа и доставка будут показаны здесь.",
     "our_selection_for_you": "Наши выбор для вас",
-    "more": "Больше"
+    "more": "Больше",
+    "share": "Поделиться",
+    "please_enter_valid_volume": "Пожалуйста, введите валидный объем",
+    "added_to_cart": "Добавлено в корзину"
   },
   "favorites":{
     "favorites": "Избранное",

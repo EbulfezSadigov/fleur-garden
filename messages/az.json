@@ -141,7 +141,9 @@
     "order_conditions_and_delivery_information": "Sifariş şərtləri və çatdırılma məlumatları burada göstəriləcək.",
     "our_selection_for_you": "Sizin üçün seçdiklərimiz",
     "more": "Daha çox",
-    "share": "Paylaş"
+    "share": "Paylaş",
+    "please_enter_valid_volume": "Zəhmət olmasa həcmi daxil edin",
+    "added_to_cart": "Səbətə əlavə olundu"
   },
   "favorites": {
     "favorites": "Sevimli məhsullar",

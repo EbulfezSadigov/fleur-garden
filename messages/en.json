@@ -141,7 +141,10 @@
     "share_your_thoughts": "Share your thoughts",
     "order_conditions_and_delivery_information": "Order conditions and delivery information will be shown here.",
     "our_selection_for_you": "Our selection for you",
-    "more": "More"
+    "more": "More",
+    "share": "Share",
+    "please_enter_valid_volume": "Please enter valid volume",
+    "added_to_cart": "Added to cart"
   },
   "favorites": {
     "favorites": "Favorites",

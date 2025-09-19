@@ -38,7 +38,6 @@ interface LocalStorageCartItem {
     }
 }
 
-// Newer cart format used by product page add-to-cart
 interface CartStorageItemV2 {
     id: number
     product?: Product
@@ -48,6 +47,8 @@ interface CartStorageItemV2 {
     size: number | null
     price: number
     subtotal: number
+    pricingMode?: 'unified' | 'by_size'
+    distinguish?: string
 }
 
 function formatCurrency(amount: number | string) {
@@ -224,6 +225,8 @@ function Cart() {
                             quantity,
                             size: sizeNum,
                             subtotal: price * quantity,
+                            pricingMode: original.pricingMode,
+                            distinguish: original.distinguish ?? `${idNum}-${sizeNum ?? 'na'}`,
                         } : {
                             id: idNum,
                             product: undefined,
@@ -233,6 +236,8 @@ function Cart() {
                             quantity,
                             size: sizeNum,
                             subtotal: price * quantity,
+                            pricingMode: undefined,
+                            distinguish: `${idNum}-${sizeNum ?? 'na'}`,
                         }
                         return base
                     })
