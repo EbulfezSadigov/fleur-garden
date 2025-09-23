@@ -50,32 +50,38 @@ export function FilterSidebar({ className, brands, categories, isFetching }: Fil
   const searchParams = useSearchParams()
 
   const [brandId, setBrandId] = useState<number>(0)
-  const [categoryId, setCategoryId] = useState<number>(0)
+  const [categoryIds, setCategoryIds] = useState<number[]>([])
   const [minPrice, setMinPrice] = useState<number>(0)
   const [maxPrice, setMaxPrice] = useState<number>(5600)
   const [typeId, setTypeId] = useState<number>(0)
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
+  const [expandedCategoryIds, setExpandedCategoryIds] = useState<Set<number>>(new Set())
 
-  // Sync state from URL on mount and whenever URL params change, without racing local updates
   const prevUrlKeyRef = useRef<string | null>(null)
   useEffect(() => {
     const spBrand = Number(searchParams.get("brand_id") || 0)
-    const spCategory = Number(searchParams.get("category_id") || 0)
+    const spCategoryVals = searchParams.getAll("category_id")
+    const spCategoryCsv = searchParams.get("category_id")
     const spMin = Number(searchParams.get("min_price") || 0)
     const spMax = Number(searchParams.get("max_price") || 5600)
     const spType = Number(searchParams.get("type") || 0)
 
     const nextBrand = Number.isNaN(spBrand) ? 0 : spBrand
-    const nextCategory = Number.isNaN(spCategory) ? 0 : spCategory
+    const nextCategoryIds = (
+      spCategoryVals.length > 0 ? spCategoryVals : (spCategoryCsv ? [spCategoryCsv] : [])
+    )
+      .flatMap((v) => v.split(","))
+      .map((v) => Number(v))
+      .filter((n) => !Number.isNaN(n))
     const nextMin = Number.isNaN(spMin) ? 0 : spMin
     const nextMax = Number.isNaN(spMax) ? 5600 : spMax
     const nextType = Number.isNaN(spType) ? 0 : spType
 
-    const nextKey = `${nextBrand}|${nextCategory}|${nextMin}|${nextMax}|${nextType}`
+    const nextKey = `${nextBrand}|${nextCategoryIds.join(',')}|${nextMin}|${nextMax}|${nextType}`
 
     if (!isInitialized) {
       setBrandId(nextBrand)
-      setCategoryId(nextCategory)
+      setCategoryIds(nextCategoryIds)
       setMinPrice(nextMin)
       setMaxPrice(nextMax)
       setTypeId(nextType)
@@ -86,7 +92,7 @@ export function FilterSidebar({ className, brands, categories, isFetching }: Fil
 
     if (prevUrlKeyRef.current !== nextKey) {
       setBrandId(nextBrand)
-      setCategoryId(nextCategory)
+      setCategoryIds(nextCategoryIds)
       setMinPrice(nextMin)
       setMaxPrice(nextMax)
       setTypeId(nextType)
@@ -94,10 +100,9 @@ export function FilterSidebar({ className, brands, categories, isFetching }: Fil
     }
   }, [searchParams, isInitialized])
 
-  // Update URL when filters change (but not on initialization)
   const updateURL = useCallback((
     newBrandId: number,
-    newCategoryId: number,
+    newCategoryIds: number[],
     newMinPrice: number,
     newMaxPrice: number,
     newTypeId: number
@@ -107,7 +112,7 @@ export function FilterSidebar({ className, brands, categories, isFetching }: Fil
     const params = new URLSearchParams()
 
     if (newBrandId > 0) params.set("brand_id", String(newBrandId))
-    if (newCategoryId > 0) params.set("category_id", String(newCategoryId))
+    if (newCategoryIds.length > 0) params.set("category_id", newCategoryIds.join(","))
     if (newMinPrice > 0) params.set("min_price", String(newMinPrice))
     if (newMaxPrice < 5600) params.set("max_price", String(newMaxPrice))
     if (newTypeId > 0) params.set("type", String(newTypeId))
@@ -120,19 +125,31 @@ export function FilterSidebar({ className, brands, categories, isFetching }: Fil
 
   // Update URL when filter values change
   useEffect(() => {
-    updateURL(brandId, categoryId, minPrice, maxPrice, typeId)
-  }, [brandId, categoryId, minPrice, maxPrice, typeId, updateURL])
+    updateURL(brandId, categoryIds, minPrice, maxPrice, typeId)
+  }, [brandId, categoryIds, minPrice, maxPrice, typeId, updateURL])
 
   const filters: FilterProductsPayload = useMemo(() => ({
     brand_id: brandId,
-    category_id: categoryId,
+    category_id: categoryIds,
     min_price: minPrice,
     max_price: maxPrice,
     stock: 0,
     type: typeId,
-  }), [brandId, categoryId, minPrice, maxPrice, typeId])
+  }), [brandId, categoryIds, minPrice, maxPrice, typeId])
 
   useMemo(() => filters, [filters])
+
+  function toggleCategoryExpanded(categoryIdToToggle: number) {
+    setExpandedCategoryIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(categoryIdToToggle)) {
+        next.delete(categoryIdToToggle)
+      } else {
+        next.add(categoryIdToToggle)
+      }
+      return next
+    })
+  }
 
   return (
     <aside
@@ -224,27 +241,76 @@ export function FilterSidebar({ className, brands, categories, isFetching }: Fil
       <FilterSection title={tf("category")} defaultOpen>
         <div className="max-h-48 overflow-auto pr-1 space-y-2 mt-1">
           {categories.map((cat) => {
-            const parentChecked = (categoryId ?? 0) === cat.id
+            const hasChildren = !!cat.category && cat.category.length > 0
+            const childIds = hasChildren ? cat.category.map((c) => c.id) : []
+            const selectedChildrenCount = childIds.filter((id) => categoryIds.includes(id)).length
+            const allChildrenSelected = hasChildren && childIds.length > 0 && selectedChildrenCount === childIds.length
+            const someChildrenSelected = hasChildren && selectedChildrenCount > 0 && !allChildrenSelected
+            const parentChecked = hasChildren ? (allChildrenSelected ? true : (someChildrenSelected ? "indeterminate" : false)) : categoryIds.includes(cat.id)
+            const isExpanded = expandedCategoryIds.has(cat.id)
             return (
               <div key={cat.id} className="space-y-2">
-                <label className="flex items-center gap-2 text-sm text-primary">
-                  <Checkbox
-                    className="border-primary"
-                    checked={parentChecked}
-                    onCheckedChange={() => setCategoryId(parentChecked ? 0 : cat.id)}
-                  />
-                  {cat.name}
-                </label>
-                {cat.category && cat.category.length > 0 && (
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 text-sm text-primary">
+                    <Checkbox
+                      className="border-primary"
+                      checked={parentChecked}
+                      onCheckedChange={() => {
+                        if (hasChildren) {
+                          setCategoryIds((prev) => {
+                            const set = new Set(prev)
+                            if (allChildrenSelected || someChildrenSelected) {
+                              // Unselect all children
+                              childIds.forEach((id) => set.delete(id))
+                            } else {
+                              // Select all children
+                              childIds.forEach((id) => set.add(id))
+                            }
+                            // Ensure parent ID is not included in payload
+                            set.delete(cat.id)
+                            return Array.from(set)
+                          })
+                        } else {
+                          // Leaf category without children – toggle itself
+                          setCategoryIds((prev) => {
+                            const set = new Set(prev)
+                            if (set.has(cat.id)) set.delete(cat.id)
+                            else set.add(cat.id)
+                            return Array.from(set)
+                          })
+                        }
+                      }}
+                    />
+                    {cat.name}
+                  </label>
+                  {hasChildren && (
+                    <button
+                      type="button"
+                      aria-label="Toggle subcategories"
+                      className="text-gray-400 hover:text-gray-600"
+                      onClick={() => toggleCategoryExpanded(cat.id)}
+                    >
+                      {isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                    </button>
+                  )}
+                </div>
+                {hasChildren && isExpanded && (
                   <div className="ml-6 space-y-2">
                     {cat.category.map((sub) => {
-                      const subChecked = (categoryId ?? 0) === sub.id
+                      const subChecked = categoryIds.includes(sub.id)
                       return (
                         <label key={sub.id} className="flex items-center gap-2 text-sm text-primary">
                           <Checkbox
                             className="border-primary"
                             checked={subChecked}
-                            onCheckedChange={() => setCategoryId(subChecked ? 0 : sub.id)}
+                            onCheckedChange={() => {
+                              setCategoryIds((prev) => {
+                                const set = new Set(prev)
+                                if (subChecked) set.delete(sub.id)
+                                else set.add(sub.id)
+                                return Array.from(set)
+                              })
+                            }}
                           />
                           {sub.name}
                         </label>

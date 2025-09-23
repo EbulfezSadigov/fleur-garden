@@ -3,20 +3,13 @@
 import React from 'react'
 import Container from "../shared/container"
 import { navigationItems } from "@/utils/static"
-import { Link, usePathname } from "@/i18n/navigation"
+import { Link } from "@/i18n/navigation"
 import Image from "next/image"
 import { useTranslations } from 'next-intl'
 import { Contact, Social } from "@/types/home"
 
 function ClientFooter({ contact, socials }: { contact: Contact, socials: Social[] }) {
     const t = useTranslations("navigation")
-    const pathname = usePathname()
-
-    const routes = ["/login", "/register","/forgot-password","/reset-password"]
-
-    const isRouteActive = routes.includes(pathname)
-
-
     return (
         <footer className="bg-[#20201E] text-white py-12">
             <Container>
@@ -27,7 +20,7 @@ function ClientFooter({ contact, socials }: { contact: Contact, socials: Social[
                         <p className="text-gray-400 mb-6">{t("watch_us")}</p>
                         <div className="flex space-x-4">
                             {socials?.map((social) => (
-                                <Link href={social.link} className="text-gray-400 hover:text-white transition-colors" key={social.name}>
+                                <Link target="_blank" href={social.link} className="text-gray-400 hover:text-white transition-colors" key={social.name}>
                                     <Image src={social.image || ""} alt={social.name} width={20} height={20} />
                                 </Link>
                             ))}
@@ -74,7 +67,7 @@ function ClientFooter({ contact, socials }: { contact: Contact, socials: Social[
                         <span className="mr-2">©</span>
                         <span>Copyright | All Rights Reserved</span>
                     </div>
-                    <div className="text-gray-400 text-sm">Markup tərəfindən hazırlanıb</div>
+                    <div className="text-gray-400 text-sm"><Link href="https://markup.az" target="_blank" className="hover:text-white transition-colors">Markup</Link> tərəfindən hazırlanıb</div>
                 </div>
             </Container>
         </footer>

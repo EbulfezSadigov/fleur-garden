@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getAbout, getAdvantages } from "./api";
+import { getAbout, getAdvantages, getFaq, getContact } from "./api";
 
 const getAboutQuery = (locale: string) => {
     return queryOptions({
@@ -15,4 +15,18 @@ const getAdvantagesQuery = (locale: string) => {
     });
 };
 
-export { getAboutQuery, getAdvantagesQuery };   
+const getFaqQuery = (locale: string, token: string) => {
+    return queryOptions({
+        queryKey: ["faq"],
+        queryFn: () => getFaq(locale, token),
+    });
+};
+
+const getContactQuery = (locale: string) => {
+    return queryOptions({
+        queryKey: ["contact"],
+        queryFn: () => getContact(locale),
+    });
+};
+
+export { getAboutQuery, getAdvantagesQuery, getFaqQuery, getContactQuery };   

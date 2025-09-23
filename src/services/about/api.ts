@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types";
 import { get } from "@/lib/api";
-import { Advantage, About } from "@/types/home";
+import { Advantage, About, Faq, Contact } from "@/types/home";
 
 const getAbout = async (locale: string) => {
     const response = await get<ApiResponse<About>>(`about`, { params: { locale } });
@@ -12,4 +12,14 @@ const getAdvantages = async (locale: string) => {
     return response;
 };
 
-export { getAbout, getAdvantages };
+const getFaq = async (locale: string, token: string) => {
+    const response = await get<ApiResponse<Faq[]>>(`faqs`, { params: { locale }, headers: { Authorization: `Bearer ${token}` } });
+    return response;
+};
+
+const getContact = async (locale: string) => {
+    const response = await get<ApiResponse<Contact>>(`contact`, { params: { locale } });
+    return response;
+};
+
+export { getAbout, getAdvantages, getFaq, getContact };

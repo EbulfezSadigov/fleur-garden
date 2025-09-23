@@ -52,3 +52,13 @@ export interface About {
     image: string;
     thumb_image: string;
 }
+
+export interface Faq {
+    name: string;
+    faqs: FaqItem[];
+}
+
+export interface FaqItem {
+    question: string;
+    answer: string;
+}

@@ -55,19 +55,18 @@ const searchProducts = async (search: string) => {
 };
 
 const filterProducts = async (data: FilterProductsPayload, page?: number) => {
-  const formData = new FormData();
+  const payload: Partial<FilterProductsPayload> = {}
 
-  // Only append non-zero values to reduce payload
-  if (data.brand_id > 0) formData.append("brand_id", String(data.brand_id));
-  if (data.category_id > 0) formData.append("category_id", String(data.category_id));
-  if (data.min_price > 0) formData.append("min_price", String(data.min_price));
-  if (data.max_price < 5600) formData.append("max_price", String(data.max_price));
-  if (data.stock > 0) formData.append("stock", String(data.stock));
-  if (data.type > 0) formData.append("type", String(data.type));
+  if (data.brand_id > 0) payload.brand_id = data.brand_id
+  if (Array.isArray(data.category_id) && data.category_id.length > 0) payload.category_id = data.category_id
+  if (data.min_price > 0) payload.min_price = data.min_price
+  if (data.max_price < 5600) payload.max_price = data.max_price
+  if (data.stock > 0) payload.stock = data.stock
+  if (data.type > 0) payload.type = data.type
 
-  const products = await post<ApiResponse<Product[]>>(`filter`, formData, {
+  const products = await post<ApiResponse<Product[]>>(`filter`, payload, {
     params: page ? { page } : undefined,
-    headers: { "Content-Type": "multipart/form-data" },
+    // keep JSON; base client already sets application/json
   });
   return products;
 };

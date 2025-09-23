@@ -26,7 +26,12 @@ export default async function Partner({ params }: { params: Promise<{ slug: stri
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl font-light text-gray-900 mb-8">{partner?.name}</h1>
+        <h1 className="text-4xl font-light text-gray-900 mb-8 flex items-center gap-2">
+          {partner?.name}
+          <div className="border border-[#F2F4F8] rounded-full p-2">
+            <Image src={partner?.logo || ""} alt={`${partner?.name} logo`} width={1200} height={800} className="w-24 object-contain" />
+          </div>
+        </h1>
 
         {/* Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">

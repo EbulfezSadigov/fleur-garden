@@ -144,7 +144,8 @@
     "more": "Больше",
     "share": "Поделиться",
     "please_enter_valid_volume": "Пожалуйста, введите валидный объем",
-    "added_to_cart": "Добавлено в корзину"
+    "added_to_cart": "Добавлено в корзину",
+    "submitting": "Отправка..."
   },
   "favorites":{
     "favorites": "Избранное",

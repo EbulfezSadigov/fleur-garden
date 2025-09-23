@@ -144,7 +144,8 @@
     "more": "More",
     "share": "Share",
     "please_enter_valid_volume": "Please enter valid volume",
-    "added_to_cart": "Added to cart"
+    "added_to_cart": "Added to cart",
+    "submitting": "Submitting..."
   },
   "favorites": {
     "favorites": "Favorites",

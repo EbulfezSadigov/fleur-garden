@@ -9,14 +9,16 @@ import { Textarea } from "@/components/ui/textarea"
 import { Phone, Mail, MapPin } from "lucide-react"
 import Container from "@/components/shared/container"
 import PhoneInput from "react-phone-input-2"
-import { useTranslations } from "next-intl"
-import { useMutation } from "@tanstack/react-query"
+import { useLocale, useTranslations } from "next-intl"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { postContactMutation } from "@/services/home/mutations"
 import { Contact } from "@/types/home"
 import { toast } from "sonner"
+import { getContactQuery } from "@/services/about/queries"
 
 export default function ContactPage() {
   const t = useTranslations("contact")
+  const locale = useLocale()
   const { mutate: postContact } = useMutation(postContactMutation)
   const [formData, setFormData] = useState({
     full_name: "",
@@ -24,6 +26,10 @@ export default function ContactPage() {
     phone: "",
     message: "",
   })
+
+  const { data: contact } = useQuery(getContactQuery(locale)) 
+
+  const contactData = contact?.data
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -62,7 +68,7 @@ export default function ContactPage() {
                   <Phone className="w-5 h-5 text-gray-600" />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">{t("phone")}</p>
-                    <p className="text-lg font-semibold text-gray-900">994 70 700 70 70</p>
+                    <p className="text-lg font-semibold text-gray-900">{contactData?.phone}</p>
                   </div>
                 </div>
               </div>
@@ -74,7 +80,7 @@ export default function ContactPage() {
                   <Mail className="w-5 h-5 text-gray-600" />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">{t("email")}</p>
-                    <p className="text-lg font-semibold text-gray-900">info@fleurgarden.com</p>
+                    <p className="text-lg font-semibold text-gray-900">{contactData?.email}</p>
                   </div>
                 </div>
               </div>
@@ -86,7 +92,7 @@ export default function ContactPage() {
                   <MapPin className="w-5 h-5 text-gray-600" />
                   <div>
                     <p className="text-sm text-gray-500 mb-1">{t("address")}</p>
-                    <p className="text-lg font-semibold text-gray-900">Azadlıq pros. 215, Binəqədi ray., Bakı</p>
+                    <p className="text-lg font-semibold text-gray-900">{contactData?.address}</p>
                   </div>
                 </div>
               </div>

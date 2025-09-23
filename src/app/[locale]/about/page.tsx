@@ -24,7 +24,7 @@ export default async function AboutPage() {
             <h1 className="text-4xl font-semibold text-foreground text-balance">{about?.title}</h1>
             <p dangerouslySetInnerHTML={{ __html: about?.description || "" }} className="text-lg text-muted-foreground leading-relaxed"></p>
           </div>
-          <div className="flex justify-center lg:justify-end h-[384px] rounded-[12px] overflow-hidden">
+          <div className="flex sticky top-40 justify-center lg:justify-end h-[384px] rounded-[12px] overflow-hidden">
             <Image
               src={about?.image || ""}
               alt="Elegant perfume bottle"

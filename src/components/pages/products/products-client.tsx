@@ -21,21 +21,28 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
     const sentinelRef = useRef<HTMLDivElement | null>(null)
 
     const brand_id = Number(searchParams.get("brand_id") || 0)
-    const category_id = Number(searchParams.get("category_id") || 0)
+    const categoryParamValues = searchParams.getAll("category_id")
+    const categoryParamCsv = searchParams.get("category_id")
+    const category_ids: number[] = (
+        categoryParamValues.length > 0 ? categoryParamValues : (categoryParamCsv ? [categoryParamCsv] : [])
+    )
+        .flatMap((v) => v.split(","))
+        .map((v) => Number(v))
+        .filter((n) => !Number.isNaN(n))
     const min_price = Number(searchParams.get("min_price") || 0)
     const max_price = Number(searchParams.get("max_price") || 5600)
     const type = Number(searchParams.get("type") || 0)
 
     const filters: FilterProductsPayload = {
         brand_id,
-        category_id,
+        category_id: category_ids,
         min_price,
         max_price,
         stock: 0,
         type,
     }
 
-    const isAnyFilterActive = brand_id > 0 || category_id > 0 || min_price > 0 || max_price < 5600 || type > 0
+    const isAnyFilterActive = brand_id > 0 || category_ids.length > 0 || min_price > 0 || max_price < 5600 || type > 0
 
     const query = useInfiniteQuery({
         ...filterProductsInfiniteQuery(filters),
@@ -49,10 +56,10 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
     const productsCount = products?.length ?? 0
 
     const brandId = brand_id
-    const categoryId = category_id
+    const selectedCategoryId = category_ids[0]
     const typeId = type
     const categoryName = useMemo(() => {
-        if (!categoryId || categoryId <= 0) return ""
+        if (!selectedCategoryId || selectedCategoryId <= 0) return ""
 
         const findInSubcategories = (
             subs: { id: number; name: string; slug: string }[],
@@ -75,8 +82,8 @@ export default function ProductsClient({ brands, categories }: ProductsClientPro
             return ""
         }
 
-        return findCategoryName(categories, categoryId)
-    }, [categories, categoryId])
+        return findCategoryName(categories, selectedCategoryId)
+    }, [categories, selectedCategoryId])
 
     const brandName = useMemo(() => {
         if (!brandId || brandId <= 0) return ""
