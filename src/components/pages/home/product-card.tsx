@@ -90,8 +90,8 @@ function ProductCard({ product }: ProductCardProps) {
 
                 <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between pt-2">
                     <div className='flex items-center gap-2'>
-                        <span className={`font-semibold text-primary ${product.discount ? 'text-[#77777B]' : 'text-primary'}`}>{product.discount ? product.discount : selectedSizePrice} AZN</span>
-                        {product.discount && <span className={`line-through ${product.discount ? 'text-[#77777B] text-sm' : 'text-primary text-lg font-semibold'}`}>{product.price} AZN</span>}
+                        <span className={`font-semibold text-primary ${product.discount ? 'text-[#77777B]' : 'text-primary'}`}>{product.discount ? (product?.price ? product?.price * (1 - product.discount / 100) : 0) : selectedSizePrice} AZN</span>
+                        {product.discount !== 0 && <span className={`line-through ${product.discount ? 'text-[#77777B] text-sm' : 'text-primary text-lg font-semibold'}`}>{product.price} AZN</span>}
                     </div>
                     <CartButton
                         product={product}

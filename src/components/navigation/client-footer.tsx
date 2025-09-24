@@ -67,7 +67,7 @@ function ClientFooter({ contact, socials }: { contact: Contact, socials: Social[
                         <span className="mr-2">©</span>
                         <span>Copyright | All Rights Reserved</span>
                     </div>
-                    <div className="text-gray-400 text-sm"><Link href="https://markup.az" target="_blank" className="hover:text-white transition-colors">Markup</Link> tərəfindən hazırlanıb</div>
+                    <div className="text-gray-400 text-sm"> <Link className="hover:text-white transition-colors" href="#">Well Vision</Link> və <Link href="https://markup.az" target="_blank" className="hover:text-white transition-colors">Markup</Link> tərəfindən hazırlanıb</div>
                 </div>
             </Container>
         </footer>

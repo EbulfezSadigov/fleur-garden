@@ -70,8 +70,8 @@ export function BlogPostClient({ locale, slug }: BlogPostClientProps) {
         <article>
           <BlogPostHeader title={post.title} heroImage={post.image} readingTime={post.read_min} shareUrl={shareUrl} />
 
-          <div className="prose prose-gray max-w-none px-12">
-            <div className="mb-8 text-[#77777B] leading-relaxed [&>span]:!text-[#77777B]" dangerouslySetInnerHTML={{ __html: post.description }} />
+          <div className="prose prose-gray max-w-none md:px-12">
+            <div className="mb-8 text-[#77777B] leading-relaxed [&>span]:!text-[#77777B] [&>div]:!bg-white" dangerouslySetInnerHTML={{ __html: post.description }} />
           </div>
         </article>
 
