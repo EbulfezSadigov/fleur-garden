@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useTranslations } from 'next-intl'
+import PhoneInput from 'react-phone-input-2'
 
 interface CheckoutItem {
     id: string
@@ -176,12 +177,18 @@ function Order() {
                             <div className="text-lg font-semibold">{t("personal_information")}</div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <Input placeholder={t("full_name")} value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                                <div className="flex gap-2">
-                                    <div className="w-24">
-                                        <Input readOnly value={'+994'} />
-                                    </div>
-                                    <Input placeholder={t("phone")} value={phone} onChange={(e) => setPhone(e.target.value)} />
-                                </div>
+                                <PhoneInput
+                                    country={'az'}
+                                    value={phone?.replace(/^\+/, '')}
+                                    onChange={(val) => setPhone(val ? `+${val}` : '')}
+                                    placeholder={t("phone")}
+                                    countryCodeEditable={false}
+                                    inputProps={{ name: 'phone', required: true }}
+                                    containerClass="w-full"
+                                    inputClass="!w-full !h-9 !text-base !bg-white !border !border-[#E4E7EC] !rounded-md !pl-12 !shadow-none focus:!border-[#E4E7EC] focus:!shadow-none"
+                                    buttonClass="!border !border-[#E4E7EC] !bg-white !rounded-l-md !h-9"
+                                    dropdownClass="!shadow-lg"
+                                />
                             </div>
                         </div>
 

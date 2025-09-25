@@ -186,7 +186,7 @@
     "promo_code": "Промокод",
     "promo_code_description": "Внимание! Только один промокод может быть использован.",
     "promo_code_applied": "20% Промокод применен!",
-    "promo_code_invalid": "Промокод неверный",
+    "promo_code_invalid": "Промокод не действителен",
     "products_price": "Цена продуктов",
     "discount": "Скидка",
     "total_price": "Итоговая цена",

@@ -186,7 +186,7 @@
     "promo_code": "Promo code",
     "promo_code_description": "Attention! Only one promo code can be used.",
     "promo_code_applied": "20% Promo code applied!",
-    "promo_code_invalid": "Promo code is invalid",
+    "promo_code_invalid": "Promo code is not valid",
     "products_price": "Products price",
     "discount": "Discount",
     "total_price": "Total price",
