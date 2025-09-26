@@ -11,6 +11,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useTranslations } from 'next-intl'
 import PhoneInput from 'react-phone-input-2'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { orderMutation } from '@/services/products/mutations'
+import type { OrderPayload } from '@/types'
+import { useRouter } from '@/i18n/navigation'
+import { toast } from 'sonner'
+import Cookies from 'js-cookie'
+import { getUserQuery } from '@/services/auth/queries'
 
 interface CheckoutItem {
     id: string
@@ -35,13 +42,27 @@ function Order() {
     const [city, setCity] = React.useState('Bakı')
     const [address, setAddress] = React.useState('')
     const [note, setNote] = React.useState('')
+    const [promo, setPromo] = React.useState('')
 
     const t = useTranslations("order")
+    const router = useRouter()
+
+    const accessToken = Cookies.get('access_token')
+
+    // Fetch authenticated user if token exists
+    const userQuery = useQuery({
+        ...getUserQuery(accessToken || ''),
+        enabled: Boolean(accessToken),
+        staleTime: 5 * 60 * 1000,
+    })
+
+    console.log(userQuery.data)
 
     // LocalStorage keys
     const STORAGE_KEYS = React.useMemo(() => ({
         items: 'cart',
         form: 'order.form',
+        payload: 'order.payload',
     }), [])
 
     function safeParseJSON<T>(value: string | null, fallback: T): T {
@@ -53,14 +74,97 @@ function Order() {
         }
     }
 
+    // Helpers to detect cart format and transform for UI + payload
+    function parseMl(value: unknown): number {
+        if (typeof value === 'number' && Number.isFinite(value)) return Math.max(0, Math.floor(value))
+        if (typeof value === 'string') {
+            const match = value.match(/(\d+)(?=\s*ml)/i) || value.match(/(\d+)/)
+            if (match && match[1]) return Math.max(0, Math.floor(Number(match[1])))
+        }
+        return 0
+    }
+    const buildProductsPayload = React.useCallback((raw: unknown): OrderPayload['products'] => {
+        if (!Array.isArray(raw)) return []
+        // V2 format: { id, quantity, size, subtotal, ... }
+        if (raw.length > 0 && typeof raw[0] === 'object' && raw[0] && 'quantity' in raw[0] && 'subtotal' in raw[0]) {
+            return (raw as Array<{ id: number; quantity: number; size: number | null }>).
+                map((it) => ({
+                    product_id: Number(it.id),
+                    quantity: Number(it.quantity),
+                    size: parseMl(it.size), // ensure ml
+                }))
+        }
+        // Very old format: { id, qty, product: {...} }
+        if (raw.length > 0 && typeof raw[0] === 'object' && raw[0] && 'product' in raw[0]) {
+            return (raw as Array<{ id: number; qty: number }>).map((it) => ({
+                product_id: Number(it.id),
+                quantity: Number(it.qty),
+                size: 0, // legacy format lacks size; server may handle default
+            }))
+        }
+        // Already UI CheckoutItem[] with id like `${id}-${size}`
+        return (raw as CheckoutItem[]).map((i) => {
+            const [rawId, rawSize] = String(i.id).split('-')
+            const productId = Number(rawId)
+            const sizeFromId = rawSize && rawSize !== 'na' ? parseMl(rawSize) : 0
+            const sizeFromVolume = parseMl(i.volume)
+            const finalSize = sizeFromVolume || sizeFromId
+            return {
+                product_id: productId,
+                quantity: Number(i.qty),
+                size: finalSize,
+            }
+        })
+    }, [])
+
+    function transformForUI(raw: unknown): CheckoutItem[] {
+        if (!Array.isArray(raw)) return []
+        // V2
+        if (raw.length > 0 && typeof raw[0] === 'object' && raw[0] && 'quantity' in raw[0] && 'subtotal' in raw[0]) {
+            return (raw as Array<{
+                id: number
+                name: string
+                image: string
+                price: number
+                quantity: number
+                size: number | null
+                product?: { brand_name?: string }
+            }>).map((it) => ({
+                id: `${it.id}-${it.size ?? 'na'}`,
+                title: it.name,
+                brand: it.product?.brand_name ?? '',
+                volume: it.size ? `${it.size} ML` : '',
+                price: Number(it.price),
+                qty: Number(it.quantity),
+                image: it.image || '',
+            }))
+        }
+        // Very old format
+        if (raw.length > 0 && typeof raw[0] === 'object' && raw[0] && 'product' in raw[0]) {
+            return (raw as Array<{ id: number; qty: number; product: { name: string; brand: string; price: string | number; image?: string } }>).
+                map((it) => ({
+                    id: String(it.id),
+                    title: it.product.name,
+                    brand: it.product.brand,
+                    volume: '',
+                    price: typeof it.product.price === 'string' ? parseFloat(it.product.price.replace(/[^\d.-]/g, '')) : Number(it.product.price ?? 0),
+                    qty: Number(it.qty),
+                    image: it.product.image || '',
+                }))
+        }
+        // Assume CheckoutItem[]
+        return raw as CheckoutItem[]
+    }
+
     // Load from localStorage on mount
     React.useEffect(() => {
         try {
-            const savedItems = safeParseJSON<CheckoutItem[]>(
+            const raw = safeParseJSON<unknown>(
                 typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEYS.items) : null,
                 []
             )
-            if (Array.isArray(savedItems) && savedItems.length) setItems(savedItems)
+            const uiItems = transformForUI(raw)
+            if (uiItems.length) setItems(uiItems)
 
             const savedForm = safeParseJSON<{
                 fullName?: string
@@ -69,6 +173,7 @@ function Order() {
                 address?: string
                 note?: string
                 payment?: 'card' | 'cod'
+                promo?: string
             }>(typeof window !== 'undefined' ? window.localStorage.getItem(STORAGE_KEYS.form) : null, {})
 
             if (savedForm.fullName) setFullName(savedForm.fullName)
@@ -77,11 +182,11 @@ function Order() {
             if (savedForm.address) setAddress(savedForm.address)
             if (savedForm.note) setNote(savedForm.note)
             if (savedForm.payment) setPayment(savedForm.payment)
+            if (savedForm.promo) setPromo(savedForm.promo)
         } catch {
             // ignore storage errors
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [STORAGE_KEYS.form, STORAGE_KEYS.items])
 
     // Persist items
     React.useEffect(() => {
@@ -100,17 +205,73 @@ function Order() {
             if (typeof window !== 'undefined') {
                 window.localStorage.setItem(
                     STORAGE_KEYS.form,
-                    JSON.stringify({ fullName, phone, city, address, note, payment })
+                    JSON.stringify({ fullName, phone, city, address, note, payment, promo })
                 )
             }
         } catch {
             // ignore storage errors
         }
-    }, [fullName, phone, city, address, note, payment, STORAGE_KEYS])
+    }, [fullName, phone, city, address, note, payment, promo, STORAGE_KEYS])
+
+    // Autofill from user when available
+    React.useEffect(() => {
+        const user = userQuery.data?.data
+        if (!user) return
+        if (!fullName && user.name) setFullName(user.name)
+        if (!phone && user.mobile) setPhone(user.mobile)
+        // No address/city in user shape; keep as-is
+    }, [userQuery.data, fullName, phone])
+
+    // Force COD when unauthenticated
+    React.useEffect(() => {
+        if (!accessToken) setPayment('cod')
+    }, [accessToken])
+
+    // Build and persist API payload whenever dependencies change
+    const payload: OrderPayload = React.useMemo(() => {
+        return {
+            name: fullName,
+            city,
+            address,
+            phone,
+            note,
+            payment_type: payment === 'card' ? '1' : '2',
+            products: buildProductsPayload(items),
+            promocode: promo,
+            user_id: userQuery.data?.data?.id
+        }
+    }, [fullName, phone, city, address, note, payment, promo, items, buildProductsPayload, userQuery.data])
+
+    React.useEffect(() => {
+        try {
+            if (typeof window !== 'undefined') {
+                window.localStorage.setItem(STORAGE_KEYS.payload, JSON.stringify(payload))
+            }
+        } catch {
+            // ignore storage errors
+        }
+    }, [payload, STORAGE_KEYS])
+
+    const submitOrder = useMutation(orderMutation(payload))
 
     const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0)
-    const discount = 2
-    const total = subtotal - discount
+    const total = subtotal
+
+    const orderAction = () => {
+        submitOrder.mutateAsync(undefined, {
+            onSuccess: (data) => {
+                if (payment === 'card') {
+                    router.push(data.data)
+                } else {
+                    router.push('/')
+                }
+                toast.success(t("order_success"))
+            },
+            onError: () => {
+                toast.error(t("order_failed"))
+            }
+        })
+    }
 
     return (
         <Container className="py-6 md:py-10">
@@ -156,13 +317,15 @@ function Order() {
                         <div className="space-y-2">
                             <div className="text-lg font-semibold">{t("payment_method")}</div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <label className={`flex items-center gap-3 rounded-md border p-3 cursor-pointer ${payment === 'card' ? 'border-primary' : 'border-[#F2F4F8]'}`}>
-                                    <input type="radio" name="payment" className="sr-only" checked={payment === 'card'} onChange={() => setPayment('card')} />
-                                    <span className="size-4 rounded-full border border-[#E4E7EC] grid place-content-center">
-                                        <span className={`size-2 rounded-full ${payment === 'card' ? 'bg-primary' : 'bg-transparent'}`} />
-                                    </span>
-                                    <span>{t("online_payment")}</span>
-                                </label>
+                                {accessToken && (
+                                    <label className={`flex items-center gap-3 rounded-md border p-3 cursor-pointer ${payment === 'card' ? 'border-primary' : 'border-[#F2F4F8]'}`}>
+                                        <input type="radio" name="payment" className="sr-only" checked={payment === 'card'} onChange={() => setPayment('card')} />
+                                        <span className="size-4 rounded-full border border-[#E4E7EC] grid place-content-center">
+                                            <span className={`size-2 rounded-full ${payment === 'card' ? 'bg-primary' : 'bg-transparent'}`} />
+                                        </span>
+                                        <span>{t("online_payment")}</span>
+                                    </label>
+                                )}
                                 <label className={`flex items-center gap-3 rounded-md border p-3 cursor-pointer ${payment === 'cod' ? 'border-primary' : 'border-[#F2F4F8]'}`}>
                                     <input type="radio" name="payment" className="sr-only" checked={payment === 'cod'} onChange={() => setPayment('cod')} />
                                     <span className="size-4 rounded-full border border-[#E4E7EC] grid place-content-center">
@@ -211,9 +374,27 @@ function Order() {
                         </div>
 
                         <div className="flex gap-3">
-                            <Button variant="outline" className="h-11 flex-1">{t("cancel")}</Button>
-                            <Button className="h-11 flex-1">{t("continue")}</Button>
+                            <Button
+                                variant="outline"
+                                className="h-11 flex-1"
+                                onClick={() => router.push('/cart')}
+                            >
+                                {t("cancel")}
+                            </Button>
+                            <Button
+                                className="h-11 flex-1"
+                                disabled={submitOrder.isPending || items.length === 0}
+                                onClick={orderAction}
+                            >
+                                {submitOrder.isPending ? t('processing') : t("continue")}
+                            </Button>
                         </div>
+                        {submitOrder.isError && (
+                            <div className="text-red-500 text-sm">{t('order_failed')}</div>
+                        )}
+                        {submitOrder.isSuccess && (
+                            <div className="text-emerald-600 text-sm">{t('order_success')}</div>
+                        )}
                     </div>
                 </div>
 
@@ -236,7 +417,7 @@ function Order() {
 
                         <div className="space-y-2 text-sm">
                             <div className="flex items-center justify-between"><span>{t("total_price")}</span><span className="font-medium">{formatCurrency(subtotal)}</span></div>
-                            <div className="flex items-center justify-between"><span>{t("discount")}</span><span className="font-medium">{formatCurrency(discount)}</span></div>
+                            {/* <div className="flex items-center justify-between"><span>{t("discount")}</span><span className="font-medium">{formatCurrency(0)}</span></div> */}
                         </div>
 
                         <div className="h-px bg-border" />

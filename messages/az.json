@@ -230,7 +230,11 @@
     "buyer": "Alıcı",
     "all_orders": "Bütün sifarişlər",
     "delivery_number": "Çatdırılma №",
-    "items": "adet"
+    "items": "adet",
+    "order_success": "Sifariş uğurla göndərildi",
+    "order_failed": "Sifariş göndərilərkən xəta baş verdi",
+    "processing": "Sifariş göndərilir...",
+    "promocode": "Promo kod"
   },
   "profile": {
     "profile_and_help": "Hesabım & Yardım",

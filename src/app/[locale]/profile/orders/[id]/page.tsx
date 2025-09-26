@@ -159,7 +159,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <StatusBadge status={order.status} />
+                            <StatusBadge status={Number(order.status)} />
                             <Button variant="secondary" className="bg-black hover:bg-black/80 text-white">{t("write_review")}</Button>
                         </div>
                     </div>

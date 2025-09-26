@@ -231,7 +231,11 @@
     "buyer": "Покупатель",
     "all_orders": "Все заказы",
     "delivery_number": "Номер доставки",
-    "items": "шт"
+    "items": "шт",
+    "processing": "Обработка...",
+    "order_success": "Заказ успешно отправлен",
+    "order_failed": "Заказ не был отправлен",
+    "promocode": "Промокод"
   },
   "profile":{
     "profile_and_help": "Профиль & Помощь",

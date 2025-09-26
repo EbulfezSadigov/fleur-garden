@@ -80,6 +80,7 @@ export interface ProductCardProps {
 }
 
 export interface User {
+    id?: number
     name: string
     email: string
     mobile: string
@@ -138,4 +139,77 @@ export interface FilterProductsPayload {
     max_price: number
     stock: number
     type: number
+}
+
+export interface OrderPayload {
+    name: string
+    phone: string
+    city: string
+    address: string
+    note: string
+    payment_type: string
+    promocode: string
+    user_id?: number
+    products: {
+        quantity: number
+        product_id: number
+        size: number
+    }[]
+}
+
+export interface Order {
+    address: string
+    city: string
+    note: string
+    order_status: number
+    payment_status: string
+    total_price: number
+    promocode: string
+    payment_type: number
+    details: {
+        product: string
+        quantity: string
+        size: number
+        price: number
+        total_price: number
+    }[]
+}
+
+
+export interface CartItemData {
+    id: string
+    title: string
+    brand: string
+    volume: string
+    price: number
+    qty: number
+    selected: boolean
+    image: string
+}
+
+export interface LocalStorageCartItem {
+    id: number
+    qty: number
+    product: {
+        id: number
+        name: string
+        brand: string
+        price: string
+        image?: string
+        rating: number
+        inStock: boolean
+    }
+}
+
+export interface CartStorageItemV2 {
+    id: number
+    product?: Product
+    name: string
+    image: string
+    quantity: number
+    size: number | null
+    price: number
+    subtotal: number
+    pricingMode?: 'unified' | 'by_size'
+    distinguish?: string
 }

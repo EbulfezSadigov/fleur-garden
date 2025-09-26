@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { filterProducts, getBrands, getCategories, getProduct, getProductReviews, getProducts, getRelatedProducts, searchProducts } from "./api";
+import { filterProducts, getBrands, getCategories, getOrders, getProduct, getProductReviews, getProducts, getRelatedProducts, searchProducts } from "./api";
 import { infiniteQueryOptions } from "@tanstack/react-query";
 import { FilterProductsPayload } from "@/types";
 
@@ -78,6 +78,13 @@ const filterProductsInfiniteQuery = (data: FilterProductsPayload) => {
     })
 }
 
+const getOrdersQuery = (token: string) => {
+    return queryOptions({
+        queryKey: ["orders"],
+        queryFn: () => getOrders(token),
+    });
+};
+
 export {
     getProductsQuery,
     getSearchProductsQuery,
@@ -88,4 +95,5 @@ export {
     getCategoriesQuery,
     filterProductsQuery,
     filterProductsInfiniteQuery,
+    getOrdersQuery,
 };

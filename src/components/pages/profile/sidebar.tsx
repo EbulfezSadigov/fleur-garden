@@ -21,7 +21,7 @@ function ProfileSidebar() {
         logoutMutation()
     }
     return (
-        <div className="w-full bg-white p-6"
+        <div className="w-full bg-white p-6 sticky top-40"
             style={{
                 borderRadius: "8px",
                 border: "1px solid #F2F4F8",

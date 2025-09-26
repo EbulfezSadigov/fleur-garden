@@ -17,9 +17,11 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
     const computedDialogPrice = React.useMemo(() => {
         if (!hasUnifiedPrice) return typeof selectedPrice === 'number' ? selectedPrice : 0
         const v = Number(volume)
-        if (!v || Number.isNaN(v) || v <= 0) return product.price ?? 0
-        return (product.price ?? 0) * v
-    }, [hasUnifiedPrice, volume, product.price, selectedPrice])
+        const discountPercent = typeof product.discount === 'number' ? product.discount : 0
+        const unitPrice = (product.price ?? 0) * (1 - discountPercent / 100)
+        if (!v || Number.isNaN(v) || v <= 0) return unitPrice
+        return unitPrice * v
+    }, [hasUnifiedPrice, volume, product.price, product.discount, selectedPrice])
 
     function handleAddToCart(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault()
@@ -94,7 +96,9 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
             const cart: CartItem[] = raw ? JSON.parse(raw) : []
 
             const id = String(product.id)
-            const totalPrice = (product.price ?? 0) * volumeMl
+            const discountPercent = typeof product.discount === 'number' ? product.discount : 0
+            const unitPrice = (product.price ?? 0) * (1 - discountPercent / 100)
+            const totalPrice = unitPrice * volumeMl
             const volumeStr = `${volumeMl} ML`
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeStr)
             if (existingIndex >= 0) {

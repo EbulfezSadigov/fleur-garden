@@ -38,7 +38,11 @@ export default async function FAQSection() {
                     boxShadow: "0 8px 12px 0 rgba(0, 0, 0, 0.03)",
                 }}>
                 <Tabs defaultValue={tabs?.[0]}>
-                    <TabsList className={`grid grid-cols-${tabs?.length} gap-1 mb-8 bg-gray-100 p-1 rounded-lg`}>
+                    <TabsList className={`grid gap-1 mb-8 bg-gray-100 p-1 rounded-lg`}
+                        style={{
+                            gridTemplateColumns: `repeat(${tabs?.length}, 1fr)`,
+                        }}
+                    >
                         {tabs?.map((tab) => (
                             <TabsTrigger
                                 key={tab}

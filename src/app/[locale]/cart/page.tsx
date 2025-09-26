@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Plus, Minus, Trash2 } from 'lucide-react'
 
@@ -11,45 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { Product } from '@/types'
-
-interface CartItemData {
-    id: string
-    title: string
-    brand: string
-    volume: string
-    price: number
-    qty: number
-    selected: boolean
-    image: string
-}
-
-interface LocalStorageCartItem {
-    id: number
-    qty: number
-    product: {
-        id: number
-        name: string
-        brand: string
-        price: string
-        image?: string
-        rating: number
-        inStock: boolean
-    }
-}
-
-interface CartStorageItemV2 {
-    id: number
-    product?: Product
-    name: string
-    image: string
-    quantity: number
-    size: number | null
-    price: number
-    subtotal: number
-    pricingMode?: 'unified' | 'by_size'
-    distinguish?: string
-}
+import { LocalStorageCartItem, CartItemData, CartStorageItemV2 } from '@/types'
 
 function formatCurrency(amount: number | string) {
     const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/[^\d.-]/g, '')) : amount
@@ -61,7 +23,7 @@ function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): Ca
         id: item.id.toString(),
         title: item.product.name,
         brand: item.product.brand,
-        volume: '50 ML', // Default volume since it's not in the product data
+        volume: '50 ML',
         price: typeof item.product.price === 'string'
             ? parseFloat(item.product.price.replace(/[^\d.-]/g, ''))
             : item.product.price,
@@ -150,15 +112,14 @@ function CartItem({ item, onChange }: { item: CartItemData; onChange: (next: Car
 }
 
 function Cart() {
-    const [items, setItems] = React.useState<CartItemData[]>([])
-    const [isInitialized, setIsInitialized] = React.useState(false)
-    const [usingV2, setUsingV2] = React.useState(false)
-    const originalV2ByKey = React.useRef<Record<string, CartStorageItemV2>>({})
+    const [items, setItems] = useState<CartItemData[]>([])
+    const [isInitialized, setIsInitialized] = useState(false)
+    const [usingV2, setUsingV2] = useState(false)
+    const originalV2ByKey = useRef<Record<string, CartStorageItemV2>>({})
 
     const t = useTranslations("cart")
 
-    // Load cart data from localStorage on component mount and on cartChanged
-    React.useEffect(() => {
+    useEffect(() => {
         function load() {
             try {
                 const savedCart = localStorage.getItem('cart')
@@ -204,7 +165,7 @@ function Cart() {
     }, [])
 
     // Save cart data to localStorage whenever items change (but not on initial load)
-    React.useEffect(() => {
+    useEffect(() => {
         if (isInitialized) {
             try {
                 if (usingV2) {
@@ -252,9 +213,9 @@ function Cart() {
     }, [items, isInitialized, usingV2])
 
     const allSelected = items.length > 0 && items.every((p) => p.selected)
-    const [promo, setPromo] = React.useState<string>('')
-    const [promoApplied, setPromoApplied] = React.useState<boolean>(false)
-    const [promoMessage, setPromoMessage] = React.useState<string>('')
+    const [promo, setPromo] = useState<string>('')
+    const [promoApplied, setPromoApplied] = useState<boolean>(false)
+    const [promoMessage, setPromoMessage] = useState<string>('')
 
     const selectedItems = items.filter((i) => i.selected)
     const subtotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0)
@@ -362,10 +323,10 @@ function Cart() {
                                 <span>{t("products_price")}</span>
                                 <span className="font-medium">{formatCurrency(subtotal)}</span>
                             </div>
-                            <div className="flex items-center justify-between">
+                            {/* <div className="flex items-center justify-between">
                                 <span>{t("discount")}</span>
                                 <span className="font-medium">{formatCurrency(discount)}</span>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="h-px bg-border" />

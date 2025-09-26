@@ -6,7 +6,7 @@ function ProfileLayout({ children }: { children: React.ReactNode }) {
     return (
         <section className="py-8">
             <Container>
-                <div className="grid grid-cols-1 lg:grid-cols-4 min-h-[574px]">
+                <div className="grid grid-cols-1 lg:grid-cols-4 items-start">
                     {/* Sidebar */}
                     <ProfileSidebar />
                     {/* Main Content */}

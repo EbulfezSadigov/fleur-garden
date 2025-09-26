@@ -1,113 +1,39 @@
-"use client"
+"use server"
 
-import { useMemo, useState } from "react"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Check } from "lucide-react"
-import { Link } from "@/i18n/navigation"
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
+import { getServerQueryClient } from "@/providers/server"
+import { getOrdersQuery } from "@/services/products/queries"
+import { cookies } from "next/headers"
+import { Order as ApiOrder } from "@/types"
 
-interface OrderItem {
-    id: string
-    title: string
-    brand: string
-    imageSrc: string
-    volume: string
-    rating: number
-}
-
-interface Order {
-    id: string
-    createdAt: string // ISO date string
-    recipient: string
-    quantity: number
-    totalAzn: number
-    status: "delivered" | "processing" | "cancelled"
-    items: OrderItem[]
-}
-
-function daysBetween(fromIso: string, to: Date): number {
-    const from = new Date(fromIso)
-    const diffMs = Math.abs(to.getTime() - from.getTime())
-    return Math.floor(diffMs / (1000 * 60 * 60 * 24))
-}
-
-const MOCK_ORDERS: Order[] = [
-    {
-        id: "ord_1",
-        createdAt: "2025-08-25",
-        recipient: "Aysun Feyzullayeva",
-        quantity: 10,
-        totalAzn: 1200,
-        status: "delivered",
-        items: [
-            {
-                id: "itm_1",
-                title: "YSL Libre",
-                brand: "Yves Saint Laurent",
-                imageSrc: "/images/product.jpg",
-                volume: "50 ML",
-                rating: 4.5,
-            },
-        ],
-    },
-    {
-        id: "ord_2",
-        createdAt: "2025-08-25",
-        recipient: "Aysun Feyzullayeva",
-        quantity: 10,
-        totalAzn: 1200,
-        status: "delivered",
-        items: [
-            {
-                id: "itm_2",
-                title: "YSL Libre",
-                brand: "Yves Saint Laurent",
-                imageSrc: "/images/product.jpg",
-                volume: "50 ML",
-                rating: 4.5,
-            },
-        ],
-    },
-    {
-        id: "ord_3",
-        createdAt: "2025-08-25",
-        recipient: "Aysun Feyzullayeva",
-        quantity: 10,
-        totalAzn: 1200,
-        status: "delivered",
-        items: [
-            {
-                id: "itm_3",
-                title: "YSL Libre",
-                brand: "Yves Saint Laurent",
-                imageSrc: "/images/product.jpg",
-                volume: "50 ML",
-                rating: 4.5,
-            },
-        ],
-    },
-]
-
-export function StatusBadge({ status }: { status: Order["status"] }) {
-    const t = useTranslations("order")
-    if (status === "delivered")
+export async function StatusBadge({ status }: { status: number }) {
+    const t = await getTranslations("order")
+    if (status === 1)
         return (
             <div className="inline-flex items-center gap-2">
                 <Check color="#34C759" size={20} />
                 <span>{t("delivered")}</span>
             </div>
         )
-    if (status === "processing")
+    if (status === 0)
         return <span className="text-amber-600">{t("processing")}</span>
     return <span className="text-rose-600">{t("cancelled")}</span>
 }
 
-function OrderCard({ order }: { order: Order }) {
-    const item = order.items[0]
+async function OrderCard({ order }: { order: ApiOrder }) {
+    const t = await getTranslations("order")
+    const firstItem = order.details?.[0]
+    const quantityTotal = Array.isArray(order.details)
+        ? order.details.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0)
+        : 0
+    const recipient = order.address || order.city || "-"
+    const volume = firstItem?.size ? `${firstItem.size} ML` : "-"
+    const productTitle = firstItem?.product || "-"
+    const rating = 0
 
-    const t = useTranslations("order")
     return (
         <div
             style={{
@@ -119,68 +45,58 @@ function OrderCard({ order }: { order: Order }) {
         >
             <div className="grid grid-cols-5 gap-4 px-6 py-4 text-sm text-muted-foreground">
                 <div>
-                    <div className="font-medium text-foreground">{t("order_date")}</div>
-                    <div>{new Date(order.createdAt).toLocaleDateString("az-AZ")}</div>
+                    <div className="font-medium text-foreground">{t("promocode")}</div>
+                    <div>{order.promocode || "-"}</div>
                 </div>
                 <div>
                     <div className="font-medium text-foreground">{t("recipient")}</div>
-                    <div>{order.recipient}</div>
+                    <div>{recipient}</div>
                 </div>
                 <div>
                     <div className="font-medium text-foreground">{t("volume")}</div>
-                    <div>{item.volume}</div>
+                    <div>{volume}</div>
                 </div>
                 <div>
                     <div className="font-medium text-foreground">{t("quantity")}</div>
-                    <div>{order.quantity} {t("items")}</div>
+                    <div>{quantityTotal} {t("items")}</div>
                 </div>
                 <div className="text-right">
                     <div className="font-medium text-foreground">{t("total")}</div>
-                    <div>{order.totalAzn} AZN</div>
+                    <div>{order.total_price} AZN</div>
                 </div>
             </div>
 
             <div className="flex items-center justify-between gap-4 border-t border-[#F2F4F8] px-6 py-5">
                 <div className="flex gap-4">
-                    <div className="h-20 w-16 overflow-hidden rounded-md bg-muted">
-                        <Image
-                            src={item.imageSrc}
-                            alt={item.title}
-                            width={64}
-                            height={80}
-                            className="h-20 w-16 object-cover"
-                        />
-                    </div>
                     <div>
                         <div className="flex items-center gap-2 text-base font-medium">
-                            <span>{item.title}</span>
+                            <span>{productTitle}</span>
                             <span className="text-amber-500">★</span>
-                            <span className="text-sm text-muted-foreground">{item.rating}</span>
+                            <span className="text-sm text-muted-foreground">{rating}</span>
                         </div>
-                        <div className="text-sm text-muted-foreground">{item.brand}</div>
+                        <div className="text-sm text-muted-foreground">{order.payment_status || ""}</div>
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-4">
-                    <StatusBadge status={order.status} />
-                    <Link href={`/profile/orders/${order.id}`}>
-                        <Button variant="secondary" className="bg-black hover:bg-black/80 text-white">{t("order_details")}</Button>
-                    </Link>
+                    <StatusBadge status={order.order_status} />
+                    <Button disabled variant="secondary" className="bg-black hover:bg-black/80 text-white">{t("order_details")}</Button>
                 </div>
             </div>
         </div >
     )
 }
 
-export default function OrdersList() {
-    const [timeFilter, setTimeFilter] = useState("30")
-    const filtered = useMemo(() => {
-        const now = new Date()
-        const limit = parseInt(timeFilter, 10)
-        return MOCK_ORDERS.filter((o) => daysBetween(o.createdAt, now) <= limit)
-    }, [timeFilter])
+export default async function OrdersList() {
+    const queryClient = getServerQueryClient();
+    const token = (await cookies()).get("access_token")?.value as string;
+    await Promise.all([queryClient.prefetchQuery(getOrdersQuery(token))]);
+    const ordersData = queryClient.getQueryData(getOrdersQuery(token).queryKey);
 
-    const t = useTranslations("order")
+    const rawOrders = (ordersData as { data?: unknown })?.data as unknown[] | undefined
+    const orders: ApiOrder[] | undefined = rawOrders?.map((o) => normalizeOrder(o as UnknownRecord))
+
+    const t = await getTranslations("order")
 
     return (
         <div className="w-full col-span-3 lg:pl-8 lg:px-6 mt-5 lg:mt-0 space-y-6">
@@ -194,7 +110,7 @@ export default function OrdersList() {
                 }}
             >
                 <h1 className="text-xl font-medium">{t("orders")}</h1>
-                <Select value={timeFilter} onValueChange={setTimeFilter}>
+                <Select value="7">
                     <SelectTrigger className="w-40">
                         <SelectValue placeholder={t("time_range")} />
                     </SelectTrigger>
@@ -207,10 +123,39 @@ export default function OrdersList() {
             </div>
 
             <div className="space-y-6">
-                {filtered.map((order) => (
-                    <OrderCard key={order.id} order={order} />
+                {orders?.map((order, idx) => (
+                    <OrderCard key={`${order.promocode || "order"}-${idx}`} order={order} />
                 ))}
             </div>
         </div>
     )
+}
+
+interface UnknownRecord {
+    [key: string]: unknown
+}
+
+function normalizeOrder(o: UnknownRecord): ApiOrder {
+    return {
+        address: (o?.address as string | null) ?? "",
+        city: (o?.city as string | null) ?? "",
+        note: (o?.note as string | null) ?? "",
+        order_status: Number((o?.order_status as number | string | undefined) ?? (o?.["order-status"] as number | string | undefined) ?? 0),
+        payment_status: (o?.payment_status as string | null) ?? (o?.["payment-status"] as string | null) ?? "",
+        total_price: Number((o?.total_price as number | string | undefined) ?? 0),
+        promocode: (o?.promocode as string | null) ?? "",
+        payment_type: Number((o?.payment_type as number | string | undefined) ?? 0),
+        details: Array.isArray(o?.details)
+            ? (o.details as unknown[]).map((d) => {
+                const r = d as UnknownRecord
+                return {
+                    product: String((r?.product as string | undefined) ?? ""),
+                    quantity: String((r?.quantity as string | number | undefined) ?? "0"),
+                    size: Number((r?.size as number | string | undefined) ?? 0),
+                    price: Number((r?.price as number | string | undefined) ?? 0),
+                    total_price: Number((r?.total_price as number | string | undefined) ?? 0),
+                }
+            })
+            : [],
+    }
 }

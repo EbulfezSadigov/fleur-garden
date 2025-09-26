@@ -231,7 +231,11 @@
     "buyer": "Buyer",
     "all_orders": "All orders",
     "delivery_number": "Delivery number",
-    "items": "items"
+    "items": "items",
+    "processing": "Processing...",
+    "order_success": "Order successfully sent",
+    "order_failed": "Order failed to send",
+    "promocode": "Promo code"
   },
   "profile":{
     "profile_and_help": "Profile & Help",

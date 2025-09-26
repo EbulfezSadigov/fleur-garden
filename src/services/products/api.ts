@@ -1,5 +1,5 @@
 import { get, post } from "@/lib/api";
-import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review, CreateReviewPayload } from "@/types";
+import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review, CreateReviewPayload, OrderPayload, Order } from "@/types";
 
 const getProducts = async (locale: string, number?: number) => {
   const endpoint = number ? `products/${number}` : "products";
@@ -71,6 +71,20 @@ const filterProducts = async (data: FilterProductsPayload, page?: number) => {
   return products;
 };
 
+const order = async (data: OrderPayload) => {
+  const response = await post<ApiResponse<string>>(`order`, data);
+  return response;
+};
+
+const getOrders = async (token: string) => {
+  const response = await get<ApiResponse<Order[]>>(`orders`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};
+
 export {
   getProducts,
   getProduct,
@@ -81,4 +95,6 @@ export {
   getCategories,
   searchProducts,
   filterProducts,
+  order,
+  getOrders,
 };
