@@ -145,7 +145,9 @@
     "share": "Share",
     "please_enter_valid_volume": "Please enter valid volume",
     "added_to_cart": "Added to cart",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "comment_added_successfully": "Your comment will be shown after it is approved.",
+    "failed_to_add_comment": "Failed to add comment"
   },
   "favorites": {
     "favorites": "Favorites",

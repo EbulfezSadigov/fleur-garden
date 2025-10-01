@@ -256,16 +256,38 @@ function Order() {
 
     const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0)
     const total = subtotal
+    const MIN_ORDER = 400
+    const isBelowMinimum = total > MIN_ORDER
+
+    function clearCart() {
+        try {
+            setItems([])
+            if (typeof window !== 'undefined') {
+                window.localStorage.removeItem(STORAGE_KEYS.items)
+                window.localStorage.removeItem(STORAGE_KEYS.payload)
+            }
+        } catch {
+            // ignore storage errors
+        }
+    }
 
     const orderAction = () => {
+        console.log(total,MIN_ORDER)
+        if (isBelowMinimum) {
+            toast.error(`Minimum order amount is ${MIN_ORDER} AZN`)
+            return
+        }
         submitOrder.mutateAsync(undefined, {
             onSuccess: (data) => {
+                // Reset cart on successful order
+                clearCart()
                 if (payment === 'card') {
                     router.push(data.data)
                 } else {
                     router.push('/')
                 }
                 toast.success(t("order_success"))
+                window.dispatchEvent(new Event('cart:updated'))
             },
             onError: () => {
                 toast.error(t("order_failed"))
@@ -423,6 +445,9 @@ function Order() {
                         <div className="h-px bg-border" />
 
                         <div className="flex items-center justify-between text-lg font-semibold"><span>{t("total_price")}</span><span>{formatCurrency(total)}</span></div>
+                        {isBelowMinimum && (
+                            <div className="text-xs text-red-500 mt-1">Minimum order amount: {MIN_ORDER} AZN</div>
+                        )}
                     </div>
                 </div>
             </div>

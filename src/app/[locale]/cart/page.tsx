@@ -203,8 +203,12 @@ function Cart() {
                         return base
                     })
                     localStorage.setItem('cart', JSON.stringify(v2))
+                    // Notify listeners (e.g., header cart indicator) in the same tab
+                    window.dispatchEvent(new Event('cart:updated'))
                 } else {
                     localStorage.setItem('cart', JSON.stringify(items))
+                    // Notify listeners (e.g., header cart indicator) in the same tab
+                    window.dispatchEvent(new Event('cart:updated'))
                 }
             } catch (error) {
                 console.error('Error saving cart to localStorage:', error)
@@ -222,6 +226,8 @@ function Cart() {
     const discountRate = promoApplied ? 0.2 : 0
     const discount = subtotal * discountRate
     const total = subtotal - discount
+    const MIN_ORDER = 400
+    const isBelowMinimum = total > MIN_ORDER
 
     function handleItemChange(next: CartItemData | null, id: string) {
         if (next === null) {
@@ -335,9 +341,12 @@ function Cart() {
                             <span>{t("total_price")}</span>
                             <span>{formatCurrency(total)}</span>
                         </div>
+                        {isBelowMinimum && (
+                            <div className="text-xs text-red-500 mt-1">Minimum order amount: {MIN_ORDER} AZN</div>
+                        )}
 
-                        <Link href={items.length === 0 ? "/cart" : "/cart/order"}>
-                            <Button disabled={items.length === 0 || !total} className="w-full h-11">{t("complete_order")}</Button>
+                        <Link href={items.length === 0 || isBelowMinimum ? "/cart" : "/cart/order"}>
+                            <Button disabled={items.length === 0 || !total || isBelowMinimum} className="w-full h-11">{t("complete_order")}</Button>
                         </Link>
                     </div>
                 </div>

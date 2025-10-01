@@ -4,7 +4,7 @@ import { mutationOptions } from "@tanstack/react-query";
 
 const addCommentMutation = (data: CreateReviewPayload) => {
     return mutationOptions({
-        mutationFn: () => addComment(data),
+        mutationFn: () => addComment(data)
     });
 };
 

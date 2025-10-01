@@ -12,6 +12,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { UpdateUserMutation, UpdatePasswordMutation } from '@/services/auth/mutations'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 function MainProfile({ user }: { user: User }) {
     const t = useTranslations("profile")
@@ -98,7 +100,16 @@ function MainProfile({ user }: { user: User }) {
                                 <FormItem>
                                     <FormLabel className="text-sm text-gray-600">{t("mobile")}</FormLabel>
                                     <FormControl>
-                                        <Input className="bg-gray-50 border-gray-200" {...field} />
+                                        <PhoneInput
+                                            country={'az'}
+                                            value={field.value ?? ''}
+                                            onChange={(value) => field.onChange(value)}
+                                            onBlur={field.onBlur}
+                                            inputProps={{ name: field.name, autoComplete: 'tel' }}
+                                            containerClass="react-tel-input"
+                                            inputClass="!w-full !bg-gray-50 !border-gray-200 !h-10 !text-sm !pl-12"
+                                            buttonClass="!bg-gray-50 !border-gray-200"
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

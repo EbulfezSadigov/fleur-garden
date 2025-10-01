@@ -144,7 +144,9 @@
     "share": "Paylaş",
     "please_enter_valid_volume": "Zəhmət olmasa həcmi daxil edin",
     "added_to_cart": "Səbətə əlavə olundu",
-    "submitting": "Göndərilir..."
+    "submitting": "Göndərilir...",
+    "comment_added_successfully": "Rəyiniz təsdiqləndikdən sonra səhifədə görünəcək.",
+    "failed_to_add_comment": "Rəy əlavə edilərkən xəta baş verdi"
   },
   "favorites": {
     "favorites": "Sevimli məhsullar",

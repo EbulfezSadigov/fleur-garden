@@ -32,7 +32,9 @@ const getProductReviews = async (locale: string, slug: string) => {
 
 const addComment = async (data: CreateReviewPayload) => {
   const response = await post<ApiResponse<Review>>(`comment`, {
-    data,
+    ...data,
+    star:String(data.star),
+    product_id:String(data.product_id),
   });
   return response;
 };

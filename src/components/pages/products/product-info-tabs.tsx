@@ -12,6 +12,7 @@ import { Product, Review } from '@/types'
 import { cn } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addCommentMutation } from '@/services/products/mutations'
+import { toast } from 'sonner'
 
 function ProductInfoTabs({ product, reviews }: { product: Product, reviews: Review[] }) {
     const t = useTranslations("product_page")
@@ -79,7 +80,7 @@ function ReviewForm({ productId, productSlug }: { productId: number, productSlug
     const [description, setDescription] = React.useState<string>('')
     const [hoverStar, setHoverStar] = React.useState<number>(0)
 
-    const mutation = useMutation(addCommentMutation({ product_id: productId, star, description }))
+    const { mutateAsync: addComment, isPending } = useMutation(addCommentMutation({ product_id: productId, star, description }))
 
     function handleSelectStar(index: number) {
         setStar(index)
@@ -88,7 +89,15 @@ function ReviewForm({ productId, productSlug }: { productId: number, productSlug
     async function handleSubmit() {
         if (!star || description.trim().length === 0) return
         try {
-            await mutation.mutateAsync()
+            await addComment(void 0, {
+                onSuccess: () => {
+                    toast.success(t('comment_added_successfully'));
+                },
+                onError: () => {
+                    toast.error(t('failed_to_add_comment'));
+                }
+            })
+            
             setDescription('')
             setStar(0)
             await queryClient.invalidateQueries({ queryKey: ['product-reviews', productSlug] })
@@ -132,9 +141,9 @@ function ReviewForm({ productId, productSlug }: { productId: number, productSlug
                 <Button
                     className="h-12 px-6"
                     onClick={handleSubmit}
-                    disabled={mutation.isPending || star === 0 || description.trim().length === 0}
+                    disabled={isPending || star === 0 || description.trim().length === 0}
                 >
-                    {mutation.isPending ? t('submitting') : t('share')}
+                    {isPending ? t('submitting') : t('share')}
                 </Button>
             </div>
         </div>

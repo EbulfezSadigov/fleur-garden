@@ -12,7 +12,7 @@ function RelatedProducts({ products }: { products: Product[] }) {
         <div className="mt-[100px]">
             <div className="flex items-center justify-between">
                 <h2 className="text-[32px] font-semibold text-gray-900">{t("our_selection_for_you")}</h2>
-                <Link href="/products" className="group cursor-pointer">
+                <Link href="/products?type=1" className="group cursor-pointer">
                     <Button className="bg-transparent cursor-pointer border-none shadow-none hover:bg-transparent text-primary text-sm font-medium">{t("more")} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></Button>
                 </Link>
             </div>
