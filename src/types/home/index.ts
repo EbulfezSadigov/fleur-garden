@@ -62,3 +62,10 @@ export interface FaqItem {
     question: string;
     answer: string;
 }
+
+export interface MetaTag {
+    title: string;
+    meta_keywords: string;
+    meta_title: string;
+    meta_desc: string;
+}

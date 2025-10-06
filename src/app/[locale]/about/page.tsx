@@ -2,7 +2,19 @@ import Container from "@/components/shared/container"
 import { getServerLocale } from "@/lib/utils";
 import { getServerQueryClient } from "@/providers/server";
 import { getAboutQuery, getAdvantagesQuery } from "@/services/about/queries";
+import { getMetaTags } from "@/services/home/api";
 import Image from "next/image"
+
+export async function generateMetadata() {
+  const metaTagsData = await getMetaTags();
+  const metaTags = metaTagsData?.data?.find((metaTag) => metaTag.title === "About");
+
+  return {
+    title: metaTags?.meta_title,
+    description: metaTags?.meta_desc,
+    keywords: metaTags?.meta_keywords,
+  };
+}
 
 export default async function AboutPage() {
   const locale = await getServerLocale();

@@ -11,6 +11,18 @@ import { getServerQueryClient } from "@/providers/server";
 import { getBlogsQuery } from "@/services/blogs/queries";
 import { getProductsQuery } from "@/services/products/queries";
 import { Fragment } from "react";
+import { getMetaTags } from "@/services/home/api";
+
+export async function generateMetadata() {
+  const metaTagsData = await getMetaTags();
+  const metaTags = metaTagsData?.data?.find((metaTag) => metaTag.title === "Home");
+  
+  return {
+    title: metaTags?.meta_title,
+    description: metaTags?.meta_desc,
+    keywords: metaTags?.meta_keywords,
+  };
+}
 
 export default async function Home() {
   const locale = await getServerLocale();
@@ -22,7 +34,7 @@ export default async function Home() {
     queryClient.prefetchQuery(getPartnersQuery(locale)),
     queryClient.prefetchQuery(getBlogsQuery(locale)),
     queryClient.prefetchQuery(getProductsQuery(locale)),
-    queryClient.prefetchQuery(getAllCommentsQuery())
+    queryClient.prefetchQuery(getAllCommentsQuery()),
   ]);
 
   const data = queryClient.getQueryData(getSlidersQuery().queryKey);

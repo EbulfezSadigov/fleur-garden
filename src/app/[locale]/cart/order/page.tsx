@@ -56,8 +56,6 @@ function Order() {
         staleTime: 5 * 60 * 1000,
     })
 
-    console.log(userQuery.data)
-
     // LocalStorage keys
     const STORAGE_KEYS = React.useMemo(() => ({
         items: 'cart',
@@ -272,7 +270,6 @@ function Order() {
     }
 
     const orderAction = () => {
-        console.log(total,MIN_ORDER)
         if (isBelowMinimum) {
             toast.error(`Minimum order amount is ${MIN_ORDER} AZN`)
             return

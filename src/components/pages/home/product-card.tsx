@@ -52,7 +52,7 @@ function ProductCard({ product }: ProductCardProps) {
                 <Image
                     width={100}
                     height={100}
-                    src={product.image || "/placeholder.svg"}
+                    src={product?.image || ""}
                     alt={product.name}
                     className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                 />

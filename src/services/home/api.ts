@@ -1,6 +1,6 @@
 import { get, post } from "@/lib/api";
 import { ApiResponse, Review } from "@/types";
-import { Slider, Banner, Partner, Contact, Social } from "@/types/home";
+import { Slider, Banner, Partner, Contact, Social, MetaTag } from "@/types/home";
 
 const getSliders = async () => {
     const response = await get<ApiResponse<Slider[]>>(`sliders`);
@@ -47,4 +47,9 @@ const postContact = async (data: Contact) => {
     return response;
 };
 
-export { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, subscribe, getAllComments, postContact };
+const getMetaTags = async () => {
+    const response = await get<ApiResponse<MetaTag[]>>(`metatags`);
+    return response;
+};
+
+export { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, subscribe, getAllComments, postContact, getMetaTags };
