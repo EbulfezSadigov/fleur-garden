@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Partner } from "@/types/home"
+import Image from "next/image"
 
 export function BrandCarousel({ partners }: { partners: Partner[] }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -14,7 +15,7 @@ export function BrandCarousel({ partners }: { partners: Partner[] }) {
     const scrollWidth = scrollContainer.scrollWidth
 
     let scrollPosition = 0
-    const speed = 0.5 // pixels per frame
+    const speed = 1.0 // pixels per frame
 
     const animate = () => {
       scrollPosition += speed
@@ -54,7 +55,7 @@ export function BrandCarousel({ partners }: { partners: Partner[] }) {
               "whitespace-nowrap select-none",
             )}
           >
-            {brand.name}
+            <Image src={brand.image} alt={brand.name} width={100} height={100} />
           </div>
         ))}
       </div>

@@ -19,11 +19,11 @@ function formatCurrency(amount: number | string) {
 }
 
 function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): CartItemData[] {
-    return localStorageData.map(item => ({
-        id: item.id.toString(),
+    return localStorageData.map((item, index) => ({
+        id: `${item.id}-${item.product.volume}-${index}`,
         title: item.product.name,
         brand: item.product.brand,
-        volume: '50 ML',
+        volume: item.product.volume,
         price: typeof item.product.price === 'string'
             ? parseFloat(item.product.price.replace(/[^\d.-]/g, ''))
             : item.product.price,
@@ -34,8 +34,8 @@ function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): Ca
 }
 
 function transformV2Data(v2: CartStorageItemV2[]): CartItemData[] {
-    return v2.map(item => ({
-        id: `${item.id}-${item.size ?? 'na'}`,
+    return v2.map((item, index) => ({
+        id: `${item.id}-${item.size ?? 'na'}-${index}`,
         title: item.name,
         brand: item.product?.brand_name ?? '',
         volume: item.size ? `${item.size} ML` : '',
@@ -142,9 +142,13 @@ function Cart() {
                             setUsingV2(false)
                             setItems(transformLocalStorageData(parsedCart))
                         } else {
-                            // Already in CartItemData[] format
                             setUsingV2(false)
-                            setItems(parsedCart)
+                            // Always regenerate unique IDs to ensure no duplicates
+                            const updatedItems = parsedCart.map((item, index) => ({
+                                ...item,
+                                id: `${item.id}-${item.volume}-${index}`
+                            }))
+                            setItems(updatedItems)
                         }
                     } else {
                         setItems([])
@@ -171,7 +175,9 @@ function Cart() {
                 if (usingV2) {
                     // Map back into V2 storage format preserving product info where possible
                     const v2: CartStorageItemV2[] = items.map(it => {
-                        const [rawId, rawSize] = it.id.split('-')
+                        const parts = it.id.split('-')
+                        const rawId = parts[0]
+                        const rawSize = parts[1]
                         const idNum = Number(rawId)
                         const sizeNum = rawSize === 'na' ? null : Number(rawSize)
                         const key = `${idNum}-${sizeNum ?? 'na'}`
@@ -288,7 +294,9 @@ function Cart() {
                                 <Checkbox checked={allSelected} onCheckedChange={(v) => handleToggleAll(Boolean(v))} />
                                 <span className="text-base md:text-lg">{t("select_all")}</span>
                             </div>
-                            <div className="text-base md:text-lg font-semibold">{t("cart")} ({items.length} {t("products")})</div>
+                            <div className="flex items-center gap-3">
+                                <div className="text-base md:text-lg font-semibold">{t("cart")} ({items.length} {t("products")})</div>
+                            </div>
                         </div>
                     </div>
 

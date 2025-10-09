@@ -198,6 +198,7 @@ export interface LocalStorageCartItem {
         image?: string
         rating: number
         inStock: boolean
+        volume: string
     }
 }
 
