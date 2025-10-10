@@ -45,7 +45,7 @@ export function BrandCarousel({ partners }: { partners: Partner[] }) {
         }}
       >
         {/* Duplicate the brands array to create seamless loop */}
-        {[...partners, ...partners, ...partners, ...partners, ...partners, ...partners].map((brand, index) => (
+        {[...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners].map((brand, index) => (
           <div
             key={`${brand}-${index}`}
             className={cn(
@@ -55,7 +55,7 @@ export function BrandCarousel({ partners }: { partners: Partner[] }) {
               "whitespace-nowrap select-none",
             )}
           >
-            <Image src={brand.image} alt={brand.name} width={100} height={100} />
+            <Image src={brand.logo} alt={brand.name} width={100} height={100} />
           </div>
         ))}
       </div>
