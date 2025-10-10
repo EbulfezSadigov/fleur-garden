@@ -30,7 +30,7 @@ interface CheckoutItem {
 }
 
 function formatCurrency(amount: number) {
-    return `${amount.toFixed(2)} AZN`
+    return `${amount.toFixed(2)} USD`
 }
 
 function Order() {
@@ -271,7 +271,7 @@ function Order() {
 
     const orderAction = () => {
         if (isBelowMinimum) {
-            toast.error(`Minimum order amount is ${MIN_ORDER} AZN`)
+            toast.error(`Minimum order amount is ${MIN_ORDER} USD`)
             return
         }
         submitOrder.mutateAsync(undefined, {
@@ -443,7 +443,7 @@ function Order() {
 
                         <div className="flex items-center justify-between text-lg font-semibold"><span>{t("total_price")}</span><span>{formatCurrency(total)}</span></div>
                         {isBelowMinimum && (
-                            <div className="text-xs text-red-500 mt-1">Minimum order amount: {MIN_ORDER} AZN</div>
+                            <div className="text-xs text-red-500 mt-1">Minimum order amount: {MIN_ORDER} USD</div>
                         )}
                     </div>
                 </div>

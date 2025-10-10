@@ -268,19 +268,19 @@ function ProductContainer({ product }: { product: Product }) {
 
                 {/* Price */}
                 <div className="space-y-2">
-                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice} AZN</div>
+                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice} USD</div>
                     <div className="flex justify-between">
                         <div className="flex items-center gap-2">
                             <div className="text-sm text-gray-500">
                                 {!hasUnifiedPrice && selectedSize ? `${selectedSize} ml` : customSize ? `${customSize} ml` : ''} {" "}
                             </div>
-                            {customSize && <span>({product?.price ? product?.price * Number(customSize) : 0} AZN)</span>}
+                            {customSize && <span>({product?.price ? product?.price * Number(customSize) : 0} USD)</span>}
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 9H12.01M11 12H12V16H13M12 3C19.2 3 21 4.8 21 12C21 19.2 19.2 21 12 21C4.8 21 3 19.2 3 12C3 4.8 4.8 3 12 3Z" stroke="#77777B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-                            <span>{t("minimum_order_amount")}: 400 AZN</span>
+                            <span>{t("minimum_order_amount")}: 400 USD</span>
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ import { LocalStorageCartItem, CartItemData, CartStorageItemV2 } from '@/types'
 
 function formatCurrency(amount: number | string) {
     const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/[^\d.-]/g, '')) : amount
-    return `${numAmount.toFixed(2)} AZN`
+    return `${numAmount.toFixed(2)} USD`
 }
 
 function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): CartItemData[] {
@@ -350,7 +350,7 @@ function Cart() {
                             <span>{formatCurrency(total)}</span>
                         </div>
                         {isBelowMinimum && (
-                            <div className="text-xs text-red-500 mt-1">Minimum order amount: {MIN_ORDER} AZN</div>
+                            <div className="text-xs text-red-500 mt-1">Minimum order amount: {MIN_ORDER} USD</div>
                         )}
 
                         <Link href={items.length === 0 || isBelowMinimum ? "/cart" : "/cart/order"}>

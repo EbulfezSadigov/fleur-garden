@@ -221,7 +221,7 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
                           </div>
                           <p className="text-muted-foreground text-sm truncate max-w-[180px]">{p.brand_name}</p>
                         </div>
-                        <p className="text-foreground font-semibold mt-1 text-sm">{p.price} AZN</p>
+                        <p className="text-foreground font-semibold mt-1 text-sm">{p.price} USD</p>
                       </div>
                     </button>
                   ))}

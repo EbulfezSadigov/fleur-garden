@@ -133,7 +133,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                         </div>
                         <div className="text-right">
                             <div className="font-medium text-foreground">{t("total")}</div>
-                            <div>{order.total} AZN</div>
+                            <div>{order.total} USD</div>
                         </div>
                     </div>
 
@@ -202,20 +202,20 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-muted-foreground">{t("total_price")}</span>
-                                <span className="text-sm">{order.paymentDetails.subtotal} AZN</span>
+                                <span className="text-sm">{order.paymentDetails.subtotal} USD</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-muted-foreground">{t("discount")}</span>
-                                <span className="text-sm">{order.paymentDetails.discount} AZN</span>
+                                <span className="text-sm">{order.paymentDetails.discount} USD</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-muted-foreground">{t("delivery")}</span>
-                                <span className="text-sm">{order.paymentDetails.delivery} AZN</span>
+                                <span className="text-sm">{order.paymentDetails.delivery} USD</span>
                             </div>
                             <div className="border-t pt-3">
                                 <div className="flex justify-between items-center">
                                     <span className="font-medium">{t("total_price")}</span>
-                                    <span className="font-medium text-lg">{order.paymentDetails.finalTotal} AZN</span>
+                                    <span className="font-medium text-lg">{order.paymentDetails.finalTotal} USD</span>
                                 </div>
                             </div>
                         </div>

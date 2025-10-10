@@ -349,7 +349,7 @@ function PriceRangeSlider({
   defaultValue = [0, 5],
   onValueChange,
   className,
-  currency = "AZN",
+  currency = "USD",
 }: PriceRangeSliderProps) {
   const [value, setValue] = useState<[number, number]>(defaultValue);
 

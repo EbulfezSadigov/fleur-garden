@@ -62,7 +62,7 @@ async function OrderCard({ order }: { order: ApiOrder }) {
                 </div>
                 <div className="text-right">
                     <div className="font-medium text-foreground">{t("total")}</div>
-                    <div>{order.total_price} AZN</div>
+                    <div>{order.total_price} USD</div>
                 </div>
             </div>
 

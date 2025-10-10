@@ -121,7 +121,7 @@ function ComparisonPage() {
                                 <tr className="border-t border-[#E8EAED]">
                                     <td className="bg-gray-50 px-6 py-4 text-gray-700 font-medium text-xl text-center">{t("price")}</td>
                                     {items.map((x) => (
-                                        <td key={`price-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.price} AZN</td>
+                                        <td key={`price-${x.id}`} className="w-48 px-6 py-4 text-center border-y border-gray-200">{x.product.price} USD</td>
                                     ))}
                                 </tr>
 
