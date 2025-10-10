@@ -1,4 +1,4 @@
-import { Bell, UserCircle, LogOut, Package, HelpCircle } from "lucide-react"
+import { UserCircle, LogOut, Package, HelpCircle } from "lucide-react"
 
 export const navigationItems = [
   { label: "about_company", href: "/about" },
@@ -10,7 +10,6 @@ export const navigationItems = [
 export const sidebarItems = [
   { icon: UserCircle, label: "profile_information", href: "/profile" },
   { icon: Package, label: "orders", href: "/profile/orders" },
-  { icon: Bell, label: "notifications", href: "/profile/notifications"  },
   { icon: HelpCircle, label: "help", href: "/profile/help" },
   { icon: LogOut, label: "logout" },
 ]

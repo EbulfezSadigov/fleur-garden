@@ -21,6 +21,7 @@ export interface Partner {
     thumb_image: string;
     logo: string;
     thumb_logo: string;
+    content: string;
 }
 
 export interface Contact {

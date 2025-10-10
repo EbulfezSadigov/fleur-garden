@@ -3,7 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['fleur-garden.markup.az'],
+    domains: ['admin.fleurgarden.com'],
   },
 };
 

@@ -49,13 +49,7 @@ function ProductCard({ product }: ProductCardProps) {
             <FavComp product={product} />
             {/* Product Image */}
             <div className="aspect-[2/2] mb-4 rounded-lg overflow-hidden">
-                <Image
-                    width={100}
-                    height={100}
-                    src={product?.image || ""}
-                    alt={product.name}
-                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
-                />
+                
             </div>
 
             {/* Product Info */}

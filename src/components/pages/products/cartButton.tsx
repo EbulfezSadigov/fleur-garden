@@ -2,18 +2,19 @@ import { useTranslations } from 'next-intl'
 import React, { Fragment } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import Image from 'next/image'
-import { Link } from '@/i18n/navigation'
 import { ArrowRight } from 'lucide-react'
 import { Product } from '@/types'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { useRouter } from '@/i18n/navigation'
 
 function CartButton({ product, selectedSize, selectedPrice }: { product: Product; selectedSize?: string; selectedPrice?: number }) {
     const [isOpen, setIsOpen] = React.useState(false)
     const [volume, setVolume] = React.useState<string>('')
     const t = useTranslations("product_card")
     const hasUnifiedPrice = product.price !== null && product.price !== undefined
-
+    const router = useRouter()
     const computedDialogPrice = React.useMemo(() => {
         if (!hasUnifiedPrice) return typeof selectedPrice === 'number' ? selectedPrice : 0
         const v = Number(volume)
@@ -52,6 +53,13 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
             const id = String(product.id)
             const volumeLabel = selectedSize ? `${selectedSize} ML` : ''
             const priceValue = typeof selectedPrice === 'number' ? selectedPrice : 0
+
+            // Enforce minimum order amount of 400 USD
+            if (priceValue > 400) {
+                toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
+                return
+            }
+
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeLabel)
             if (existingIndex >= 0) {
                 cart[existingIndex].qty += 1
@@ -99,6 +107,13 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
             const discountPercent = typeof product.discount === 'number' ? product.discount : 0
             const unitPrice = (product.price ?? 0) * (1 - discountPercent / 100)
             const totalPrice = unitPrice * volumeMl
+            console.log(totalPrice)
+            // Enforce minimum order amount of 400 USD
+            if (totalPrice > 400) {
+                toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
+                return
+            }
+
             const volumeStr = `${volumeMl} ML`
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeStr)
             if (existingIndex >= 0) {
@@ -117,6 +132,8 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
                     image: product.image || ''
                 })
             }
+
+            router.push('/cart')
 
             window.localStorage.setItem(storageKey, JSON.stringify(cart))
             try {
@@ -194,10 +211,9 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
                         </div>
 
                         <div className="mt-4 w-full flex justify-end gap-2">
-                            <Link
-                                href={`/cart`}
+                            <Button
                                 className="flex gap-2 items-center bg-primary text-white rounded-md px-3 py-2 text-xs text-center"
-                                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                     e.stopPropagation()
                                     if (hasUnifiedPrice) {
                                         const v = Number(volume)
@@ -212,7 +228,7 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
                                 }}
                             >
                                 {t("cross_basket")} <ArrowRight className="w-4 h-4" />
-                            </Link>
+                            </Button>
                         </div>
                     </div>
                 </DialogContent>

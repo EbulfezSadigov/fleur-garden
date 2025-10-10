@@ -60,7 +60,8 @@
     "already_in_compare": "Məhsul artıq müqayisə siyahısına əlavə olunub",
     "cross_basket": "Səbətə keç",
     "in_cart": "Səbətinizdə məhsullar var",
-    "initial_price": "Səbətin ilkin dəyəri"
+    "initial_price": "Səbətin ilkin dəyəri",
+    "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir"
   },
   "blogs": {
     "title": "Bloqlar",
@@ -146,7 +147,8 @@
     "added_to_cart": "Səbətə əlavə olundu",
     "submitting": "Göndərilir...",
     "comment_added_successfully": "Rəyiniz təsdiqləndikdən sonra səhifədə görünəcək.",
-    "failed_to_add_comment": "Rəy əlavə edilərkən xəta baş verdi"
+    "failed_to_add_comment": "Rəy əlavə edilərkən xəta baş verdi",
+    "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir"
   },
   "favorites": {
     "favorites": "Sevimli məhsullar",

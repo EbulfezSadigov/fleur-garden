@@ -39,7 +39,7 @@ export default async function Partner({ params }: { params: Promise<{ slug: stri
             <p dangerouslySetInnerHTML={{ __html: partner?.description || "" }} />
           </div>
 
-          <div className="relative w-full">
+          <div className="w-full sticky top-40">
             <div className="overflow-hidden h-[384px] rounded-2xl border border-[#F2F4F8] shadow-[0_8px_12px_rgba(0,0,0,0.03)]">
               <Image
                 src={partner?.image || ""}

@@ -38,14 +38,14 @@ export function BrandCarousel({ partners }: { partners: Partner[] }) {
     <div className="w-full overflow-hidden bg-background py-8">
       <div
         ref={scrollRef}
-        className="flex gap-16 overflow-hidden"
+        className="flex justify-center gap-16 overflow-hidden"
         style={{
           scrollBehavior: "auto",
           WebkitOverflowScrolling: "touch",
         }}
       >
         {/* Duplicate the brands array to create seamless loop */}
-        {[...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners].map((brand, index) => (
+        {[...partners].map((brand, index) => (
           <div
             key={`${brand}-${index}`}
             className={cn(

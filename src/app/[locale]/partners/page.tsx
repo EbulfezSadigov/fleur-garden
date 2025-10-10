@@ -15,6 +15,8 @@ export default async function PartnersPage() {
   const partnersData = queryClient.getQueryData(getPartnersQuery(locale).queryKey);
   const partners = partnersData?.data;
 
+  console.log(partners);
+
   return (
     <div className="py-9">
       <Container>
@@ -22,13 +24,6 @@ export default async function PartnersPage() {
         <div className="mb-16">
           <h1 className="text-[32px] font-semibold text-gray-900 mb-8">{t("partners")}</h1>
           <p className="text-[#77777B] leading-relaxed text-base">
-            Biz uzun illerdir etir sanayesində etibar və keyfiyyət prinsipləri ilə fəaliyyət göstəririk. Tarafdaşlarımız
-            seçilən brendlərdən ibarət olub, hər biri öz sahəsində peşəkarlığı və yenilikçiliyi ilə tanınır. Birlikdə
-            çalışdığımız markalar bizə güvənərək məhsullarımızın geniş kütləyə çatmasına dəstək olurlar. Onların dəstəyi
-            və əməkdaşlığı sayəsində müştərilərimizə ən yaxşı seçimləri təqdim edə bilirik. Hər bir tarafdaşımızla
-            qurduğumuz münasibətlər uzunmüddətli və etibarlı əsaslara söykənir. Biz keyfiyyət və müştəri məmnuniyyətini
-            hər zaman ön planda tuturuq. Aşağıda təqdim olunan loqolar, etibarlı tarafdaşlarımızın yalnız bir hissəsini
-            əks etdirir və onların hər biri ilə fəxr edirik.
           </p>
         </div>
 

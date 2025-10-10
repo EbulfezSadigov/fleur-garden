@@ -154,6 +154,14 @@ function ProductContainer({ product }: { product: Product }) {
                 priceValue = selectedSizePrice
             }
 
+            // Enforce minimum order amount of 400 USD per add operation
+            const subtotal = priceValue * quantity
+            console.log(subtotal)
+            if (subtotal > 400) {
+                toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
+                return
+            }
+
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeLabel)
             if (existingIndex >= 0) {
                 // Same product and same volume → increment qty only

@@ -61,7 +61,8 @@
     "cross_basket": "Go to cart",
     "in_cart": "Product in cart",
     "initial_price": "Product initial price",
-    "share": "Share"
+    "share": "Share",
+    "minimum_order_validation": "Minimum order amount is 400 USD"
   },
   "blogs": {
     "title": "Blogs",
@@ -147,7 +148,8 @@
     "added_to_cart": "Added to cart",
     "submitting": "Submitting...",
     "comment_added_successfully": "Your comment will be shown after it is approved.",
-    "failed_to_add_comment": "Failed to add comment"
+    "failed_to_add_comment": "Failed to add comment",
+    "minimum_order_validation": "Minimum order amount is 400 USD"
   },
   "favorites": {
     "favorites": "Favorites",

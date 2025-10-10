@@ -64,7 +64,7 @@ function RegisterSheet() {
                 toast.error("Qeydiyyat uğursuz oldu")
             }
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Qeydiyyat uğursuz oldu"
+            const message = "Qeydiyyat uğursuz oldu"
             toast.error(message)
         }
     }
