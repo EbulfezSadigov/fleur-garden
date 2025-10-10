@@ -170,13 +170,13 @@ function CartButton({ product, selectedSize, selectedPrice }: { product: Product
 
                         <div className="mt-4 grid grid-cols-[72px_1fr_auto] gap-4 items-center">
                             <div className="w-18 h-18 bg-white py-3 rounded-md border flex items-center justify-center overflow-hidden">
-                                <Image
-                                    width={72}
-                                    height={72}
-                                    src={product.image || '/placeholder.svg'}
-                                    alt={product.name}
-                                    className="w-full h-full object-contain"
-                                />
+                                {product.image && product.image !== null && product.image !== 'null' ? (
+                                    <Image src={product.image} alt={product.name} width={100} height={100} />
+                                ) : (
+                                    <div className="w-full h-full bg-[#F2F4F8] flex items-center justify-center">
+                                        <span className="text-[#77777B] text-sm">No Image</span>
+                                    </div>
+                                )}
                             </div>
                             <div>
                                 <p className="text-sm font-medium text-primary">{product.name}</p>

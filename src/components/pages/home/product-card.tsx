@@ -8,7 +8,6 @@ import { ProductCardProps } from '@/types'
 import { useTranslations } from 'next-intl'
 import FavComp from '../products/favComp'
 import CartButton from '../products/cartButton'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 function ProductCard({ product }: ProductCardProps) {
     const router = useRouter()
@@ -40,6 +39,8 @@ function ProductCard({ product }: ProductCardProps) {
         }
     }, [hasUnifiedPrice, sizeOptions, selectedSize])
 
+    console.log(product.image)
+
     return (
         <div onClick={() => router.push(`/products/${product.slug}`)} key={product.id} className="bg-white relative group border border-[#F2F4F8] rounded-[12px] p-4"
             style={{
@@ -49,7 +50,19 @@ function ProductCard({ product }: ProductCardProps) {
             <FavComp product={product} />
             {/* Product Image */}
             <div className="aspect-[2/2] mb-4 rounded-lg overflow-hidden">
-                
+                {product.image && product.image !== null && product.image !== 'null' ? (
+                    <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={100}
+                        height={100}
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <div className="w-full h-full bg-[#F2F4F8] rounded-lg flex items-center justify-center">
+                        <span className="text-[#77777B] text-sm">No Image</span>
+                    </div>
+                )}
             </div>
 
             {/* Product Info */}
@@ -66,27 +79,11 @@ function ProductCard({ product }: ProductCardProps) {
 
                 <div className='flex items-center gap-2 justify-between mt-3'>
                     {product.stock > 0 && <p className="text-[10px] text-primary bg-[#F2F4F8] rounded-[4px] px-2 py-1 w-fit">{t("in_stock")}</p>}
-                    {!hasUnifiedPrice && (
-                        <Select value={selectedSize} onValueChange={setSelectedSize}>
-                            <SelectTrigger className="w-24 text-xs py-1 data-[size=default]:h-5">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className='text-xs'>
-                                {sizeOptions.map(opt => (
-                                    <SelectItem className='text-xs' key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
                 </div>
 
                 <div className="h-[1px] bg-[#F2F4F8] w-full" />
 
-                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between pt-2">
-                    <div className='flex items-center gap-2'>
-                        <span className={`font-semibold text-primary ${product.discount ? 'text-[#77777B]' : 'text-primary'}`}>{product.discount ? (product?.price ? product?.price * (1 - product.discount / 100) : 0) : selectedSizePrice.toFixed(1)} USD</span>
-                        {product.discount !== 0 && <span className={`line-through ${product.discount ? 'text-[#77777B] text-sm' : 'text-primary text-lg font-semibold'}`}>{product.price?.toFixed(1)} USD</span>}
-                    </div>
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-end pt-2">
                     <CartButton
                         product={product}
                         selectedSize={selectedSize}

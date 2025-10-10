@@ -197,13 +197,19 @@ function ProductContainer({ product }: { product: Product }) {
             <div className="relative w-full lg:w-[calc(45%-16px)]">
                 <div className="border border-[#D3D3D7] h-[520px] rounded-[12px] p-8 bg-white">
                     <div className="relative aspect-square h-full w-full">
-                        <Image
-                            width={1000}
-                            height={1000}
-                            src={product.image}
-                            alt="YSL Libre Perfume"
-                            className="w-full h-full object-contain"
-                        />
+                        {product.image && product.image !== null && product.image !== 'null' ? (
+                            <Image
+                                width={1000}
+                                height={1000}
+                                src={product.image}
+                                alt="YSL Libre Perfume"
+                                className="w-full h-full object-contain"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-[#F2F4F8] flex items-center justify-center">
+                                <span className="text-[#77777B] text-sm">No Image</span>
+                            </div>
+                        )}
 
                         {/* Action Icons */}
                         <div className="absolute top-4 right-4 flex flex-col gap-3">

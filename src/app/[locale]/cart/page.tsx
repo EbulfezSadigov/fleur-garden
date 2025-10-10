@@ -70,13 +70,13 @@ function CartItem({ item, onChange }: { item: CartItemData; onChange: (next: Car
 
                 <div className="flex items-center gap-4 md:gap-6 flex-1">
                     <div className="shrink-0">
-                        <Image
-                            src={item.image || ""}
-                            alt={item.title}
-                            width={88}
-                            height={88}
-                            className="rounded-md object-cover"
-                        />
+                        {item.image && item.image !== null && item.image !== 'null' ? (
+                            <Image src={item.image} alt={item.title} width={100} height={100} />
+                        ) : (
+                            <div className="w-full h-full bg-[#F2F4F8] flex items-center justify-center">
+                                <span className="text-[#77777B] text-sm">No Image</span>
+                            </div>
+                        )}
                     </div>
                     <div className="flex-1">
                         <div className="text-lg md:text-xl font-semibold text-foreground">{item.title}</div>
