@@ -88,7 +88,6 @@ const getOrders = async (token: string) => {
 };
 
 const applyPromo = async (data: ApplyPromoPayload) => {
-  console.log('API call data:', data);
   const response = await get(`order/apply-promocode`, {
     params: data
   });

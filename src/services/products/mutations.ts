@@ -15,7 +15,6 @@ const orderMutation = (data: OrderPayload) => {
 };
 
 const applyPromoMutation = (data: ApplyPromoPayload) => {
-    console.log(data);
     return mutationOptions({
         mutationFn: () => applyPromo(data),
     });

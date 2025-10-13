@@ -236,13 +236,11 @@ function Cart() {
             const mutationConfig = applyPromoMutation(payload);
             return mutationConfig.mutationFn?.() || Promise.reject('Mutation function not available');
         },
-        onSuccess: (data) => {
-            console.log('Promo applied successfully:', data);
+        onSuccess: () => {
             setPromoApplied(true);
             setPromoMessage(t("promo_code_applied"));
         },
-        onError: (error) => {
-            console.error('Promo application failed:', error);
+        onError: () => {
             setPromoApplied(false);
             setPromoMessage(t('promo_code_invalid'));
         }
