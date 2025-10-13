@@ -424,7 +424,15 @@ function Order() {
                         <div className="space-y-4">
                             {items.map((i) => (
                                 <div key={i.id} className="flex items-start gap-3">
-                                    <Image src={i.image} alt={i.title} width={64} height={64} className="rounded-md object-cover" />
+                                    {
+                                        i.image && i.image !== null && i.image !== 'null' ? (
+                                            <Image src={i.image} alt={i.title} width={64} height={64} className="rounded-md object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full bg-[#F2F4F8]">
+                                                <span className="text-[#77777B] text-sm">No Image</span>
+                                            </div>
+                                        )
+                                    }
                                     <div className="flex-1">
                                         <div className="font-medium">{i.title}</div>
                                         <div className="text-muted-foreground text-sm">{i.brand} • {i.volume}</div>

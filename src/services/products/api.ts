@@ -1,5 +1,5 @@
 import { get, post } from "@/lib/api";
-import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review, CreateReviewPayload, OrderPayload, Order } from "@/types";
+import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review, CreateReviewPayload, OrderPayload, Order, ApplyPromoPayload } from "@/types";
 
 const getProducts = async (locale: string, number?: number) => {
   const endpoint = number ? `products/${number}` : "products";
@@ -33,8 +33,8 @@ const getProductReviews = async (locale: string, slug: string) => {
 const addComment = async (data: CreateReviewPayload) => {
   const response = await post<ApiResponse<Review>>(`comment`, {
     ...data,
-    star:String(data.star),
-    product_id:String(data.product_id),
+    star: String(data.star),
+    product_id: String(data.product_id),
   });
   return response;
 };
@@ -87,6 +87,14 @@ const getOrders = async (token: string) => {
   return response;
 };
 
+const applyPromo = async (data: ApplyPromoPayload) => {
+  console.log('API call data:', data);
+  const response = await get(`order/apply-promocode`, {
+    params: data
+  });
+  return response;
+};
+
 export {
   getProducts,
   getProduct,
@@ -99,4 +107,5 @@ export {
   filterProducts,
   order,
   getOrders,
+  applyPromo,
 };

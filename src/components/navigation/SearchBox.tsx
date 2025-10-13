@@ -209,7 +209,15 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
                       }}
                       className="min-w-[280px] flex items-center gap-4 rounded-2xl border px-4 py-3 hover:bg-muted/50"
                     >
-                      <Image width={56} height={90} src={p.thumb_image || p.image} alt={p.name} className="w-[56px] h-[90px] object-cover rounded-md bg-white" />
+                      {
+                        p.image && p.image !== null && p.image !== 'null' ? (
+                          <Image width={56} height={90} src={p.thumb_image || p.image} alt={p.name} className="w-[56px] h-[90px] object-cover rounded-md bg-white" />
+                        ) : (
+                          <div className="w-full h-full bg-[#F2F4F8]">
+                            <span className="text-[#77777B] text-xs">No Image</span>
+                          </div>
+                        )
+                      }
                       <div className="text-left w-full h-full flex flex-col justify-between">
                         <div className="w-full">
                           <div className="flex items-center justify-between w-full">

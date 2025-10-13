@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Plus, Minus, Trash2 } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
 
 import Container from '@/components/shared/container'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage } from '@/components/ui/breadcrumb'
@@ -11,7 +12,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { LocalStorageCartItem, CartItemData, CartStorageItemV2 } from '@/types'
+import { LocalStorageCartItem, CartItemData, CartStorageItemV2, ApplyPromoPayload } from '@/types'
+import { applyPromoMutation } from '@/services/products/mutations'
 
 function formatCurrency(amount: number | string) {
     const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/[^\d.-]/g, '')) : amount
@@ -29,7 +31,8 @@ function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): Ca
             : item.product.price,
         qty: item.qty,
         selected: true,
-        image: item.product.image || ""
+        image: item.product.image || "",
+        type: item.product.type,
     }))
 }
 
@@ -43,6 +46,7 @@ function transformV2Data(v2: CartStorageItemV2[]): CartItemData[] {
         qty: item.quantity,
         selected: true,
         image: item.image || "",
+        type: item.pricingMode || 'unified',
     }))
 }
 
@@ -69,11 +73,11 @@ function CartItem({ item, onChange }: { item: CartItemData; onChange: (next: Car
                 />
 
                 <div className="flex items-center gap-4 md:gap-6 flex-1">
-                    <div className="shrink-0">
+                    <div className="h-full">
                         {item.image && item.image !== null && item.image !== 'null' ? (
                             <Image src={item.image} alt={item.title} width={100} height={100} />
                         ) : (
-                            <div className="w-full h-full bg-[#F2F4F8] flex items-center justify-center">
+                            <div className="w-full h-full">
                                 <span className="text-[#77777B] text-sm">No Image</span>
                             </div>
                         )}
@@ -87,12 +91,12 @@ function CartItem({ item, onChange }: { item: CartItemData; onChange: (next: Car
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Button className='rounded-full' variant="outline" size="icon" aria-label="Increase" onClick={() => handleQty(1)}>
-                            <Plus />
-                        </Button>
-                        <span className="w-6 text-center text-base md:text-lg">{item.qty}</span>
                         <Button className='rounded-full' variant="outline" size="icon" aria-label="Decrease" onClick={() => handleQty(-1)}>
                             <Minus />
+                        </Button>
+                        <span className="w-6 text-center text-base md:text-lg">{item.qty}</span>
+                        <Button className='rounded-full' variant="outline" size="icon" aria-label="Increase" onClick={() => handleQty(1)}>
+                            <Plus />
                         </Button>
                     </div>
 
@@ -227,6 +231,23 @@ function Cart() {
     const [promoApplied, setPromoApplied] = useState<boolean>(false)
     const [promoMessage, setPromoMessage] = useState<string>('')
 
+    const { mutate: applyPromoCode, isPending: isApplyingPromo } = useMutation({
+        mutationFn: (payload: ApplyPromoPayload) => {
+            const mutationConfig = applyPromoMutation(payload);
+            return mutationConfig.mutationFn?.() || Promise.reject('Mutation function not available');
+        },
+        onSuccess: (data) => {
+            console.log('Promo applied successfully:', data);
+            setPromoApplied(true);
+            setPromoMessage(t("promo_code_applied"));
+        },
+        onError: (error) => {
+            console.error('Promo application failed:', error);
+            setPromoApplied(false);
+            setPromoMessage(t('promo_code_invalid'));
+        }
+    })
+
     const selectedItems = items.filter((i) => i.selected)
     const subtotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0)
     const discountRate = promoApplied ? 0.2 : 0
@@ -248,13 +269,30 @@ function Cart() {
     }
 
     function applyPromo() {
-        if (promo.trim().toUpperCase() === 'FLEUR20') {
-            setPromoApplied(true)
-            setPromoMessage(t("promo_code_applied"))
-        } else {
-            setPromoApplied(false)
-            setPromoMessage(t('promo_code_invalid'))
+        if (!promo.trim()) {
+            setPromoMessage(t('promo_code_invalid'));
+            return;
         }
+
+        if (selectedItems.length === 0) {
+            setPromoMessage(t('select_items_first') || 'Please select items first');
+            return;
+        }
+
+        const payload: ApplyPromoPayload = {
+            promocode: promo.trim().toUpperCase(),
+            products: selectedItems.map((i) => {
+                const idParts = i.id.split('-');
+                const productId = parseInt(idParts[0]);
+
+                return {
+                    product_id: productId,
+                    quantity: i.qty,
+                };
+            }),
+        };
+
+        applyPromoCode(payload);
     }
 
     return (
@@ -323,7 +361,9 @@ function Cart() {
                             <p className="text-muted-foreground text-sm mb-3">{t("promo_code_description")}</p>
                             <div className="flex gap-2">
                                 <Input disabled={items.length === 0 || !total} placeholder="FLEUR20" value={promo} onChange={(e) => setPromo(e.target.value)} />
-                                <Button disabled={items.length === 0 || !total} variant="outline" onClick={applyPromo}>{t("apply")}</Button>
+                                <Button disabled={items.length === 0 || !total || isApplyingPromo} variant="outline" onClick={applyPromo}>
+                                    {isApplyingPromo ? t("applying") || "Applying..." : t("apply")}
+                                </Button>
                             </div>
                             {promoMessage && (
                                 <div className={promoApplied ? 'text-emerald-600 text-sm mt-2' : 'text-red-500 text-sm mt-2'}>

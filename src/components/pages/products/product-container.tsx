@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Heart, Scale, Star, Plus, Minus } from "lucide-react"
 import Image from "next/image"
 import ShareDialog from "@/components/shared/share-dialog"
@@ -14,31 +13,30 @@ import { Input } from "@/components/ui/input"
 function ProductContainer({ product }: { product: Product }) {
     const [quantity, setQuantity] = useState(1)
     const hasUnifiedPrice = product.price !== null && product.price !== undefined
-    const [selectedSize, setSelectedSize] = useState<string>("")
     const [customSize, setCustomSize] = useState<string>("")
     const [isFavorite, setIsFavorite] = useState(false)
     const [isInComparison, setIsInComparison] = useState(false)
 
     const t = useTranslations("product_page")
 
-    // Prepare size options from API shape when price is null
-    const sizeOptions = useMemo(() => {
-        if (hasUnifiedPrice) return [] as Array<{ label: string; value: string; price: number }>
-        const entries = Array.isArray(product.price_by_size) ? product.price_by_size : []
-        return entries
-            .filter(item => typeof item.size === 'number' && typeof item.price === 'number')
-            .map(item => ({
-                label: `${item.size} ML`,
-                value: String(item.size),
-                price: item.price,
-            }))
-    }, [product.price_by_size, hasUnifiedPrice])
-
     const selectedSizePrice = useMemo(() => {
-        if (hasUnifiedPrice) return product.price ?? 0
-        const found = sizeOptions.find(opt => opt.value === selectedSize)
-        return found?.price ?? 0
-    }, [hasUnifiedPrice, product.price, sizeOptions, selectedSize])
+        const v = Number(customSize)
+        if (!v || Number.isNaN(v) || v <= 0) {
+            if (hasUnifiedPrice) return product.price ?? 0
+            if (product.price_by_size && product.price_by_size.length > 0) {
+                return product.price_by_size[0].price
+            }
+            return 0
+        }
+
+        if (hasUnifiedPrice) {
+            return (product.price ?? 0) * v
+        } else {
+            // Find the correct tier for this volume
+            const correctTier = product.price_by_size?.find(tier => v >= tier.min && v <= tier.max)
+            return correctTier ? correctTier.price * v : 0
+        }
+    }, [hasUnifiedPrice, product.price, product.price_by_size, customSize])
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -53,12 +51,6 @@ function ProductContainer({ product }: { product: Product }) {
         }
     }, [product.id])
 
-    // Initialize default selected size from API when price is null
-    useEffect(() => {
-        if (!hasUnifiedPrice && sizeOptions.length > 0 && !selectedSize) {
-            setSelectedSize(sizeOptions[0].value)
-        }
-    }, [hasUnifiedPrice, sizeOptions, selectedSize])
 
     const incrementQuantity = () => setQuantity((prev) => prev + 1)
     const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1))
@@ -121,6 +113,7 @@ function ProductContainer({ product }: { product: Product }) {
             // Use the SAME schema as the quick `CartButton` so the cart page renders consistently
             type CartItem = {
                 id: string
+                product_id: number
                 title: string
                 brand: string
                 volume: string
@@ -128,6 +121,7 @@ function ProductContainer({ product }: { product: Product }) {
                 qty: number
                 selected: boolean
                 image: string
+                type: string
             }
 
             const storageKey = 'cart'
@@ -146,17 +140,51 @@ function ProductContainer({ product }: { product: Product }) {
                     toast.error(t('please_enter_valid_volume') || 'Zəhmət olmasa həcmi daxil edin')
                     return
                 }
-                volumeLabel = `${v} ML`
-                priceValue = (product.price ?? 0) * v
+
+                // For unified price products, check if product already exists in cart
+                // If it does, increase the volume instead of creating separate entry
+                const existingProductIndex = cart.findIndex(item => item.product_id === product.id)
+                if (existingProductIndex >= 0) {
+                    // Product exists, increase volume and recalculate price
+                    const existingVolume = Number(cart[existingProductIndex].volume)
+                    const newVolume = existingVolume + (v * quantity)
+                    cart[existingProductIndex].volume = `${newVolume}`
+                    cart[existingProductIndex].price = (product.price ?? 0) * newVolume
+                    cart[existingProductIndex].qty = 1 // Keep qty as 1 since we're managing volume directly
+
+                    window.localStorage.setItem(storageKey, JSON.stringify(cart))
+                    try {
+                        window.dispatchEvent(new Event('cart:updated'))
+                        window.dispatchEvent(new CustomEvent('cartChanged'))
+                    } catch { }
+                    toast.success(t('added_to_cart') || 'Səbətə əlavə olundu')
+                    return
+                }
+
+                volumeLabel = `${v * quantity}`
+                priceValue = (product.price ?? 0) * v * quantity
             } else {
-                const v = Number(selectedSize)
-                volumeLabel = v ? `${v} ML` : ''
-                priceValue = selectedSizePrice
+                // For price_by_size products, user enters custom volume and we find the tier
+                const v = Number(customSize)
+                if (!v || Number.isNaN(v) || v <= 0) {
+                    toast.error(t('please_enter_valid_volume') || 'Zəhmət olmasa həcmi daxil edin')
+                    return
+                }
+
+                // Find the correct tier for this volume
+                const correctTier = product.price_by_size?.find(tier => v >= tier.min && v <= tier.max)
+                if (!correctTier) {
+                    const ranges = product.price_by_size?.map(tier => `${tier.min}-${tier.max}`).join(', ') || ''
+                    toast.error(t('volume_out_of_range') || `Volume must be within one of these ranges: ${ranges}`)
+                    return
+                }
+
+                volumeLabel = `${v}`
+                priceValue = correctTier.price * v
             }
 
             // Enforce minimum order amount of 400 USD per add operation
             const subtotal = priceValue * quantity
-            console.log(subtotal)
             if (subtotal > 400) {
                 toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
                 return
@@ -170,13 +198,15 @@ function ProductContainer({ product }: { product: Product }) {
             } else {
                 cart.push({
                     id,
+                    product_id: product.id,
                     title: product.name,
                     brand: product.brand_name ?? '',
                     volume: volumeLabel,
                     price: priceValue,
-                    qty: quantity,
+                    qty: hasUnifiedPrice ? 1 : quantity, // For unified price, qty is always 1, volume handles the amount
                     selected: true,
-                    image: product.image || ''
+                    image: product.image || '',
+                    type: hasUnifiedPrice ? 'unified' : 'priced'
                 })
             }
 
@@ -253,10 +283,10 @@ function ProductContainer({ product }: { product: Product }) {
                     </div>
                 </div>
 
-                {/* Volume: Select when price-by-size, Number input when single price */}
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium text-gray-700">{t("product_volume")}:</label>
-                    {hasUnifiedPrice ? (
+                {/* Volume: Number input for both unified price and price_by_size */}
+                <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium text-gray-700">{t(hasUnifiedPrice ? "product_volume" : "ml")}:</label>
                         <Input
                             type="number"
                             min={1}
@@ -264,31 +294,44 @@ function ProductContainer({ product }: { product: Product }) {
                             value={customSize}
                             onChange={(e) => setCustomSize(e.target.value)}
                             className="w-32"
-                            placeholder="ML"
+                            placeholder={t(hasUnifiedPrice ? "product_volume" : "ml")}
                         />
-                    ) : (
-                        <Select value={selectedSize} onValueChange={setSelectedSize}>
-                            <SelectTrigger className="w-32">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {sizeOptions.map(opt => (
-                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    </div>
+                    {!hasUnifiedPrice && product.price_by_size && product.price_by_size.length > 0 && (
+                        <div className="text-xs text-gray-500">
+                            Available ranges: {product.price_by_size.map(tier => `${tier.min}-${tier.max} ML`).join(', ')}
+                        </div>
+                    )}
+                    {customSize && !hasUnifiedPrice && product.price_by_size && (
+                        (() => {
+                            const v = Number(customSize)
+                            const currentTier = product.price_by_size.find(tier => v >= tier.min && v <= tier.max)
+                            return currentTier ? (
+                                <div className="text-xs text-green-600">
+                                    Current tier: {currentTier.min}-{currentTier.max} ML @ ${currentTier.price} per ML
+                                </div>
+                            ) : (
+                                <div className="text-xs text-red-600">
+                                    Volume outside available ranges
+                                </div>
+                            )
+                        })()
                     )}
                 </div>
 
                 {/* Price */}
                 <div className="space-y-2">
-                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice} USD</div>
+                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice.toFixed(2)} USD</div>
                     <div className="flex justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="text-sm text-gray-500">
-                                {!hasUnifiedPrice && selectedSize ? `${selectedSize} ml` : customSize ? `${customSize} ml` : ''} {" "}
-                            </div>
-                            {customSize && <span>({product?.price ? product?.price * Number(customSize) : 0} USD)</span>}
+                            {!hasUnifiedPrice && (
+                                <div className="text-sm text-gray-500">
+                                    {customSize ? `${customSize} ml` : ''} {" "}
+                                </div>
+                            )}
+                            {!hasUnifiedPrice && customSize && (
+                                <span>(Base price: ${product.price} per ML)</span>
+                            )}
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

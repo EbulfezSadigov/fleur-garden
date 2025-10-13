@@ -3,7 +3,7 @@
 import { Star } from 'lucide-react'
 import { useRouter } from '@/i18n/navigation'
 import Image from 'next/image'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { ProductCardProps } from '@/types'
 import { useTranslations } from 'next-intl'
 import FavComp from '../products/favComp'
@@ -11,35 +11,20 @@ import CartButton from '../products/cartButton'
 
 function ProductCard({ product }: ProductCardProps) {
     const router = useRouter()
-    const [selectedSize, setSelectedSize] = useState<string>("")
     const hasUnifiedPrice = product.price !== null && product.price !== undefined
+    const hasPriceBySizeStructure = product.price_by_size && Array.isArray(product.price_by_size) && product.price_by_size.length > 0
     const t = useTranslations("product_card")
 
-    const sizeOptions = useMemo(() => {
-        if (hasUnifiedPrice) return [] as Array<{ label: string; value: string; price: number }>
-        const entries = Array.isArray(product.price_by_size) ? product.price_by_size : []
-        return entries
-            .filter(item => typeof item.size === 'number' && typeof item.price === 'number')
-            .map(item => ({
-                label: `${item.size} ML`,
-                value: String(item.size),
-                price: item.price,
-            }))
-    }, [product.price_by_size, hasUnifiedPrice])
-
-    const selectedSizePrice = useMemo(() => {
-        if (hasUnifiedPrice) return product.price ?? 0
-        const found = sizeOptions.find(opt => opt.value === selectedSize)
-        return found?.price ?? 0
-    }, [hasUnifiedPrice, product.price, sizeOptions, selectedSize])
-
-    useEffect(() => {
-        if (!hasUnifiedPrice && sizeOptions.length > 0 && !selectedSize) {
-            setSelectedSize(sizeOptions[0].value)
+    // Get the display price - either unified price or first price tier
+    const displayPrice = useMemo(() => {
+        if (hasUnifiedPrice) {
+            return product.price ?? 0
         }
-    }, [hasUnifiedPrice, sizeOptions, selectedSize])
-
-    console.log(product.image)
+        if (hasPriceBySizeStructure && product.price_by_size) {
+            return product.price_by_size[0].price
+        }
+        return 0
+    }, [hasUnifiedPrice, hasPriceBySizeStructure, product.price, product.price_by_size])
 
     return (
         <div onClick={() => router.push(`/products/${product.slug}`)} key={product.id} className="bg-white relative group border border-[#F2F4F8] rounded-[12px] p-4"
@@ -68,7 +53,7 @@ function ProductCard({ product }: ProductCardProps) {
             {/* Product Info */}
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                    <h3 className="font-medium text-primary">{product.name}</h3>
+                    <h3 className="font-medium text-primary line-clamp-1">{product.name}</h3>
                     <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 fill-[#FF9500] text-[#FF9500]" />
                         <span className="text-sm text-[#FF9500] font-medium">{product.star}</span>
@@ -81,14 +66,26 @@ function ProductCard({ product }: ProductCardProps) {
                     {product.stock > 0 && <p className="text-[10px] text-primary bg-[#F2F4F8] rounded-[4px] px-2 py-1 w-fit">{t("in_stock")}</p>}
                 </div>
 
+                {/* Price Display */}
+
                 <div className="h-[1px] bg-[#F2F4F8] w-full" />
 
-                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-end pt-2">
-                    <CartButton
-                        product={product}
-                        selectedSize={selectedSize}
-                        selectedPrice={selectedSizePrice}
-                    />
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between pt-2">
+                    <div className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                            <span className="text-lg font-semibold text-primary">${displayPrice}</span>
+                            {hasPriceBySizeStructure && product.price_by_size && (
+                                <span className="text-xs text-[#77777B]">
+                                    {product.price_by_size[0].min}-{product.price_by_size[0].max} ML
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <CartButton
+                            product={product}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

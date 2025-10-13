@@ -71,7 +71,8 @@ export interface Product {
     }[]
     price_by_size?: {
         price: number
-        size: number
+        min: number
+        max: number
     }[]
 }
 
@@ -185,6 +186,7 @@ export interface CartItemData {
     qty: number
     selected: boolean
     image: string
+    type: string
 }
 
 export interface LocalStorageCartItem {
@@ -199,6 +201,7 @@ export interface LocalStorageCartItem {
         rating: number
         inStock: boolean
         volume: string
+        type: string
     }
 }
 
@@ -213,4 +216,13 @@ export interface CartStorageItemV2 {
     subtotal: number
     pricingMode?: 'unified' | 'by_size'
     distinguish?: string
+}
+
+export interface ApplyPromoPayload {
+    promocode: string
+    products: {
+        quantity?: number
+        product_id: number
+        size?: number
+    }[]
 }

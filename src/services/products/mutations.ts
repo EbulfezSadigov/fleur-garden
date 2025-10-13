@@ -1,5 +1,5 @@
-import { CreateReviewPayload, OrderPayload } from "@/types";
-import { addComment, order } from "./api";
+import { CreateReviewPayload, OrderPayload, ApplyPromoPayload } from "@/types";
+import { addComment, order, applyPromo   } from "./api";
 import { mutationOptions } from "@tanstack/react-query";
 
 const addCommentMutation = (data: CreateReviewPayload) => {
@@ -14,4 +14,11 @@ const orderMutation = (data: OrderPayload) => {
     });
 };
 
-export { addCommentMutation, orderMutation };
+const applyPromoMutation = (data: ApplyPromoPayload) => {
+    console.log(data);
+    return mutationOptions({
+        mutationFn: () => applyPromo(data),
+    });
+};
+
+export { addCommentMutation, orderMutation, applyPromoMutation };

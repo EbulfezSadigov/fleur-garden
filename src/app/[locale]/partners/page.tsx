@@ -15,8 +15,6 @@ export default async function PartnersPage() {
   const partnersData = queryClient.getQueryData(getPartnersQuery(locale).queryKey);
   const partners = partnersData?.data;
 
-  console.log(partners);
-
   return (
     <div className="py-9">
       <Container>
