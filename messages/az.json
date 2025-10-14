@@ -13,7 +13,8 @@
     "login": "Daxil ol",
     "register": "Qeydiyyatdan keç",
     "catalog": "Kataloq",
-    "watch_us": "Bizi izləyin"
+    "watch_us": "Bizi izləyin",
+    "franchises": "Franchises"
   },
   "newsletter": {
     "title": "Yeniliklərdən Xəbərdar Ol",
@@ -148,7 +149,8 @@
     "submitting": "Göndərilir...",
     "comment_added_successfully": "Rəyiniz təsdiqləndikdən sonra səhifədə görünəcək.",
     "failed_to_add_comment": "Rəy əlavə edilərkən xəta baş verdi",
-    "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir"
+    "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir",
+    "kq": "Kq"
   },
   "favorites": {
     "favorites": "Sevimli məhsullar",

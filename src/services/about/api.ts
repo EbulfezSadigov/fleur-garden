@@ -22,4 +22,9 @@ const getContact = async (locale: string) => {
     return response;
 };
 
-export { getAbout, getAdvantages, getFaq, getContact };
+const getFranchises = async () => {
+    const response = await get<ApiResponse<About>>(`franchises`);
+    return response;
+};
+
+export { getAbout, getAdvantages, getFaq, getContact, getFranchises };

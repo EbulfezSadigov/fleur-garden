@@ -146,7 +146,7 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
           <div>
             {currentView === 'main' ? (
               <>
-                <h3 className="text-lg font-semibold mb-4">Kataloq</h3>
+                <h3 className="text-lg font-semibold mb-4">{t("catalog")}</h3>
                 <div className="space-y-3">
                   {categories.map((item, index) => (
                     <button

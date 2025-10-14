@@ -35,7 +35,7 @@ export function BrandCarousel({ partners }: { partners: Partner[] }) {
   }, [])
 
   return (
-    <div className="w-full overflow-hidden bg-background py-8">
+    <div className="w-full overflow-hidden bg-background md:py-8">
       <div
         ref={scrollRef}
         className="flex justify-center gap-16 overflow-hidden"

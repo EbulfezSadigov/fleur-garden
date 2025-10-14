@@ -16,6 +16,9 @@ import { Review } from "@/types";
 
 export function CarouselWithReviews({ comments }: { comments: Review[] }) {
     const t = useTranslations("reviews")
+
+    if (comments.length === 0) return null;
+
     return (
         <div className="px-4 md:px-0 pb-[72px]">
             <Carousel

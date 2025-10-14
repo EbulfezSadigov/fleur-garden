@@ -13,7 +13,8 @@
     "login": "Login",
     "register": "Register",
     "catalog": "Catalog",
-    "watch_us": "Watch us"
+    "watch_us": "Watch us",
+    "franchises": "Franchises"
   },
   "newsletter": {
     "title": "Stay Updated",
@@ -149,7 +150,8 @@
     "submitting": "Submitting...",
     "comment_added_successfully": "Your comment will be shown after it is approved.",
     "failed_to_add_comment": "Failed to add comment",
-    "minimum_order_validation": "Minimum order amount is 400 USD"
+    "minimum_order_validation": "Minimum order amount is 400 USD",
+    "kq": "Kq"
   },
   "favorites": {
     "favorites": "Favorites",

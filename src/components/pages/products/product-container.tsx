@@ -232,7 +232,7 @@ function ProductContainer({ product }: { product: Product }) {
                                 width={1000}
                                 height={1000}
                                 src={product.image}
-                                alt="YSL Libre Perfume"
+                                alt={product.name}
                                 className="w-full h-full object-contain"
                             />
                         ) : (
@@ -286,7 +286,6 @@ function ProductContainer({ product }: { product: Product }) {
                 {/* Volume: Number input for both unified price and price_by_size */}
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                        <label className="text-sm font-medium text-gray-700">{t(hasUnifiedPrice ? "product_volume" : "ml")}:</label>
                         <Input
                             type="number"
                             min={1}
@@ -294,12 +293,12 @@ function ProductContainer({ product }: { product: Product }) {
                             value={customSize}
                             onChange={(e) => setCustomSize(e.target.value)}
                             className="w-32"
-                            placeholder={t(hasUnifiedPrice ? "product_volume" : "ml")}
+                            placeholder={t("kq")}
                         />
                     </div>
                     {!hasUnifiedPrice && product.price_by_size && product.price_by_size.length > 0 && (
                         <div className="text-xs text-gray-500">
-                            Available ranges: {product.price_by_size.map(tier => `${tier.min}-${tier.max} ML`).join(', ')}
+                            Available ranges: {product.price_by_size.map(tier => `${tier.min}-${tier.max} Kq`).join(', ')}
                         </div>
                     )}
                     {customSize && !hasUnifiedPrice && product.price_by_size && (

@@ -31,7 +31,7 @@ export function ProductCarousel({ sliders }: { sliders: Slider[] }) {
     }, [api])
 
     return (
-        <div className="relative w-full h-[549px]">
+        <div className="relative w-full h-[200px] md:h-[549px]">
             {/* Hero Banner */}
             <div className="relative flex items-center justify-center overflow-hidden">
                 {/* Carousel */}
@@ -56,7 +56,7 @@ export function ProductCarousel({ sliders }: { sliders: Slider[] }) {
                                                     src={slider.image}
                                                     unoptimized
                                                     alt={`Product ${slider.image}`}
-                                                    className="w-full h-[549px] object-cover"
+                                                    className="w-full h-[200px] md:h-[549px] object-cover"
                                                 />
                                             </div>
                                         </div>

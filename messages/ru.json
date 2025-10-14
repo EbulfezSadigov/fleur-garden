@@ -13,7 +13,8 @@
     "login": "Войти",
     "register": "Зарегистрироваться",
     "catalog": "Каталог",
-    "watch_us": "Будьте в курсе последних новостей"
+    "watch_us": "Будьте в курсе последних новостей",
+    "franchises": "Франшизы"
   },
   "newsletter": {
     "title": "Будьте в курсе последних новостей",
@@ -149,7 +150,8 @@
     "submitting": "Отправка...",
     "comment_added_successfully": "Ваш отзыв будет показан после одобрения.",
     "failed_to_add_comment": "Не удалось добавить отзыв",
-    "minimum_order_validation": "Минимальное количество заказа 400 USD"
+    "minimum_order_validation": "Минимальное количество заказа 400 USD",
+    "kq": "Kq"
   },
   "favorites":{
     "favorites": "Избранное",

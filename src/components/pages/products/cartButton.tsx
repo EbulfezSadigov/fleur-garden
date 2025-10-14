@@ -221,7 +221,7 @@ function CartButton({ product }: { product: Product }) {
                         {(hasUnifiedPrice || selectedPriceTier) && (
                             <div className="mt-4">
                                 <label className="text-xs text-[#77777B] mb-1 block">
-                                    ML {allRanges.length > 0 && (
+                                    Kq {allRanges.length > 0 && (
                                         <span>
                                             (Available ranges: {allRanges.map(tier => `${tier.min}-${tier.max}`).join(', ')})
                                         </span>

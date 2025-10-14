@@ -5,6 +5,7 @@ export const navigationItems = [
   { label: "partners", href: "/partners" },
   { label: "blog", href: "/blogs" },
   { label: "contact", href: "/contact" },
+  { label: "franchises", href: "/franchises" },
 ]
 
 export const sidebarItems = [
