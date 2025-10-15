@@ -52,7 +52,7 @@ const mockOrderDetail: OrderDetail = {
         image: "/images/product.jpg",
         rating: 4.5,
     },
-    volume: "50 ML",
+    volume: "50 Kq",
     quantity: 10,
     total: 1200,
     status: "delivered",

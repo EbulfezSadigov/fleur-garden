@@ -63,7 +63,9 @@
     "in_cart": "В корзине",
     "initial_price": "Начальная цена",
     "share": "Поделиться",
-    "minimum_order_validation": "Минимальное количество заказа 400 USD"
+    "minimum_order_validation": "Минимальное количество заказа 400 USD",
+    "volume_out_of_range": "Объем вне диапазона",
+    "please_enter_valid_volume": "Пожалуйста, введите валидный объем"
   },
   "blogs":{
     "title": "Блоги",

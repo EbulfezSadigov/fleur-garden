@@ -16,7 +16,6 @@ function CartButton({ product }: { product: Product }) {
     const hasUnifiedPrice = product.price !== null && product.price !== undefined
     const router = useRouter()
 
-    // Get the appropriate price tier based on volume input
     const selectedPriceTier = React.useMemo(() => {
         if (hasUnifiedPrice || !product.price_by_size || !Array.isArray(product.price_by_size) || product.price_by_size.length === 0) {
             return null
@@ -24,7 +23,6 @@ function CartButton({ product }: { product: Product }) {
 
         const v = Number(volume)
         if (!v || Number.isNaN(v) || v <= 0) {
-            // Return first tier as default when no volume is entered
             return product.price_by_size[0]
         }
 
@@ -69,9 +67,6 @@ function CartButton({ product }: { product: Product }) {
             setIsOpen(true)
             return
         }
-
-        // This should not happen anymore since we always show dialog for products with pricing
-        console.warn('Unexpected state: no unified price or price_by_size structure')
     }
 
     function addPricedItemToCart(volumeMl: number) {
@@ -101,12 +96,12 @@ function CartButton({ product }: { product: Product }) {
                 const existingProductIndex = cart.findIndex(item => item.product_id === product.id)
                 if (existingProductIndex >= 0) {
                     // Product exists, increase volume and recalculate price
-                    const existingVolume = Number(cart[existingProductIndex].volume.replace(' ML', ''))
+                    const existingVolume = Number(cart[existingProductIndex].volume.replace(' Kq', ''))
                     const newVolume = existingVolume + volumeMl
                     const discountPercent = typeof product.discount === 'number' ? product.discount : 0
                     const unitPrice = (product.price ?? 0) * (1 - discountPercent / 100)
 
-                    cart[existingProductIndex].volume = `${newVolume} ML`
+                    cart[existingProductIndex].volume = `${newVolume} Kq`
                     cart[existingProductIndex].price = unitPrice * newVolume
                     cart[existingProductIndex].qty = 1 // Keep qty as 1 since we're managing volume directly
 
@@ -135,12 +130,12 @@ function CartButton({ product }: { product: Product }) {
                 totalPrice = correctTier.price * volumeMl
             }
 
-            if (totalPrice > 400) {
+            if (totalPrice < 400) {
                 toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
                 return
             }
 
-            const volumeStr = `${volumeMl} ML`
+            const volumeStr = `${volumeMl} Kq`
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeStr)
             if (existingIndex >= 0) {
                 // Same product and same volume → just increment qty
@@ -213,7 +208,7 @@ function CartButton({ product }: { product: Product }) {
                             <div className="text-right">
                                 <p className="text-sm font-semibold text-primary">(x1) {computedDialogPrice.toFixed(2)} USD</p>
                                 {hasUnifiedPrice && (
-                                    <p className="text-[10px] text-muted-foreground">{volume ? `${volume} ml` : ''}</p>
+                                    <p className="text-[10px] text-muted-foreground">{volume ? `${volume} kq` : ''}</p>
                                 )}
                             </div>
                         </div>
@@ -238,7 +233,7 @@ function CartButton({ product }: { product: Product }) {
                                 />
                                 {selectedPriceTier && volume && (
                                     <p className="text-xs text-[#77777B] mt-1">
-                                        Current tier: {selectedPriceTier.min}-{selectedPriceTier.max} ML @ ${selectedPriceTier.price} per ML
+                                        Current tier: {selectedPriceTier.min}-{selectedPriceTier.max} Kq @ ${selectedPriceTier.price} per Kq
                                     </p>
                                 )}
                             </div>

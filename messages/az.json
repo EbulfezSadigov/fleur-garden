@@ -62,7 +62,9 @@
     "cross_basket": "Səbətə keç",
     "in_cart": "Səbətinizdə məhsullar var",
     "initial_price": "Səbətin ilkin dəyəri",
-    "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir"
+    "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir",
+    "volume_out_of_range": "Həcm aralığı daxil edin",
+    "please_enter_valid_volume": "Zəhmət olmasa həcmi daxil edin"
   },
   "blogs": {
     "title": "Bloqlar",

@@ -63,7 +63,9 @@
     "in_cart": "Product in cart",
     "initial_price": "Product initial price",
     "share": "Share",
-    "minimum_order_validation": "Minimum order amount is 400 USD"
+    "minimum_order_validation": "Minimum order amount is 400 USD",
+    "volume_out_of_range": "Volume out of range",
+    "please_enter_valid_volume": "Please enter valid volume"
   },
   "blogs": {
     "title": "Blogs",

@@ -185,7 +185,7 @@ function ProductContainer({ product }: { product: Product }) {
 
             // Enforce minimum order amount of 400 USD per add operation
             const subtotal = priceValue * quantity
-            if (subtotal > 400) {
+            if (subtotal < 400) {
                 toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
                 return
             }
@@ -307,7 +307,7 @@ function ProductContainer({ product }: { product: Product }) {
                             const currentTier = product.price_by_size.find(tier => v >= tier.min && v <= tier.max)
                             return currentTier ? (
                                 <div className="text-xs text-green-600">
-                                    Current tier: {currentTier.min}-{currentTier.max} ML @ ${currentTier.price} per ML
+                                    Current tier: {currentTier.min}-{currentTier.max} Kq @ ${currentTier.price} per Kq
                                 </div>
                             ) : (
                                 <div className="text-xs text-red-600">
@@ -325,11 +325,11 @@ function ProductContainer({ product }: { product: Product }) {
                         <div className="flex items-center gap-2">
                             {!hasUnifiedPrice && (
                                 <div className="text-sm text-gray-500">
-                                    {customSize ? `${customSize} ml` : ''} {" "}
+                                    {customSize ? `${customSize} kq` : ''} {" "}
                                 </div>
                             )}
                             {!hasUnifiedPrice && customSize && (
-                                <span>(Base price: ${product.price} per ML)</span>
+                                <span>(Base price: ${product.price} per Kq)</span>
                             )}
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">

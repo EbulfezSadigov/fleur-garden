@@ -28,7 +28,7 @@ export default function ProductGrid({ locale, products }: ProductGridProps) {
         <Container className="py-8 md:py-[72px]">
             {/* Header */}
             <div className="flex flex-col md:flex-row items-center justify-between mb-8">
-                <h1 className= "text-2xl md:text-4xl font-medium text-primary">{heading}</h1>
+                <h1 className= "text-[28px] md:text-4xl font-medium text-primary">{heading}</h1>
                 <nav className="flex items-center gap-6 w-full md:w-auto min-w-0 overflow-x-auto whitespace-nowrap md:mt-0 mt-4">
                     <button
                         className={`relative flex items-center gap-2 text-sm md:text-base font-medium ${selectedNumber === undefined ? "text-primary" : "text-gray-500 hover:text-primary transition-colors"}`}

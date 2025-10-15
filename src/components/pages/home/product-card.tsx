@@ -21,7 +21,7 @@ function ProductCard({ product }: ProductCardProps) {
             return product.price ?? 0
         }
         if (hasPriceBySizeStructure && product.price_by_size) {
-            return product.price_by_size[0].price
+            return product.price_by_size[product.price_by_size.length - 1].price
         }
         return 0
     }, [hasUnifiedPrice, hasPriceBySizeStructure, product.price, product.price_by_size])
@@ -60,7 +60,7 @@ function ProductCard({ product }: ProductCardProps) {
                     </div>
 
                 </div>
-                <p className="text-sm text-[#77777B]">{product.brand_name}</p>
+                <p className="text-sm text-[#77777B] line-clamp-1">{product.brand_name}</p>
 
                 <div className='flex items-center gap-2 justify-between mt-3'>
                     {product.stock > 0 && <p className="text-[10px] text-primary bg-[#F2F4F8] rounded-[4px] px-2 py-1 w-fit">{t("in_stock")}</p>}
@@ -73,10 +73,10 @@ function ProductCard({ product }: ProductCardProps) {
                 <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between pt-2">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col">
-                            <span className="text-lg font-semibold text-primary">${displayPrice}</span>
+                            <span className="text-lg text-center md:text-left font-semibold text-primary">${displayPrice}</span>
                             {hasPriceBySizeStructure && product.price_by_size && (
-                                <span className="text-xs text-[#77777B]">
-                                    {product.price_by_size[0].min}-{product.price_by_size[0].max} Kq
+                                <span className="text-xs text-center md:text-left text-[#77777B]">
+                                    {product.price_by_size[product.price_by_size.length - 1].min}-{product.price_by_size[product.price_by_size.length - 1].max} Kq
                                 </span>
                             )}
                         </div>

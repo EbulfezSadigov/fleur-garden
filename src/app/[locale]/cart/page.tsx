@@ -41,7 +41,7 @@ function transformV2Data(v2: CartStorageItemV2[]): CartItemData[] {
         id: `${item.id}-${item.size ?? 'na'}-${index}`,
         title: item.name,
         brand: item.product?.brand_name ?? '',
-        volume: item.size ? `${item.size} ML` : '',
+        volume: item.size ? `${item.size} Kq` : '',
         price: item.price,
         qty: item.quantity,
         selected: true,
@@ -58,43 +58,109 @@ function CartItem({ item, onChange }: { item: CartItemData; onChange: (next: Car
     }
 
     return (
-        <div className="p-5 md:p-6"
+        <div className="p-4 md:p-6"
             style={{
                 borderRadius: "10px",
                 border: "1px solid #F2F4F8",
                 background: "#FFF",
             }}
         >
-            <div className="flex items-start gap-4 md:gap-6">
+            {/* Mobile Layout */}
+            <div className="flex flex-col space-y-4 md:hidden">
+                <div className="flex items-start gap-3">
+                    <Checkbox
+                        checked={item.selected}
+                        onCheckedChange={(v) => onChange({ ...item, selected: Boolean(v) })}
+                        className="mt-1"
+                    />
+                    <div className="flex-1">
+                        <div className="text-base font-semibold text-foreground">{item.title}</div>
+                        <div className="text-muted-foreground text-sm mt-1">
+                            {item.brand} • {item.volume}
+                        </div>
+                    </div>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="Remove"
+                        className="text-destructive flex-shrink-0"
+                        onClick={() => onChange(null)}
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <div className="w-16 h-16 flex-shrink-0">
+                        {item.image && item.image !== null && item.image !== 'null' ? (
+                            <Image
+                                src={item.image}
+                                alt={item.title}
+                                width={64}
+                                height={64}
+                                className="w-full h-full object-cover rounded"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gray-100 rounded flex items-center justify-center">
+                                <span className="text-[#77777B] text-xs">No Image</span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex-1">
+                        <div className="text-lg font-semibold text-foreground">{formatCurrency(item.price)}</div>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-end">
+                    <div className="flex items-center gap-3">
+                        <Button className='rounded-full' variant="outline" size="icon" aria-label="Decrease" onClick={() => handleQty(-1)}>
+                            <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="w-8 text-center text-base">{item.qty}</span>
+                        <Button className='rounded-full' variant="outline" size="icon" aria-label="Increase" onClick={() => handleQty(1)}>
+                            <Plus className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Desktop Layout */}
+            <div className="hidden md:flex items-start gap-6">
                 <Checkbox
                     checked={item.selected}
                     onCheckedChange={(v) => onChange({ ...item, selected: Boolean(v) })}
                     className="mt-2"
                 />
 
-                <div className="flex items-center gap-4 md:gap-6 flex-1">
-                    <div className="h-full">
+                <div className="flex items-center gap-6 flex-1">
+                    <div className="w-20 h-20 flex-shrink-0">
                         {item.image && item.image !== null && item.image !== 'null' ? (
-                            <Image src={item.image} alt={item.title} width={100} height={100} />
+                            <Image
+                                src={item.image}
+                                alt={item.title}
+                                width={80}
+                                height={80}
+                                className="w-full h-full object-cover rounded"
+                            />
                         ) : (
-                            <div className="w-full h-full">
+                            <div className="w-full h-full bg-gray-100 rounded flex items-center justify-center">
                                 <span className="text-[#77777B] text-sm">No Image</span>
                             </div>
                         )}
                     </div>
                     <div className="flex-1">
-                        <div className="text-lg md:text-xl font-semibold text-foreground">{item.title}</div>
-                        <div className="text-muted-foreground text-sm md:text-base mt-1">
+                        <div className="text-xl font-semibold text-foreground">{item.title}</div>
+                        <div className="text-muted-foreground text-base mt-1">
                             {item.brand} • {item.volume}
                         </div>
-                        <div className="text-foreground text-xl md:text-2xl font-semibold mt-3">{formatCurrency(item.price)}</div>
+                        <div className="text-foreground text-2xl font-semibold mt-3">{formatCurrency(item.price)}</div>
                     </div>
 
                     <div className="flex items-center gap-3">
                         <Button className='rounded-full' variant="outline" size="icon" aria-label="Decrease" onClick={() => handleQty(-1)}>
                             <Minus />
                         </Button>
-                        <span className="w-6 text-center text-base md:text-lg">{item.qty}</span>
+                        <span className="w-6 text-center text-lg">{item.qty}</span>
                         <Button className='rounded-full' variant="outline" size="icon" aria-label="Increase" onClick={() => handleQty(1)}>
                             <Plus />
                         </Button>
@@ -252,7 +318,7 @@ function Cart() {
     const discount = subtotal * discountRate
     const total = subtotal - discount
     const MIN_ORDER = 400
-    const isBelowMinimum = total > MIN_ORDER
+    const isBelowMinimum = total < MIN_ORDER
 
     function handleItemChange(next: CartItemData | null, id: string) {
         if (next === null) {
@@ -294,8 +360,8 @@ function Cart() {
     }
 
     return (
-        <Container className="py-6 md:py-10">
-            <Breadcrumb className="mb-6 md:mb-8">
+        <Container className="py-4 md:py-6 lg:py-10">
+            <Breadcrumb className="mb-4 md:mb-6 lg:mb-8">
                 <BreadcrumbList>
                     <BreadcrumbItem>
                         <BreadcrumbLink href="/">{t("home")}</BreadcrumbLink>
@@ -316,38 +382,38 @@ function Cart() {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
                 <div className="lg:col-span-8 space-y-4">
-                    <div className="p-5 md:p-6"
+                    <div className="p-4 md:p-6"
                         style={{
                             borderRadius: "10px",
                             border: "1px solid #F2F4F8",
                             background: "#FFF",
                         }}
                     >
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div className="flex items-center gap-3">
                                 <Checkbox checked={allSelected} onCheckedChange={(v) => handleToggleAll(Boolean(v))} />
-                                <span className="text-base md:text-lg">{t("select_all")}</span>
+                                <span className="text-sm md:text-base">{t("select_all")}</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="text-base md:text-lg font-semibold">{t("cart")} ({items.length} {t("products")})</div>
+                                <div className="text-sm md:text-base font-semibold">{t("cart")} ({items.length} {t("products")})</div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3 md:space-y-4">
                         {items.map((item) => (
                             <CartItem key={item.id} item={item} onChange={(n) => handleItemChange(n, item.id)} />
                         ))}
                         {items.length === 0 && (
-                            <div className="border rounded-2xl p-8 text-center text-muted-foreground">{t("cart_empty")}</div>
+                            <div className="border rounded-2xl p-6 md:p-8 text-center text-muted-foreground">{t("cart_empty")}</div>
                         )}
                     </div>
                 </div>
 
                 <div className="lg:col-span-4">
-                    <div className="p-5 md:p-6 space-y-5"
+                    <div className="p-4 md:p-6 space-y-4 md:space-y-5"
                         style={{
                             borderRadius: "10px",
                             border: "1px solid #F2F4F8",
@@ -355,22 +421,33 @@ function Cart() {
                         }}
                     >
                         <div>
-                            <div className="text-lg md:text-xl font-semibold mb-3">{t("promo_code")}</div>
-                            <p className="text-muted-foreground text-sm mb-3">{t("promo_code_description")}</p>
-                            <div className="flex gap-2">
-                                <Input disabled={items.length === 0 || !total} placeholder="FLEUR20" value={promo} onChange={(e) => setPromo(e.target.value)} />
-                                <Button disabled={items.length === 0 || !total || isApplyingPromo} variant="outline" onClick={applyPromo}>
+                            <div className="text-base md:text-lg font-semibold mb-2 md:mb-3">{t("promo_code")}</div>
+                            <p className="text-muted-foreground text-xs md:text-sm mb-3">{t("promo_code_description")}</p>
+                            <div className="flex flex-col sm:flex-row gap-2">
+                                <Input
+                                    disabled={items.length === 0 || !total}
+                                    placeholder="FLEUR20"
+                                    value={promo}
+                                    onChange={(e) => setPromo(e.target.value)}
+                                    className="flex-1"
+                                />
+                                <Button
+                                    disabled={items.length === 0 || !total || isApplyingPromo}
+                                    variant="outline"
+                                    onClick={applyPromo}
+                                    className="sm:w-auto"
+                                >
                                     {isApplyingPromo ? t("applying") || "Applying..." : t("apply")}
                                 </Button>
                             </div>
                             {promoMessage && (
-                                <div className={promoApplied ? 'text-emerald-600 text-sm mt-2' : 'text-red-500 text-sm mt-2'}>
+                                <div className={promoApplied ? 'text-emerald-600 text-xs md:text-sm mt-2' : 'text-red-500 text-xs md:text-sm mt-2'}>
                                     {promoMessage}
                                 </div>
                             )}
                         </div>
 
-                        <div className="space-y-2 text-sm">
+                        <div className="space-y-2 text-xs md:text-sm">
                             <div className="flex items-center justify-between">
                                 <span>{t("products_price")}</span>
                                 <span className="font-medium">{formatCurrency(subtotal)}</span>
@@ -383,7 +460,7 @@ function Cart() {
 
                         <div className="h-px bg-border" />
 
-                        <div className="flex items-center justify-between text-lg font-semibold">
+                        <div className="flex items-center justify-between text-base md:text-lg font-semibold">
                             <span>{t("total_price")}</span>
                             <span>{formatCurrency(total)}</span>
                         </div>
@@ -392,7 +469,7 @@ function Cart() {
                         )}
 
                         <Link href={items.length === 0 || isBelowMinimum ? "/cart" : "/cart/order"}>
-                            <Button disabled={items.length === 0 || !total || isBelowMinimum} className="w-full h-11">{t("complete_order")}</Button>
+                            <Button disabled={items.length === 0 || !total || isBelowMinimum} className="w-full h-10 md:h-11 text-sm md:text-base">{t("complete_order")}</Button>
                         </Link>
                     </div>
                 </div>

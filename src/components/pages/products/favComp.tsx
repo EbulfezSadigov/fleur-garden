@@ -133,7 +133,7 @@ function FavComp({ product }: { product: Product }) {
                             </div>
                             <div className="text-right">
                                 <p className="text-sm font-semibold text-primary">{product.price} USD</p>
-                                <p className="text-xs text-[#77777B]">200 ml (1.50 ₼ / ml)</p>
+                                <p className="text-xs text-[#77777B]">200 kq (1.50 ₼ / kq)</p>
                             </div>
                         </div>
 

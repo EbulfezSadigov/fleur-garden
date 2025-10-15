@@ -131,7 +131,7 @@ function Order() {
                 id: `${it.id}-${it.size ?? 'na'}`,
                 title: it.name,
                 brand: it.product?.brand_name ?? '',
-                volume: it.size ? `${it.size} ML` : '',
+                volume: it.size ? `${it.size} Kq` : '',
                 price: Number(it.price),
                 qty: Number(it.quantity),
                 image: it.image || '',
