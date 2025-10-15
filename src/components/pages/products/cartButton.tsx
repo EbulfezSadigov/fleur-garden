@@ -206,7 +206,7 @@ function CartButton({ product }: { product: Product }) {
                                 <p className="text-xs text-[#77777B] mt-1">{product.brand_name}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-semibold text-primary">(x1) {computedDialogPrice.toFixed(2)} USD</p>
+                                <p className="text-sm font-semibold text-primary">(x1) {computedDialogPrice.toFixed(3)} USD</p>
                                 {hasUnifiedPrice && (
                                     <p className="text-[10px] text-muted-foreground">{volume ? `${volume} Gr` : ''}</p>
                                 )}

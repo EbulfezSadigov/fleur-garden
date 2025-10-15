@@ -17,7 +17,7 @@ import { applyPromoMutation } from '@/services/products/mutations'
 
 function formatCurrency(amount: number | string) {
     const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/[^\d.-]/g, '')) : amount
-    return `${numAmount.toFixed(2)} USD`
+    return `${numAmount.toFixed(3)} USD`
 }
 
 function transformLocalStorageData(localStorageData: LocalStorageCartItem[]): CartItemData[] {

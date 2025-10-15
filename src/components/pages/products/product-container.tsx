@@ -312,7 +312,7 @@ function ProductContainer({ product }: { product: Product }) {
 
                 {/* Price */}
                 <div className="space-y-2">
-                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice.toFixed(2)} USD</div>
+                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice.toFixed(3)} USD</div>
                     <div className="flex justify-end">
                         {/* <div className="flex items-center gap-2">
                             {!hasUnifiedPrice && (
