@@ -18,8 +18,7 @@ export async function loginAction(email: string, password: string): Promise<Auth
   })
 
   if (!res.ok) {
-    const message = await safeReadError(res)
-    throw new Error(message || 'Login failed')
+    throw new Error('Login failed')
   }
 
   const data = (await res.json()) as AuthLoginResponse

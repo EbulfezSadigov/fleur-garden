@@ -14,7 +14,8 @@
     "register": "Зарегистрироваться",
     "catalog": "Каталог",
     "watch_us": "Будьте в курсе последних новостей",
-    "franchises": "Франшизы"
+    "franchises": "Франшизы",
+    "search": "Поиск"
   },
   "newsletter": {
     "title": "Будьте в курсе последних новостей",
@@ -45,7 +46,12 @@
     "no_products": "Товаров не найдено",
     "loading": "Загрузка...",
     "no_products_found": "Товаров не найдено",
-    "no_more": "Нет больше товаров"
+    "no_more": "Нет больше товаров",
+    "search": "Поиск",
+    "last_searches": "Последние поиски",
+    "clear": "Очистить",
+    "no_searches": "Нет поисков",
+    "most_searched": "Самые популярные"
   },
   "product_card": {
     "add_to_cart": "В корзину",
@@ -65,20 +71,25 @@
     "share": "Поделиться",
     "minimum_order_validation": "Минимальное количество заказа 400 USD",
     "volume_out_of_range": "Объем вне диапазона",
-    "please_enter_valid_volume": "Пожалуйста, введите валидный объем"
+    "please_enter_valid_volume": "Пожалуйста, введите валидный объем",
+    "current_tier": "Текущий диапазон",
+    "volume_outside_available_ranges": "Объем вне диапазона",
+    "available_ranges": "Диапазоны"
   },
-  "blogs":{
+  "blogs": {
     "title": "Блоги",
     "more": "Больше",
     "similar_blogs": "Похожие блоги",
     "share": "Поделиться",
     "reading_time": "время чтения"
   },
-  "reviews":{
+  "reviews": {
     "title": "Отзывы",
-    "more": "Больше"
+    "more": "Больше",
+    "review": "Отзыв",
+    "no_reviews": "Отзывов нет"
   },
-  "login":{
+  "login": {
     "loading": "Вход...",
     "title": "Войти",
     "email": "Email",
@@ -87,12 +98,12 @@
     "register": "Зарегистрироваться",
     "remember": "Запомнить меня",
     "forgot_password": "Забыли пароль?",
-    "no_account": "Нет аккаунта?",  
+    "no_account": "Нет аккаунта?",
     "register_link": "Зарегистрироваться",
     "email_placeholder": "Введите ваш email",
     "password_placeholder": "Введите ваш пароль"
   },
-  "register":{
+  "register": {
     "loading": "Регистрация...",
     "title": "Регистрация",
     "name": "Имя",
@@ -103,9 +114,11 @@
     "name_placeholder": "Введите ваше имя",
     "no_account": "Уже есть аккаунт?",
     "login_link": "Войти",
-    "register_link": "Регистрация"
+    "register_link": "Регистрация",
+    "register_successfully": "Регистрация успешно",
+    "register_failed": "Регистрация не была успешной"
   },
-  "contact":{
+  "contact": {
     "title": "Контакты",
     "phone": "Телефон",
     "email": "Email",
@@ -119,15 +132,15 @@
     "send": "Отправить",
     "question": "Нужна помощь?"
   },
-  "share":{
+  "share": {
     "share_page_title": "Поделиться страницей",
     "share_page_description": "Поделитесь URL-адресом страницы и позвольте другим узнать о продукте.",
     "link_placeholder": "Введите URL-адрес страницы",
     "whatsapp": "Поделиться с WhatsApp",
     "facebook": "Поделиться с Facebook",
     "email": "Поделиться с Email"
-    },
-  "product_page":{
+  },
+  "product_page": {
     "home": "Главная",
     "product_code": "Код продукта",
     "in_stock": "В наличии",
@@ -153,9 +166,12 @@
     "comment_added_successfully": "Ваш отзыв будет показан после одобрения.",
     "failed_to_add_comment": "Не удалось добавить отзыв",
     "minimum_order_validation": "Минимальное количество заказа 400 USD",
-    "kq": "Kq"
+    "kq": "Kq",
+    "current_tier": "Текущий диапазон",
+    "volume_outside_available_ranges": "Объем вне диапазона",
+    "available_ranges": "Диапазоны"
   },
-  "favorites":{
+  "favorites": {
     "favorites": "Избранное",
     "category": "Категория",
     "all_categories": "Все категории",
@@ -172,20 +188,20 @@
     "no_favorites_description": "Добавьте ваши любимые продукты в избранное, нажав на символ сердца.",
     "products": "Продукты"
   },
-  "comparison":{
+  "comparison": {
     "comparison": "Сравнение",
     "clear_all": "Очистить все",
     "delete": "Удалить",
     "product_comparison": "Сравнение",
     "comparison_list_empty": "Сравнение список пуст",
-      "brand": "Бренд",
+    "brand": "Бренд",
     "product": "Продукт",
     "price": "Цена",
     "stock_status": "Статус наличия",
     "in_stock": "В наличии",
     "not_in_stock": "Не в наличии"
   },
-  "cart":{
+  "cart": {
     "home": "Главная",
     "cart": "Корзина",
     "select_all": "Выбрать все",
@@ -199,9 +215,12 @@
     "discount": "Скидка",
     "total_price": "Итоговая цена",
     "complete_order": "Заказать",
-    "apply": "Применить"
+    "apply": "Применить",
+    "clear": "Очистить",
+    "promo_applied_successfully": "Промокод применен успешно",
+    "applying": "Применение промокода..."
   },
-  "order":{
+  "order": {
     "home": "Главная",
     "cart": "Корзина",
     "order_confirmation": "Подтверждение заказа",
@@ -243,9 +262,10 @@
     "processing": "Обработка...",
     "order_success": "Заказ успешно отправлен",
     "order_failed": "Заказ не был отправлен",
-    "promocode": "Промокод"
+    "promocode": "Промокод",
+    "minimum_order_amount": "Минимальное количество заказа 400 USD"
   },
-  "profile":{
+  "profile": {
     "profile_and_help": "Профиль & Помощь",
     "are_you_sure_you_want_to_logout": "Вы уверены, что хотите выйти?",
     "cancel": "Отмена",
@@ -276,7 +296,7 @@
     "minimum_6_simvol": "Минимум 6 символов",
     "passwords_do_not_match": "Пароли не совпадают"
   },
-  "notifications":{
+  "notifications": {
     "notifications": "Уведомления",
     "notification_selection": "Выбор уведомлений",
     "notification_selection_description": "Выберите уведомления, которые вы хотите получать от Felur Garden и настроить их.",

@@ -67,8 +67,7 @@ function ClientHeader({ user, categories, latestProducts }: { user: User, catego
                     </div>
 
                     <div className="hidden md:flex flex-1 max-w-[500px] mx-8">
-                        <SearchBox latestProducts={latestProducts}
-                        />
+                        <SearchBox latestProducts={latestProducts}/>
                     </div>
 
                     <div className="flex items-center space-x-2">

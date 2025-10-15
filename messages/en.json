@@ -14,7 +14,8 @@
     "register": "Register",
     "catalog": "Catalog",
     "watch_us": "Watch us",
-    "franchises": "Franchises"
+    "franchises": "Franchises",
+    "search": "Search"
   },
   "newsletter": {
     "title": "Stay Updated",
@@ -45,7 +46,12 @@
     "no_products": "No products found",
     "loading": "Loading...",
     "no_products_found": "No products found",
-    "no_more": "No more products"
+    "no_more": "No more products",
+    "search": "Search",
+    "last_searches": "Last searches",
+    "clear": "Clear",
+    "no_searches": "No searches",
+    "most_searched": "Most searched"
   },
   "product_card": {
     "add_to_cart": "Add to cart",
@@ -65,7 +71,10 @@
     "share": "Share",
     "minimum_order_validation": "Minimum order amount is 400 USD",
     "volume_out_of_range": "Volume out of range",
-    "please_enter_valid_volume": "Please enter valid volume"
+    "please_enter_valid_volume": "Please enter valid volume",
+    "current_tier": "Current tier",
+    "volume_outside_available_ranges": "Volume outside available ranges",
+    "available_ranges": "Available ranges"
   },
   "blogs": {
     "title": "Blogs",
@@ -76,7 +85,9 @@
   },
   "reviews": {
     "title": "Reviews",
-    "more": "More"
+    "more": "More",
+    "review": "Review",
+    "no_reviews": "No reviews"
   },
   "login": {
     "loading": "Login...",
@@ -103,7 +114,9 @@
     "name_placeholder": "Enter your name",
     "no_account": "Have an account?",
     "login_link": "Login",
-    "register_link": "Register"
+    "register_link": "Register",
+    "register_successfully": "Registration successful",
+    "register_failed": "Registration failed"
   },
   "contact": {
     "title": "Contact",
@@ -153,7 +166,10 @@
     "comment_added_successfully": "Your comment will be shown after it is approved.",
     "failed_to_add_comment": "Failed to add comment",
     "minimum_order_validation": "Minimum order amount is 400 USD",
-    "kq": "Kq"
+    "kq": "Kq",
+    "current_tier": "Current tier",
+    "volume_outside_available_ranges": "Volume outside available ranges",
+    "available_ranges": "Available ranges"
   },
   "favorites": {
     "favorites": "Favorites",
@@ -199,7 +215,10 @@
     "discount": "Discount",
     "total_price": "Total price",
     "complete_order": "Complete order",
-    "apply": "Apply"
+    "apply": "Apply",
+    "clear": "Clear",
+    "promo_applied_successfully": "Promo code applied successfully",
+    "applying": "Applying promo code..."
   },
   "order": {
     "home": "Home",
@@ -243,7 +262,8 @@
     "processing": "Processing...",
     "order_success": "Order successfully sent",
     "order_failed": "Order failed to send",
-    "promocode": "Promo code"
+    "promocode": "Promo code",
+    "minimum_order_amount": "Minimum order amount is 400 USD"
   },
   "profile":{
     "profile_and_help": "Profile & Help",

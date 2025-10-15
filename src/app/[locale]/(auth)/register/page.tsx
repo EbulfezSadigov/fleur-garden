@@ -58,13 +58,13 @@ function RegisterSheet() {
         try {
             const res = await registerAction(values.name, values.email, values.password)
             if (res?.status === "success") {
-                toast.success("Qeydiyyat uğurludur")
+                toast.success(t("register_successfully"))
                 router.refresh()
             } else {
-                toast.error("Qeydiyyat uğursuz oldu")
+                toast.error(t("register_failed"))
             }
         } catch (error: unknown) {
-            const message = "Qeydiyyat uğursuz oldu"
+            const message = t("register_failed")
             toast.error(message)
         }
     }

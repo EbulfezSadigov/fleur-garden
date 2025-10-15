@@ -28,14 +28,14 @@ export default async function Home() {
   const queryClient = getServerQueryClient();
 
   await Promise.all([
-    queryClient.prefetchQuery(getSlidersQuery()), 
+    queryClient.prefetchQuery(getSlidersQuery(locale)), 
     queryClient.prefetchQuery(getPartnersQuery(locale)),
     queryClient.prefetchQuery(getBlogsQuery(locale)),
     queryClient.prefetchQuery(getProductsQuery(locale)),
     queryClient.prefetchQuery(getAllCommentsQuery()),
   ]);
 
-  const data = queryClient.getQueryData(getSlidersQuery().queryKey);
+  const data = queryClient.getQueryData(getSlidersQuery(locale).queryKey);
   const partnersData = queryClient.getQueryData(getPartnersQuery(locale).queryKey);
   const blogPostsData = queryClient.getQueryData(getBlogsQuery(locale).queryKey);
   const productsData = queryClient.getQueryData(getProductsQuery(locale).queryKey);

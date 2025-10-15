@@ -91,7 +91,7 @@ export function MobileMenu({ user, categories }: { user: User, categories: Categ
           <div className="mt-3 relative">
             <Input
               type="text"
-              placeholder="Search"
+              placeholder={t("search")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-3 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"

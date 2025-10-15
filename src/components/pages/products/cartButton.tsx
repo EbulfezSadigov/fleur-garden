@@ -218,7 +218,7 @@ function CartButton({ product }: { product: Product }) {
                                 <label className="text-xs text-[#77777B] mb-1 block">
                                     Kq {allRanges.length > 0 && (
                                         <span>
-                                            (Available ranges: {allRanges.map(tier => `${tier.min}-${tier.max}`).join(', ')})
+                                            ({t("available_ranges")}: {allRanges.map(tier => `${tier.min}-${tier.max}`).join(', ')})
                                         </span>
                                     )}
                                 </label>
@@ -233,7 +233,7 @@ function CartButton({ product }: { product: Product }) {
                                 />
                                 {selectedPriceTier && volume && (
                                     <p className="text-xs text-[#77777B] mt-1">
-                                        Current tier: {selectedPriceTier.min}-{selectedPriceTier.max} Kq @ ${selectedPriceTier.price} per Kq
+                                        {t("current_tier")}: {selectedPriceTier.min}-{selectedPriceTier.max} Kq @ ${selectedPriceTier.price} per Kq
                                     </p>
                                 )}
                             </div>

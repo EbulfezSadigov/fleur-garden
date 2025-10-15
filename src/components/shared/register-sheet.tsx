@@ -46,14 +46,14 @@ export function RegisterSheet({ isOpen, isAnimating, onClose, onOpenLogin }: Reg
     try {
       const res = await registerAction(values.name, values.email, values.password)
       if (res?.status === "success") {
-        toast.success("Qeydiyyat uğurludur")
+        toast.success(t("register_successfully"))
         onClose()
         router.refresh()
       } else {
-        toast.error("Qeydiyyat uğursuz oldu")
+        toast.error(t("register_failed"))
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Qeydiyyat uğursuz oldu"
+      const message = error instanceof Error ? error.message : t("register_failed")
       toast.error(message)
     }
   }

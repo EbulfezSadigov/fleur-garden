@@ -24,7 +24,7 @@ function ProductContainer({ product }: { product: Product }) {
         if (!v || Number.isNaN(v) || v <= 0) {
             if (hasUnifiedPrice) return product.price ?? 0
             if (product.price_by_size && product.price_by_size.length > 0) {
-                return product.price_by_size[0].price
+                return product.price_by_size[product.price_by_size.length - 1].price
             }
             return 0
         }
@@ -183,7 +183,6 @@ function ProductContainer({ product }: { product: Product }) {
                 priceValue = correctTier.price * v
             }
 
-            // Enforce minimum order amount of 400 USD per add operation
             const subtotal = priceValue * quantity
             if (subtotal < 400) {
                 toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
@@ -298,7 +297,7 @@ function ProductContainer({ product }: { product: Product }) {
                     </div>
                     {!hasUnifiedPrice && product.price_by_size && product.price_by_size.length > 0 && (
                         <div className="text-xs text-gray-500">
-                            Available ranges: {product.price_by_size.map(tier => `${tier.min}-${tier.max} Kq`).join(', ')}
+                            {t("available_ranges")}: {product.price_by_size.map(tier => `${tier.min}-${tier.max} Kq`).join(', ')}
                         </div>
                     )}
                     {customSize && !hasUnifiedPrice && product.price_by_size && (
@@ -307,11 +306,11 @@ function ProductContainer({ product }: { product: Product }) {
                             const currentTier = product.price_by_size.find(tier => v >= tier.min && v <= tier.max)
                             return currentTier ? (
                                 <div className="text-xs text-green-600">
-                                    Current tier: {currentTier.min}-{currentTier.max} Kq @ ${currentTier.price} per Kq
+                                    {t("current_tier")}: {currentTier.min}-{currentTier.max} Kq @ ${currentTier.price} per Kq
                                 </div>
                             ) : (
                                 <div className="text-xs text-red-600">
-                                    Volume outside available ranges
+                                    {t("volume_outside_available_ranges")}
                                 </div>
                             )
                         })()
@@ -321,8 +320,8 @@ function ProductContainer({ product }: { product: Product }) {
                 {/* Price */}
                 <div className="space-y-2">
                     <div className="text-3xl font-bold text-gray-900">{selectedSizePrice.toFixed(2)} USD</div>
-                    <div className="flex justify-between">
-                        <div className="flex items-center gap-2">
+                    <div className="flex justify-end">
+                        {/* <div className="flex items-center gap-2">
                             {!hasUnifiedPrice && (
                                 <div className="text-sm text-gray-500">
                                     {customSize ? `${customSize} kq` : ''} {" "}
@@ -331,7 +330,7 @@ function ProductContainer({ product }: { product: Product }) {
                             {!hasUnifiedPrice && customSize && (
                                 <span>(Base price: ${product.price} per Kq)</span>
                             )}
-                        </div>
+                        </div> */}
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 9H12.01M11 12H12V16H13M12 3C19.2 3 21 4.8 21 12C21 19.2 19.2 21 12 21C4.8 21 3 19.2 3 12C3 4.8 4.8 3 12 3Z" stroke="#77777B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />

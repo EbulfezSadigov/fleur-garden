@@ -1,10 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 import { getSliders, getBanners, getPartners, getPartner, getContact, getSocials, getAllComments, getMetaTags } from "./api";
 
-const getSlidersQuery = () => {
+const getSlidersQuery = (locale: string) => {
     return queryOptions({
         queryKey: ["sliders"],
-        queryFn: () => getSliders(),
+        queryFn: () => getSliders(locale),
     });
 }
 

@@ -1,5 +1,5 @@
 import { get, post } from "@/lib/api";
-import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review, CreateReviewPayload, OrderPayload, Order, ApplyPromoPayload } from "@/types";
+import { ApiResponse, Brand, Category, FilterProductsPayload, Product, Review, CreateReviewPayload, OrderPayload, Order, ApplyPromoPayload, PromoCodeResponse } from "@/types";
 
 const getProducts = async (locale: string, number?: number) => {
   const endpoint = number ? `products/${number}` : "products";
@@ -88,9 +88,7 @@ const getOrders = async (token: string) => {
 };
 
 const applyPromo = async (data: ApplyPromoPayload) => {
-  const response = await get(`order/apply-promocode`, {
-    params: data
-  });
+  const response = await post<PromoCodeResponse>(`order/apply-promocode`, data);
   return response;
 };
 

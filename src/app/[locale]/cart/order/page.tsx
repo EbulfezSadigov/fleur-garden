@@ -255,7 +255,7 @@ function Order() {
     const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0)
     const total = subtotal
     const MIN_ORDER = 400
-    const isBelowMinimum = total > MIN_ORDER
+    const isBelowMinimum = total < MIN_ORDER
 
     function clearCart() {
         try {
@@ -271,7 +271,7 @@ function Order() {
 
     const orderAction = () => {
         if (isBelowMinimum) {
-            toast.error(`Minimum order amount is ${MIN_ORDER} USD`)
+            toast.error(t("minimum_order_amount") + ` ${MIN_ORDER} USD`)
             return
         }
         submitOrder.mutateAsync(undefined, {
@@ -418,40 +418,94 @@ function Order() {
                 </div>
 
                 <div className="lg:col-span-4 sticky top-0">
-                    <div className="p-5 md:p-6 space-y-5" style={{ borderRadius: '10px', border: '1px solid #F2F4F8', background: '#FFF' }}>
-                        <div className="text-lg md:text-xl font-semibold">{t("cart")} ({items.length} {t("products")})</div>
-
-                        <div className="space-y-4">
-                            {items.map((i) => (
-                                <div key={i.id} className="flex items-start gap-3">
-                                    {
-                                        i.image && i.image !== null && i.image !== 'null' ? (
-                                            <Image src={i.image} alt={i.title} width={64} height={64} className="rounded-md object-cover" />
-                                        ) : (
-                                            <div className="w-full h-full bg-[#F2F4F8]">
-                                                <span className="text-[#77777B] text-sm">No Image</span>
-                                            </div>
-                                        )
-                                    }
-                                    <div className="flex-1">
-                                        <div className="font-medium">{i.title}</div>
-                                        <div className="text-muted-foreground text-sm">{i.brand} • {i.volume}</div>
-                                        <div className="text-sm">(X{i.qty}) {formatCurrency(i.price)}</div>
-                                    </div>
+                    <div className="p-5 md:p-6 space-y-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+                                {t("cart")} ({items.length} {t("products")})
+                            </h3>
+                            {items.length > 0 && (
+                                <div className="text-sm text-gray-500">
+                                    {items.reduce((sum, item) => sum + item.qty, 0)} {t("items")}
                                 </div>
-                            ))}
+                            )}
                         </div>
 
-                        <div className="space-y-2 text-sm">
-                            <div className="flex items-center justify-between"><span>{t("total_price")}</span><span className="font-medium">{formatCurrency(subtotal)}</span></div>
-                            {/* <div className="flex items-center justify-between"><span>{t("discount")}</span><span className="font-medium">{formatCurrency(0)}</span></div> */}
-                        </div>
+                        {items.length > 0 ? (
+                            <div className="space-y-4">
+                                {items.map((i) => (
+                                    <div key={i.id} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                                        <div className="w-16 h-16 flex-shrink-0">
+                                            {i.image && i.image !== null && i.image !== 'null' ? (
+                                                <Image
+                                                    src={i.image}
+                                                    alt={i.title}
+                                                    width={64}
+                                                    height={64}
+                                                    className="w-full h-full rounded-md object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
+                                                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-medium text-gray-900 line-clamp-2">{i.title}</div>
+                                            <div className="text-sm text-gray-500 mt-1">{i.brand} • {i.volume}</div>
+                                            <div className="flex items-center justify-between mt-2">
+                                                <span className="text-sm text-gray-600">Qty: {i.qty}</span>
+                                                <span className="font-semibold text-gray-900">{formatCurrency(i.price)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-8">
+                                <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                                </svg>
+                                <p className="text-gray-500 text-sm">Your cart is empty</p>
+                            </div>
+                        )}
 
-                        <div className="h-px bg-border" />
+                        {items.length > 0 && (
+                            <div className="space-y-3">
+                                <div className="h-px bg-gray-200" />
 
-                        <div className="flex items-center justify-between text-lg font-semibold"><span>{t("total_price")}</span><span>{formatCurrency(total)}</span></div>
-                        {isBelowMinimum && (
-                            <div className="text-xs text-red-500 mt-1">Minimum order amount: {MIN_ORDER} USD</div>
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-gray-600">{t("total_price")}</span>
+                                        <span className="font-medium">{formatCurrency(subtotal)}</span>
+                                    </div>
+                                    {/* <div className="flex items-center justify-between text-sm">
+                                        <span className="text-gray-600">{t("discount")}</span>
+                                        <span className="font-medium text-green-600">-{formatCurrency(0)}</span>
+                                    </div> */}
+                                </div>
+
+                                <div className="h-px bg-gray-200" />
+
+                                <div className="flex items-center justify-between text-lg font-semibold">
+                                    <span className="text-gray-900">{t("total_price")}</span>
+                                    <span className="text-gray-900">{formatCurrency(total)}</span>
+                                </div>
+
+                                {isBelowMinimum && (
+                                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z" />
+                                            </svg>
+                                            <span className="text-sm text-red-700 font-medium">
+                                                {t("minimum_order_amount")}: {MIN_ORDER} USD
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
                 </div>

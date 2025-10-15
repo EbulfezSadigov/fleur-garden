@@ -14,7 +14,8 @@
     "register": "Qeydiyyatdan keç",
     "catalog": "Kataloq",
     "watch_us": "Bizi izləyin",
-    "franchises": "Franchises"
+    "franchises": "Franchises",
+    "search": "Axtar"
   },
   "newsletter": {
     "title": "Yeniliklərdən Xəbərdar Ol",
@@ -45,7 +46,12 @@
     "no_products": "Məhsul tapılmadı",
     "loading": "Yüklənir...",
     "no_products_found": "Məhsul tapılmadı",
-    "no_more": "Daha çox məhsul yoxdur"
+    "no_more": "Daha çox məhsul yoxdur",
+    "search": "Axtar",
+    "last_searches": "Ən son axtarışlar",
+    "clear": "Təmizlə",
+    "no_searches": "Ən son axtarış yoxdur",
+    "most_searched": "Ən çox axtarılanlar"
   },
   "product_card": {
     "add_to_cart": "Səbətə at",
@@ -64,7 +70,10 @@
     "initial_price": "Səbətin ilkin dəyəri",
     "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir",
     "volume_out_of_range": "Həcm aralığı daxil edin",
-    "please_enter_valid_volume": "Zəhmət olmasa həcmi daxil edin"
+    "please_enter_valid_volume": "Zəhmət olmasa həcmi daxil edin",
+    "current_tier": "Cari tier",
+    "volume_outside_available_ranges": "Həcm aralığı daxil edin",
+    "available_ranges": "Mövcud aralıqlar"
   },
   "blogs": {
     "title": "Bloqlar",
@@ -75,7 +84,9 @@
   },
   "reviews": {
     "title": "Rəylər",
-    "more": "Daha çox"
+    "more": "Daha çox",
+    "review": "Rəy",
+    "no_reviews": "Rəy yoxdur"
   },
   "login": {
     "loading": "Giriş edilir...",
@@ -102,7 +113,9 @@
     "name_placeholder": "Adınızı qeyd edin",
     "no_account": "Hesabın var?",
     "login_link": "Daxil ol",
-    "register_link": "Qeydiyyatdan keç"
+    "register_link": "Qeydiyyatdan keç",
+    "register_successfully": "Qeydiyyat uğurludur",
+    "register_failed": "Qeydiyyat uğursuz oldu"
   },
   "contact": {
     "title": "Əlaqə",
@@ -152,7 +165,10 @@
     "comment_added_successfully": "Rəyiniz təsdiqləndikdən sonra səhifədə görünəcək.",
     "failed_to_add_comment": "Rəy əlavə edilərkən xəta baş verdi",
     "minimum_order_validation": "Minimum sifariş məbləği 400 USD-dir",
-    "kq": "Kq"
+    "kq": "Kq",
+    "current_tier": "Cari tier",
+    "volume_outside_available_ranges": "Həcm aralığı daxil edin",
+    "available_ranges": "Mövcud aralıqlar"
   },
   "favorites": {
     "favorites": "Sevimli məhsullar",
@@ -198,7 +214,10 @@
     "discount": "Endirim",
     "total_price": "Yekun qiymət",
     "complete_order": "Sifarişi tamamla",
-    "apply": "Tətbiq et"
+    "apply": "Tətbiq et",
+    "clear": "Təmizlə",
+    "promo_applied_successfully": "Promo kod tətbiq olundu",
+    "applying": "Promo kod tətbiq olunur..."
   },
   "order": {
     "home": "Ana Səhifə",
@@ -238,11 +257,12 @@
     "buyer": "Alıcı",
     "all_orders": "Bütün sifarişlər",
     "delivery_number": "Çatdırılma №",
-    "items": "adet",
+    "items": "ədəd",
     "order_success": "Sifariş uğurla göndərildi",
     "order_failed": "Sifariş göndərilərkən xəta baş verdi",
     "processing": "Sifariş göndərilir...",
-    "promocode": "Promo kod"
+    "promocode": "Promo kod",
+    "minimum_order_amount": "Minimum sifariş məbləği 400 USD-dir"
   },
   "profile": {
     "profile_and_help": "Hesabım & Yardım",

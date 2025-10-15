@@ -2,8 +2,8 @@ import { get, post } from "@/lib/api";
 import { ApiResponse, Review } from "@/types";
 import { Slider, Banner, Partner, Contact, Social, MetaTag } from "@/types/home";
 
-const getSliders = async () => {
-    const response = await get<ApiResponse<Slider[]>>(`sliders`);
+const getSliders = async (locale: string) => {
+    const response = await get<ApiResponse<Slider[]>>(`sliders`, { params: { locale } });
     return response;
 };
 

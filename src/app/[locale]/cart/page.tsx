@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { LocalStorageCartItem, CartItemData, CartStorageItemV2, ApplyPromoPayload } from '@/types'
+import { LocalStorageCartItem, CartItemData, CartStorageItemV2, ApplyPromoPayload, PromoCodeResponse } from '@/types'
 import { applyPromoMutation } from '@/services/products/mutations'
 
 function formatCurrency(amount: number | string) {
@@ -296,29 +296,35 @@ function Cart() {
     const [promo, setPromo] = useState<string>('')
     const [promoApplied, setPromoApplied] = useState<boolean>(false)
     const [promoMessage, setPromoMessage] = useState<string>('')
+    const [promoData, setPromoData] = useState<PromoCodeResponse['data'] | null>(null)
+
+    const selectedItems = items.filter((i) => i.selected)
+    const subtotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0)
+
+    // Use dynamic data from API if promo is applied, otherwise use static calculation
+    const total = promoApplied && promoData ? promoData.total_price : subtotal
+    const discount = promoApplied && promoData ? subtotal - promoData.total_price : 0
+    const discountPercentage = promoApplied && promoData ? parseFloat(promoData.percentage) : 0
+
+    const MIN_ORDER = 400
+    const isBelowMinimum = total < MIN_ORDER
 
     const { mutate: applyPromoCode, isPending: isApplyingPromo } = useMutation({
         mutationFn: (payload: ApplyPromoPayload) => {
             const mutationConfig = applyPromoMutation(payload);
             return mutationConfig.mutationFn?.() || Promise.reject('Mutation function not available');
         },
-        onSuccess: () => {
+        onSuccess: (response: PromoCodeResponse) => {
+            setPromoData(response.data);
             setPromoApplied(true);
             setPromoMessage(t("promo_code_applied"));
         },
         onError: () => {
             setPromoApplied(false);
+            setPromoData(null);
             setPromoMessage(t('promo_code_invalid'));
         }
     })
-
-    const selectedItems = items.filter((i) => i.selected)
-    const subtotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0)
-    const discountRate = promoApplied ? 0.2 : 0
-    const discount = subtotal * discountRate
-    const total = subtotal - discount
-    const MIN_ORDER = 400
-    const isBelowMinimum = total < MIN_ORDER
 
     function handleItemChange(next: CartItemData | null, id: string) {
         if (next === null) {
@@ -326,10 +332,24 @@ function Cart() {
             return
         }
         setItems((prev) => prev.map((i) => (i.id === id ? next : i)))
+
+        // Clear promo data when items change
+        if (promoApplied) {
+            setPromoApplied(false)
+            setPromoData(null)
+            setPromoMessage('')
+        }
     }
 
     function handleToggleAll(checked: boolean) {
         setItems((prev) => prev.map((i) => ({ ...i, selected: checked })))
+
+        // Clear promo data when selection changes
+        if (promoApplied) {
+            setPromoApplied(false)
+            setPromoData(null)
+            setPromoMessage('')
+        }
     }
 
     function applyPromo() {
@@ -351,12 +371,21 @@ function Cart() {
 
                 return {
                     product_id: productId,
-                    quantity: i.qty,
+                    [i.type === 'unified' ? 'quantity' : 'size']: i.type === 'unified' ? i.qty : String(i.volume.replace(' Kq', '')),
                 };
             }),
         };
 
+        console.log(payload);
+
         applyPromoCode(payload);
+    }
+
+    function clearPromo() {
+        setPromoApplied(false);
+        setPromoData(null);
+        setPromoMessage('');
+        setPromo('');
     }
 
     return (
@@ -425,24 +454,40 @@ function Cart() {
                             <p className="text-muted-foreground text-xs md:text-sm mb-3">{t("promo_code_description")}</p>
                             <div className="flex flex-col sm:flex-row gap-2">
                                 <Input
-                                    disabled={items.length === 0 || !total}
+                                    disabled={items.length === 0 || !total || promoApplied}
                                     placeholder="FLEUR20"
                                     value={promo}
                                     onChange={(e) => setPromo(e.target.value)}
                                     className="flex-1"
                                 />
-                                <Button
-                                    disabled={items.length === 0 || !total || isApplyingPromo}
-                                    variant="outline"
-                                    onClick={applyPromo}
-                                    className="sm:w-auto"
-                                >
-                                    {isApplyingPromo ? t("applying") || "Applying..." : t("apply")}
-                                </Button>
+                                {promoApplied ? (
+                                    <Button
+                                        variant="outline"
+                                        onClick={clearPromo}
+                                        className="sm:w-auto"
+                                    >
+                                        {t("clear") || "Clear"}
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        disabled={items.length === 0 || !total || isApplyingPromo}
+                                        variant="outline"
+                                        onClick={applyPromo}
+                                        className="sm:w-auto"
+                                    >
+                                        {isApplyingPromo ? t("applying") || "Applying..." : t("apply")}
+                                    </Button>
+                                )}
                             </div>
                             {promoMessage && (
                                 <div className={promoApplied ? 'text-emerald-600 text-xs md:text-sm mt-2' : 'text-red-500 text-xs md:text-sm mt-2'}>
                                     {promoMessage}
+                                </div>
+                            )}
+                            {promoApplied && promoData && (
+                                <div className="text-emerald-600 text-xs md:text-sm mt-2 font-medium">
+                                    {t("promo_applied_successfully") || "Promo code applied successfully!"}
+                                    {discountPercentage > 0 && ` (${discountPercentage}% off)`}
                                 </div>
                             )}
                         </div>
@@ -452,10 +497,12 @@ function Cart() {
                                 <span>{t("products_price")}</span>
                                 <span className="font-medium">{formatCurrency(subtotal)}</span>
                             </div>
-                            {/* <div className="flex items-center justify-between">
-                                <span>{t("discount")}</span>
-                                <span className="font-medium">{formatCurrency(discount)}</span>
-                            </div> */}
+                            {promoApplied && promoData && discount > 0 && (
+                                <div className="flex items-center justify-between">
+                                    <span>{t("discount")} ({discountPercentage}%)</span>
+                                    <span className="font-medium text-green-600">-{formatCurrency(discount)}</span>
+                                </div>
+                            )}
                         </div>
 
                         <div className="h-px bg-border" />

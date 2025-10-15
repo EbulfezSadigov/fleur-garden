@@ -105,7 +105,7 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
               onFocus={() => setOpen(true)}
               onClick={() => setOpen(true)}
               onKeyDown={onKeyDown}
-              placeholder="Search"
+              placeholder={t("search")}
               className="w-full pl-4 pr-12 h-12 py-4 border border-gray-300 rounded-[16px] focus:outline-none focus:ring-2 focus:ring-gray-200"
             />
             <Button
@@ -122,12 +122,12 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
         <PopoverContent align="start" sideOffset={8} className="w-[min(500px,90vw)] p-0 rounded-2xl border shadow-xl">
           <div className="p-4">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-base font-semibold">Son Axtarışlar</p>
-              <button onClick={clearRecent} className="text-sm text-muted-foreground hover:text-foreground">Təmizlə</button>
+              <p className="text-base font-semibold">{t("last_searches")}</p>
+              <button onClick={clearRecent} className="text-sm text-muted-foreground hover:text-foreground">{t("clear")}</button>
             </div>
             <div className="space-y-2 h-[200px] overflow-y-auto">
               {recentSearches.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Hələ axtarış yoxdur</p>
+                <p className="text-sm text-muted-foreground">{t("no_searches")}</p>
               ) : (
                 recentSearches.map((item) => (
                   <div key={item}>
@@ -162,9 +162,9 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
               )}
             </div>
 
-            <div className="h-px bg-border my-4" />
-            <div className="mb-3">
-              <p className="text-base font-semibold">Ən Çox Axtarılanlar</p>
+            {/* <div className="h-px bg-border my-4" /> */}
+            {/* <div className="mb-3">
+              <p className="text-base font-semibold">{t("most_searched")}</p>
             </div>
             <div className="flex flex-wrap gap-3">
               {[
@@ -190,7 +190,7 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
                   {term}
                 </button>
               ))}
-            </div>
+            </div> */}
 
             {latestProducts && latestProducts.length > 0 && (
               <>
@@ -211,9 +211,9 @@ export function SearchBox({ initialQuery = "", className, latestProducts = [] }:
                     >
                       {
                         p.image && p.image !== null && p.image !== 'null' ? (
-                          <Image width={56} height={90} src={p.thumb_image || p.image} alt={p.name} className="w-[56px] h-[90px] object-cover rounded-md bg-white" />
+                          <Image width={56} height={90} src={p.thumb_image || p.image} alt={p.name} className="w-[64px] h-[90px] object-cover rounded-xl bg-white" />
                         ) : (
-                          <div className="w-full h-full bg-[#F2F4F8]">
+                          <div className="w-full h-full bg-[#F2F4F8] rounded-md">
                             <span className="text-[#77777B] text-xs">No Image</span>
                           </div>
                         )

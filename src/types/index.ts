@@ -226,3 +226,14 @@ export interface ApplyPromoPayload {
         size?: number
     }[]
 }
+
+export interface PromoCodeResponse {
+    timestamp: string
+    status: boolean
+    message: string
+    lang: string
+    data: {
+        total_price: number
+        percentage: string
+    }
+}

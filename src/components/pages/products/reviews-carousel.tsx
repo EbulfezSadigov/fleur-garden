@@ -12,8 +12,10 @@ import Container from "@/components/shared/container";
 import Autoplay from "embla-carousel-autoplay";
 import { Star } from "lucide-react";
 import { Review } from "@/types";
+import { useTranslations } from "next-intl";
 
 export function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
+    const t = useTranslations("reviews")
     return (
         <div className="px-4 md:px-0 pb-[72px]">
             <Carousel
@@ -26,7 +28,7 @@ export function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
                 className="mt-4">
                 <Container className="md:!px-0">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-medium">{reviews.length} Rəy</h2>
+                        <h2 className="text-2xl font-medium">{reviews.length} {t("review")}</h2>
                         <div className="flex items-center space-x-2">
                             <CarouselPrevious className="border w-12 h-12 rounded-full p-1 static translate-y-0" />
                             <CarouselNext className="border w-12 h-12 rounded-full p-1 static translate-y-0" />
@@ -40,7 +42,7 @@ export function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
                         </CarouselItem>
                     )) : <CarouselItem className="basis-full">
                         <div className="flex items-center justify-center h-full">
-                            <p className="text-muted-foreground">No reviews found</p>
+                            <p className="text-muted-foreground">{t("no_reviews")}</p>
                         </div>
                     </CarouselItem>}
                 </CarouselContent>
