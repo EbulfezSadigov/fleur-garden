@@ -167,6 +167,7 @@
     "failed_to_add_comment": "Не удалось добавить отзыв",
     "minimum_order_validation": "Минимальное количество заказа 400 USD",
     "kq": "Kq",
+    "Gr": "Gr",
     "current_tier": "Текущий диапазон",
     "volume_outside_available_ranges": "Объем вне диапазона",
     "available_ranges": "Диапазоны"

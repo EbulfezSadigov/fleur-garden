@@ -41,7 +41,7 @@ function transformV2Data(v2: CartStorageItemV2[]): CartItemData[] {
         id: `${item.id}-${item.size ?? 'na'}-${index}`,
         title: item.name,
         brand: item.product?.brand_name ?? '',
-        volume: item.size ? `${item.size} Kq` : '',
+        volume: item.size ? `${item.size} Gr` : '',
         price: item.price,
         qty: item.quantity,
         selected: true,
@@ -371,12 +371,10 @@ function Cart() {
 
                 return {
                     product_id: productId,
-                    [i.type === 'unified' ? 'quantity' : 'size']: i.type === 'unified' ? i.qty : String(i.volume.replace(' Kq', '')),
+                    [i.type === 'unified' ? 'quantity' : 'size']: i.type === 'unified' ? i.qty : String(i.volume.replace(' Gr', '')),
                 };
             }),
         };
-
-        console.log(payload);
 
         applyPromoCode(payload);
     }

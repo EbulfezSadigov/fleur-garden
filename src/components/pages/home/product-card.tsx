@@ -76,7 +76,7 @@ function ProductCard({ product }: ProductCardProps) {
                             <span className="text-lg text-center md:text-left font-semibold text-primary">${displayPrice}</span>
                             {hasPriceBySizeStructure && product.price_by_size && (
                                 <span className="text-xs text-center md:text-left text-[#77777B]">
-                                    {product.price_by_size[product.price_by_size.length - 1].min}-{product.price_by_size[product.price_by_size.length - 1].max} Kq
+                                    {product.price_by_size[product.price_by_size.length - 1].min}-{product.price_by_size[product.price_by_size.length - 1].max} Gr
                                 </span>
                             )}
                         </div>

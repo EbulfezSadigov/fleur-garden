@@ -96,12 +96,12 @@ function CartButton({ product }: { product: Product }) {
                 const existingProductIndex = cart.findIndex(item => item.product_id === product.id)
                 if (existingProductIndex >= 0) {
                     // Product exists, increase volume and recalculate price
-                    const existingVolume = Number(cart[existingProductIndex].volume.replace(' Kq', ''))
+                    const existingVolume = Number(cart[existingProductIndex].volume.replace(' Gr', ''))
                     const newVolume = existingVolume + volumeMl
                     const discountPercent = typeof product.discount === 'number' ? product.discount : 0
                     const unitPrice = (product.price ?? 0) * (1 - discountPercent / 100)
 
-                    cart[existingProductIndex].volume = `${newVolume} Kq`
+                    cart[existingProductIndex].volume = `${newVolume} Gr`
                     cart[existingProductIndex].price = unitPrice * newVolume
                     cart[existingProductIndex].qty = 1 // Keep qty as 1 since we're managing volume directly
 
@@ -135,7 +135,7 @@ function CartButton({ product }: { product: Product }) {
                 return
             }
 
-            const volumeStr = `${volumeMl} Kq`
+            const volumeStr = `${volumeMl} Gr`
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeStr)
             if (existingIndex >= 0) {
                 // Same product and same volume → just increment qty
@@ -208,7 +208,7 @@ function CartButton({ product }: { product: Product }) {
                             <div className="text-right">
                                 <p className="text-sm font-semibold text-primary">(x1) {computedDialogPrice.toFixed(2)} USD</p>
                                 {hasUnifiedPrice && (
-                                    <p className="text-[10px] text-muted-foreground">{volume ? `${volume} kq` : ''}</p>
+                                    <p className="text-[10px] text-muted-foreground">{volume ? `${volume} Gr` : ''}</p>
                                 )}
                             </div>
                         </div>
@@ -216,7 +216,7 @@ function CartButton({ product }: { product: Product }) {
                         {(hasUnifiedPrice || selectedPriceTier) && (
                             <div className="mt-4">
                                 <label className="text-xs text-[#77777B] mb-1 block">
-                                    Kq {allRanges.length > 0 && (
+                                    Gr {allRanges.length > 0 && (
                                         <span>
                                             ({t("available_ranges")}: {allRanges.map(tier => `${tier.min}-${tier.max}`).join(', ')})
                                         </span>
@@ -233,7 +233,7 @@ function CartButton({ product }: { product: Product }) {
                                 />
                                 {selectedPriceTier && volume && (
                                     <p className="text-xs text-[#77777B] mt-1">
-                                        {t("current_tier")}: {selectedPriceTier.min}-{selectedPriceTier.max} Kq @ ${selectedPriceTier.price} per Kq
+                                        {t("current_tier")}: {selectedPriceTier.min}-{selectedPriceTier.max} Gr @ ${selectedPriceTier.price} per Gr
                                     </p>
                                 )}
                             </div>

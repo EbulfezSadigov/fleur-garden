@@ -130,7 +130,6 @@ function ProductContainer({ product }: { product: Product }) {
 
             const id = String(product.id)
 
-            // Resolve volume label and price according to pricing mode
             let volumeLabel = ''
             let priceValue = 0
 
@@ -141,16 +140,13 @@ function ProductContainer({ product }: { product: Product }) {
                     return
                 }
 
-                // For unified price products, check if product already exists in cart
-                // If it does, increase the volume instead of creating separate entry
                 const existingProductIndex = cart.findIndex(item => item.product_id === product.id)
                 if (existingProductIndex >= 0) {
-                    // Product exists, increase volume and recalculate price
                     const existingVolume = Number(cart[existingProductIndex].volume)
                     const newVolume = existingVolume + (v * quantity)
                     cart[existingProductIndex].volume = `${newVolume}`
                     cart[existingProductIndex].price = (product.price ?? 0) * newVolume
-                    cart[existingProductIndex].qty = 1 // Keep qty as 1 since we're managing volume directly
+                    cart[existingProductIndex].qty = 1
 
                     window.localStorage.setItem(storageKey, JSON.stringify(cart))
                     try {
@@ -164,14 +160,12 @@ function ProductContainer({ product }: { product: Product }) {
                 volumeLabel = `${v * quantity}`
                 priceValue = (product.price ?? 0) * v * quantity
             } else {
-                // For price_by_size products, user enters custom volume and we find the tier
                 const v = Number(customSize)
                 if (!v || Number.isNaN(v) || v <= 0) {
                     toast.error(t('please_enter_valid_volume') || 'Zəhmət olmasa həcmi daxil edin')
                     return
                 }
 
-                // Find the correct tier for this volume
                 const correctTier = product.price_by_size?.find(tier => v >= tier.min && v <= tier.max)
                 if (!correctTier) {
                     const ranges = product.price_by_size?.map(tier => `${tier.min}-${tier.max}`).join(', ') || ''
@@ -191,7 +185,6 @@ function ProductContainer({ product }: { product: Product }) {
 
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeLabel)
             if (existingIndex >= 0) {
-                // Same product and same volume → increment qty only
                 cart[existingIndex].qty += quantity
                 cart[existingIndex].price = priceValue
             } else {
@@ -292,12 +285,12 @@ function ProductContainer({ product }: { product: Product }) {
                             value={customSize}
                             onChange={(e) => setCustomSize(e.target.value)}
                             className="w-32"
-                            placeholder={t("kq")}
+                            placeholder={t("Gr")}
                         />
                     </div>
                     {!hasUnifiedPrice && product.price_by_size && product.price_by_size.length > 0 && (
                         <div className="text-xs text-gray-500">
-                            {t("available_ranges")}: {product.price_by_size.map(tier => `${tier.min}-${tier.max} Kq`).join(', ')}
+                            {t("available_ranges")}: {product.price_by_size.map(tier => `${tier.min}-${tier.max} Gr`).join(', ')}
                         </div>
                     )}
                     {customSize && !hasUnifiedPrice && product.price_by_size && (
@@ -306,7 +299,7 @@ function ProductContainer({ product }: { product: Product }) {
                             const currentTier = product.price_by_size.find(tier => v >= tier.min && v <= tier.max)
                             return currentTier ? (
                                 <div className="text-xs text-green-600">
-                                    {t("current_tier")}: {currentTier.min}-{currentTier.max} Kq @ ${currentTier.price} per Kq
+                                    {t("current_tier")}: {currentTier.min}-{currentTier.max} Gr @ ${currentTier.price} per Gr
                                 </div>
                             ) : (
                                 <div className="text-xs text-red-600">
@@ -324,11 +317,11 @@ function ProductContainer({ product }: { product: Product }) {
                         {/* <div className="flex items-center gap-2">
                             {!hasUnifiedPrice && (
                                 <div className="text-sm text-gray-500">
-                                    {customSize ? `${customSize} kq` : ''} {" "}
+                                    {customSize ? `${customSize} Gr` : ''} {" "}
                                 </div>
                             )}
                             {!hasUnifiedPrice && customSize && (
-                                <span>(Base price: ${product.price} per Kq)</span>
+                                <span>(Base price: ${product.price} per Gr)</span>
                             )}
                         </div> */}
                         <div className="flex items-center gap-2 text-sm text-gray-600">

@@ -30,7 +30,7 @@ async function OrderCard({ order }: { order: ApiOrder }) {
         ? order.details.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0)
         : 0
     const recipient = order.address || order.city || "-"
-    const volume = firstItem?.size ? `${firstItem.size} Kq` : "-"
+    const volume = firstItem?.size ? `${firstItem.size} Gr` : "-"
     const productTitle = firstItem?.product || "-"
     const rating = 0
 

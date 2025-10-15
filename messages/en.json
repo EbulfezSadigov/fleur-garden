@@ -167,6 +167,7 @@
     "failed_to_add_comment": "Failed to add comment",
     "minimum_order_validation": "Minimum order amount is 400 USD",
     "kq": "Kq",
+    "Gr": "Gr",
     "current_tier": "Current tier",
     "volume_outside_available_ranges": "Volume outside available ranges",
     "available_ranges": "Available ranges"
