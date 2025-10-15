@@ -130,10 +130,10 @@ function CartButton({ product }: { product: Product }) {
                 totalPrice = correctTier.price * volumeMl
             }
 
-            if (totalPrice < 400) {
-                toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
-                return
-            }
+            // if (totalPrice < 400) {
+            //     toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
+            //     return
+            // }
 
             const volumeStr = `${volumeMl} Gr`
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeStr)

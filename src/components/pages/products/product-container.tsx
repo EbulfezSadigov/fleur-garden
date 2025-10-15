@@ -178,10 +178,10 @@ function ProductContainer({ product }: { product: Product }) {
             }
 
             const subtotal = priceValue * quantity
-            if (subtotal < 400) {
-                toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
-                return
-            }
+            // if (subtotal < 400) {
+            //     toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
+            //     return
+            // }
 
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeLabel)
             if (existingIndex >= 0) {
