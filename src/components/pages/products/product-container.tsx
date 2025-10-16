@@ -51,7 +51,6 @@ function ProductContainer({ product }: { product: Product }) {
         }
     }, [product.id])
 
-
     const incrementQuantity = () => setQuantity((prev) => prev + 1)
     const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1))
 
@@ -64,20 +63,16 @@ function ProductContainer({ product }: { product: Product }) {
             const existingIndex = favorites.findIndex(item => item.id === product.id)
 
             if (existingIndex >= 0) {
-                // Remove from favorites
                 favorites.splice(existingIndex, 1)
                 setIsFavorite(false)
                 toast.success('Məhsul sevimlilərdən çıxarıldı')
             } else {
-                // Add to favorites
                 favorites.push({ id: product.id, product: product })
                 setIsFavorite(true)
                 toast.success('Məhsul sevimlilərə əlavə olundu')
             }
 
             window.localStorage.setItem(storageKey, JSON.stringify(favorites))
-
-            // Dispatch custom event to notify other components
             window.dispatchEvent(new CustomEvent('favoritesChanged'))
         } catch (error) {
             console.error('Failed to write favorites to localStorage', error)
@@ -97,7 +92,6 @@ function ProductContainer({ product }: { product: Product }) {
                 window.localStorage.setItem(storageKey, JSON.stringify(comparison))
                 setIsInComparison(true)
                 toast.success('Məhsul müqayisə siyahısına əlavə olundu')
-                // Notify header and others
                 window.dispatchEvent(new CustomEvent('comparisonChanged'))
             } else {
                 toast.error('Məhsul artıq müqayisə siyahısına əlavə olunub')
@@ -110,7 +104,6 @@ function ProductContainer({ product }: { product: Product }) {
 
     const handleAddToCart = () => {
         try {
-            // Use the SAME schema as the quick `CartButton` so the cart page renders consistently
             type CartItem = {
                 id: string
                 product_id: number
@@ -177,16 +170,10 @@ function ProductContainer({ product }: { product: Product }) {
                 priceValue = correctTier.price * v
             }
 
-            const subtotal = priceValue * quantity
-            // if (subtotal < 400) {
-            //     toast.error(t('minimum_order_validation') || 'Minimum sifariş məbləği 400 USD-dir')
-            //     return
-            // }
-
             const existingIndex = cart.findIndex(item => item.id === id && item.volume === volumeLabel)
             if (existingIndex >= 0) {
                 cart[existingIndex].qty += quantity
-                cart[existingIndex].price = priceValue
+                cart[existingIndex].price = priceValue * quantity // Adjusted for quantity
             } else {
                 cart.push({
                     id,
@@ -195,7 +182,7 @@ function ProductContainer({ product }: { product: Product }) {
                     brand: product.brand_name ?? '',
                     volume: volumeLabel,
                     price: priceValue,
-                    qty: hasUnifiedPrice ? 1 : quantity, // For unified price, qty is always 1, volume handles the amount
+                    qty: hasUnifiedPrice ? 1 : quantity,
                     selected: true,
                     image: product.image || '',
                     type: hasUnifiedPrice ? 'unified' : 'priced'
@@ -213,6 +200,14 @@ function ProductContainer({ product }: { product: Product }) {
             toast.error('Xəta baş verdi')
         }
     }
+
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 3
+        }).format(price);
+    };
+
     return (
         <div className="flex flex-col lg:flex-row gap-8">
             {/* Product Image Section */}
@@ -312,18 +307,8 @@ function ProductContainer({ product }: { product: Product }) {
 
                 {/* Price */}
                 <div className="space-y-2">
-                    <div className="text-3xl font-bold text-gray-900">{selectedSizePrice.toFixed(3)} USD</div>
+                    <div className="text-3xl font-bold text-gray-900">{formatPrice(selectedSizePrice)} USD</div>
                     <div className="flex justify-end">
-                        {/* <div className="flex items-center gap-2">
-                            {!hasUnifiedPrice && (
-                                <div className="text-sm text-gray-500">
-                                    {customSize ? `${customSize} Gr` : ''} {" "}
-                                </div>
-                            )}
-                            {!hasUnifiedPrice && customSize && (
-                                <span>(Base price: ${product.price} per Gr)</span>
-                            )}
-                        </div> */}
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 9H12.01M11 12H12V16H13M12 3C19.2 3 21 4.8 21 12C21 19.2 19.2 21 12 21C4.8 21 3 19.2 3 12C3 4.8 4.8 3 12 3Z" stroke="#77777B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />

@@ -9,6 +9,15 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { useRouter } from '@/i18n/navigation'
 
+function formatCurrency(amount: number) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+    }).format(amount);
+}
+
 function CartButton({ product }: { product: Product }) {
     const [isOpen, setIsOpen] = React.useState(false)
     const [volume, setVolume] = React.useState<string>('')
@@ -206,7 +215,7 @@ function CartButton({ product }: { product: Product }) {
                                 <p className="text-xs text-[#77777B] mt-1">{product.brand_name}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-semibold text-primary">(x1) {computedDialogPrice.toFixed(3)} USD</p>
+                                <p className="text-sm font-semibold text-primary">(x1) {formatCurrency(computedDialogPrice)}</p>
                                 {hasUnifiedPrice && (
                                     <p className="text-[10px] text-muted-foreground">{volume ? `${volume} Gr` : ''}</p>
                                 )}
@@ -244,10 +253,10 @@ function CartButton({ product }: { product: Product }) {
                             <span className="text-primary">
                                 {t("initial_price")} {
                                     hasUnifiedPrice
-                                        ? (product.price ?? 0)
+                                        ? formatCurrency(product.price ?? 0)
                                         : selectedPriceTier
-                                            ? selectedPriceTier.price
-                                            : 0
+                                            ? formatCurrency(selectedPriceTier.price)
+                                            : formatCurrency(0)
                                 }
                             </span>
                         </div>
