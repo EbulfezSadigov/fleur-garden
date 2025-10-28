@@ -55,7 +55,7 @@ export function BrandCarousel({ partners }: { partners: Partner[] }) {
               "whitespace-nowrap select-none",
             )}
           >
-            <Image src={brand.logo} alt={brand.name} width={100} height={100} />
+            <Image src={brand.logo} alt={brand.name} width={150} height={150} />
           </div>
         ))}
       </div>
